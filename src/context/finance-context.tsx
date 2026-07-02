@@ -28,7 +28,7 @@ interface FinanceContextType {
   deleteCategory: (id: string) => Promise<void>;
   
   // Investment actions
-  addInvestment: (investment: Omit<Investment, 'id' | 'created_at' | 'quantidade' | 'preço_medio'>) => Promise<void>;
+  addInvestment: (investment: Omit<Investment, 'id' | 'created_at' | 'quantidade' | 'preço_medio'>) => Promise<string>;
   updateInvestmentPrice: (id: string, newPrice: number) => Promise<void>;
   deleteInvestment: (id: string) => Promise<void>;
   
@@ -80,17 +80,13 @@ const SEED_TRANSACTIONS: Transaction[] = [
 ];
 
 const SEED_INVESTMENTS: Investment[] = [
-  { id: 'inv-1', tipo: 'ação', ticker: 'WEGE3', quantidade: 50, preço_medio: 38.50, preço_atual: 42.10, data_atualização: new Date().toISOString() },
-  { id: 'inv-2', tipo: 'fii', ticker: 'MXRF11', quantidade: 200, preço_medio: 10.12, preço_atual: 10.45, data_atualização: new Date().toISOString() },
-  { id: 'inv-3', tipo: 'cripto', ticker: 'BTC', quantidade: 0.012, preço_medio: 310000.00, preço_atual: 352000.00, data_atualização: new Date().toISOString() },
-  { id: 'inv-4', tipo: 'renda_fixa', ticker: 'LCI CAIXA 98% CDI', quantidade: 8000, preço_medio: 1.00, preço_atual: 1.00, data_atualização: new Date().toISOString() }
+  { id: 'inv-1', tipo: 'renda_fixa', ticker: 'CDB 100% CDI (Nubank)', quantidade: 8500, preço_medio: 1.00, preço_atual: 1.02, data_atualização: new Date().toISOString() },
+  { id: 'inv-2', tipo: 'renda_fixa', ticker: 'CDB 110% CDI (Inter)', quantidade: 4000, preço_medio: 1.00, preço_atual: 1.05, data_atualização: new Date().toISOString() }
 ];
 
 const SEED_MOVEMENTS: InvestmentMovement[] = [
-  { id: 'mov-1', investment_id: 'inv-1', tipo: 'aporte', valor: 1925.00, quantidade: 50, data: '2026-05-10' },
-  { id: 'mov-2', investment_id: 'inv-2', tipo: 'aporte', valor: 2024.00, quantidade: 200, data: '2026-05-12' },
-  { id: 'mov-3', investment_id: 'inv-3', tipo: 'aporte', valor: 3720.00, quantidade: 0.012, data: '2026-05-20' },
-  { id: 'mov-4', investment_id: 'inv-4', tipo: 'aporte', valor: 8000.00, quantidade: 8000, data: '2026-05-01' }
+  { id: 'mov-1', investment_id: 'inv-1', tipo: 'aporte', valor: 8500.00, quantidade: 8500, data: '2026-05-10' },
+  { id: 'mov-2', investment_id: 'inv-2', tipo: 'aporte', valor: 4000.00, quantidade: 4000, data: '2026-05-12' }
 ];
 
 const SEED_GOALS: Goal[] = [
@@ -520,29 +516,34 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // Investments
-  const addInvestment = async (inv: Omit<Investment, 'id' | 'created_at' | 'quantidade' | 'preço_medio'>) => {
+  const addInvestment = async (inv: Omit<Investment, 'id' | 'created_at' | 'quantidade' | 'preço_medio'>): Promise<string> => {
     if (isSupabaseConfigured && user) {
-      const { error } = await supabase!
+      const { data, error } = await supabase!
         .from('investments')
         .insert([{ 
           ...inv, 
           quantidade: 0, 
           preço_medio: 0, 
           user_id: user.id 
-        }]);
+        }])
+        .select()
+        .single();
       if (error) throw error;
-      loadSupabaseData(user.id);
+      await loadSupabaseData(user.id);
+      return data.id;
     } else {
+      const id = generateId();
       const newInv: Investment = {
         ...inv,
         quantidade: 0,
         preço_medio: 0,
-        id: generateId(),
+        id,
         created_at: new Date().toISOString()
       };
       const updated = [...investments, newInv];
       setInvestments(updated);
       localStorage.setItem('fin_investments', JSON.stringify(updated));
+      return id;
     }
   };
 
