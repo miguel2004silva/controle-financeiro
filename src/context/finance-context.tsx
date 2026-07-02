@@ -372,14 +372,93 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const deleteTransaction = async (id: string) => {
+    const tx = transactions.find(t => t.id === id);
+    const linkedMovId = tx?.investment_movement_id;
+
     if (isSupabaseConfigured && user) {
-      const { error } = await supabase!
-        .from('transactions')
-        .delete()
-        .eq('id', id);
-      if (error) throw error;
+      if (linkedMovId) {
+        // Find movement to revert its effect
+        const { data: movData, error: fetchMovErr } = await supabase!
+          .from('investment_movements')
+          .select('*')
+          .eq('id', linkedMovId)
+          .single();
+        
+        if (!fetchMovErr && movData) {
+          // Revert investment quantity and avg price
+          const targetInv = investments.find(i => i.id === movData.investment_id);
+          if (targetInv) {
+            let newQty = Number(targetInv.quantidade);
+            let newAvgPrice = Number(targetInv.preço_medio);
+            const movQty = Number(movData.quantidade);
+            const movVal = Number(movData.valor);
+
+            if (movData.tipo === 'aporte') {
+              newQty = Math.max(0, newQty - movQty);
+              const costBefore = (Number(targetInv.quantidade) * Number(targetInv.preço_medio)) - movVal;
+              newAvgPrice = newQty > 0 ? costBefore / newQty : 0;
+            } else {
+              newQty += movQty;
+            }
+
+            const { error: invErr } = await supabase!
+              .from('investments')
+              .update({ quantidade: newQty, preço_medio: newAvgPrice })
+              .eq('id', movData.investment_id);
+            if (invErr) console.error('Erro ao reverter investimento:', invErr);
+          }
+
+          // Delete the movement. By foreign key cascade, this will delete the transaction too.
+          const { error: delMovErr } = await supabase!
+            .from('investment_movements')
+            .delete()
+            .eq('id', linkedMovId);
+          if (delMovErr) throw delMovErr;
+        }
+      } else {
+        // Normal transaction delete
+        const { error } = await supabase!
+          .from('transactions')
+          .delete()
+          .eq('id', id);
+        if (error) throw error;
+      }
       loadSupabaseData(user.id);
     } else {
+      // Mock mode
+      if (linkedMovId) {
+        const mov = investmentMovements.find(m => m.id === linkedMovId);
+        if (mov) {
+          // Revert investment
+          const updatedInvs = investments.map(i => {
+            if (i.id === mov.investment_id) {
+              let newQty = Number(i.quantidade);
+              let newAvgPrice = Number(i.preço_medio);
+              const movQty = Number(mov.quantidade);
+              const movVal = Number(mov.valor);
+
+              if (mov.tipo === 'aporte') {
+                newQty = Math.max(0, newQty - movQty);
+                const costBefore = (Number(i.quantidade) * Number(i.preço_medio)) - movVal;
+                newAvgPrice = newQty > 0 ? costBefore / newQty : 0;
+              } else {
+                newQty += movQty;
+              }
+
+              return { ...i, quantidade: newQty, preço_medio: newAvgPrice };
+            }
+            return i;
+          });
+          setInvestments(updatedInvs);
+          localStorage.setItem('fin_investments', JSON.stringify(updatedInvs));
+
+          // Remove investment movement
+          const updatedMovs = investmentMovements.filter(m => m.id !== linkedMovId);
+          setInvestmentMovements(updatedMovs);
+          localStorage.setItem('fin_movements', JSON.stringify(updatedMovs));
+        }
+      }
+
       const updated = transactions.filter(t => t.id !== id);
       setTransactions(updated);
       localStorage.setItem('fin_transactions', JSON.stringify(updated));
@@ -497,9 +576,17 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const updated = investments.filter(i => i.id !== id);
       setInvestments(updated);
       localStorage.setItem('fin_investments', JSON.stringify(updated));
+      
+      const movementsToDelete = investmentMovements.filter(m => m.investment_id === id);
+      const movementIds = movementsToDelete.map(m => m.id);
+
       const updatedMovs = investmentMovements.filter(m => m.investment_id !== id);
       setInvestmentMovements(updatedMovs);
       localStorage.setItem('fin_movements', JSON.stringify(updatedMovs));
+
+      const updatedTxs = transactions.filter(t => !t.investment_movement_id || !movementIds.includes(t.investment_movement_id));
+      setTransactions(updatedTxs);
+      localStorage.setItem('fin_transactions', JSON.stringify(updatedTxs));
     }
   };
 
@@ -507,10 +594,31 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const addInvestmentMovement = async (mov: Omit<InvestmentMovement, 'id' | 'created_at'>) => {
     if (isSupabaseConfigured && user) {
       // Begin transaction manually by inserting the movement and updating the investment
-      const { error: movErr } = await supabase!
+      const { data: insertedMovs, error: movErr } = await supabase!
         .from('investment_movements')
-        .insert([{ ...mov, user_id: user.id }]);
+        .insert([{ ...mov, user_id: user.id }])
+        .select();
       if (movErr) throw movErr;
+      const newMov = insertedMovs?.[0];
+
+      if (newMov) {
+        // Insert linked transaction
+        const targetInv = investments.find(i => i.id === mov.investment_id);
+        const invCategory = categories.find(c => c.nome.toLowerCase() === 'investimentos');
+        const { error: txErr } = await supabase!
+          .from('transactions')
+          .insert([{
+            user_id: user.id,
+            tipo: mov.tipo === 'aporte' ? 'despesa' : 'receita',
+            valor: Number(mov.valor),
+            categoria_id: invCategory?.id || null,
+            descrição: `${mov.tipo === 'aporte' ? 'Aporte' : 'Resgate'} - ${targetInv?.ticker || 'Ativo'}`,
+            data: mov.data,
+            recorrente: false,
+            investment_movement_id: newMov.id
+          }]);
+        if (txErr) console.error('Erro ao inserir transação vinculada:', txErr);
+      }
 
       // Recalculate quantity and avg price
       const targetInv = investments.find(i => i.id === mov.investment_id);
@@ -537,15 +645,35 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
       loadSupabaseData(user.id);
     } else {
+      const newMovId = generateId();
       const newMov: InvestmentMovement = {
         ...mov,
-        id: generateId(),
+        id: newMovId,
         created_at: new Date().toISOString()
       };
       
       const updatedMovs = [newMov, ...investmentMovements];
       setInvestmentMovements(updatedMovs);
       localStorage.setItem('fin_movements', JSON.stringify(updatedMovs));
+
+      // Add linked transaction in mock mode
+      const targetInv = investments.find(i => i.id === mov.investment_id);
+      const invCategory = categories.find(c => c.nome.toLowerCase() === 'investimentos');
+      const newTx: Transaction = {
+        id: generateId(),
+        tipo: mov.tipo === 'aporte' ? 'despesa' : 'receita',
+        valor: Number(mov.valor),
+        categoria_id: invCategory?.id || null,
+        descrição: `${mov.tipo === 'aporte' ? 'Aporte' : 'Resgate'} - ${targetInv?.ticker || 'Ativo'}`,
+        data: mov.data,
+        recorrente: false,
+        created_at: new Date().toISOString(),
+        investment_movement_id: newMovId
+      } as any;
+      
+      const updatedTxs = [newTx, ...transactions];
+      setTransactions(updatedTxs);
+      localStorage.setItem('fin_transactions', JSON.stringify(updatedTxs));
 
       // Update investment average price and quantity
       const updatedInvs = investments.map(i => {

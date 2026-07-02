@@ -290,13 +290,22 @@ export default function TransacoesPage() {
                             </>
                           ) : (
                             <>
-                              <button
-                                onClick={() => startEdit(tx.id, tx.descrição, Number(tx.valor), tx.categoria_id, tx.data)}
-                                className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-slate-100 hover:bg-muted-foreground/10 transition-colors"
-                                title="Editar"
-                              >
-                                <Edit2 size={13} />
-                              </button>
+                              {!tx.investment_movement_id ? (
+                                <button
+                                  onClick={() => startEdit(tx.id, tx.descrição, Number(tx.valor), tx.categoria_id, tx.data)}
+                                  className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-slate-100 hover:bg-muted-foreground/10 transition-colors"
+                                  title="Editar"
+                                >
+                                  <Edit2 size={13} />
+                                </button>
+                              ) : (
+                                <span 
+                                  className="p-1.5 rounded-lg bg-muted/30 text-muted-foreground/40 cursor-not-allowed"
+                                  title="Transação vinculada a investimento. Edite ou remova o ativo na aba de Investimentos."
+                                >
+                                  <Edit2 size={13} />
+                                </span>
+                              )}
                               <button
                                 onClick={() => deleteTransaction(tx.id)}
                                 className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-danger hover:bg-danger/10 transition-colors"

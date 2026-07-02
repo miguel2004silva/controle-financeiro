@@ -13,7 +13,8 @@ import {
   ArrowDownRight, 
   Trash2,
   Calendar,
-  Layers
+  Layers,
+  Wallet
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -229,6 +230,72 @@ export default function DashboardPage() {
           <Layers size={16} />
           Lançamento Rápido
         </button>
+      </div>
+
+      {/* Net Worth Breakdown Card */}
+      <div className="bg-card border border-border/40 rounded-2xl p-5 shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+          <div>
+            <h3 className="font-bold text-base text-slate-100">Distribuição do Patrimônio</h3>
+            <p className="text-xs text-muted-foreground font-medium">Divisão entre saldo líquido e investimentos (Base MultiCap)</p>
+          </div>
+        </div>
+        
+        {/* Progress Bar Split */}
+        <div className="w-full h-3 bg-muted/30 rounded-full overflow-hidden flex mb-4">
+          {consolidatedBalance > 0 ? (
+            <>
+              {accountBalance > 0 && (
+                <div 
+                  className="h-full bg-indigo-500 transition-all duration-500" 
+                  style={{ width: `${(Math.max(0, accountBalance) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100}%` }}
+                  title={`Liquidez: ${((Math.max(0, accountBalance) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100).toFixed(1)}%`}
+                />
+              )}
+              {currentInvestmentsValuation > 0 && (
+                <div 
+                  className="h-full bg-emerald-500 transition-all duration-500" 
+                  style={{ width: `${(Math.max(0, currentInvestmentsValuation) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100}%` }}
+                  title={`Investimentos: ${((Math.max(0, currentInvestmentsValuation) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100).toFixed(1)}%`}
+                />
+              )}
+            </>
+          ) : (
+            <div className="w-full h-full bg-muted/40" />
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-3 bg-[#12151D]/60 border border-border/20 rounded-xl flex items-center justify-between hover:border-indigo-500/30 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                <Wallet size={16} />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground font-semibold">Liquidez (Saldo em Conta)</p>
+                <p className="text-lg font-bold text-white font-mono">{formatBRL(accountBalance)}</p>
+              </div>
+            </div>
+            <span className="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+              {(consolidatedBalance > 0 ? (Math.max(0, accountBalance) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100 : 0).toFixed(1)}%
+            </span>
+          </div>
+
+          <div className="p-3 bg-[#12151D]/60 border border-border/20 rounded-xl flex items-center justify-between hover:border-emerald-500/30 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                <TrendingUp size={16} />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground font-semibold">Investimentos (Ativos)</p>
+                <p className="text-lg font-bold text-white font-mono">{formatBRL(currentInvestmentsValuation)}</p>
+              </div>
+            </div>
+            <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              {(consolidatedBalance > 0 ? (Math.max(0, currentInvestmentsValuation) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100 : 0).toFixed(1)}%
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Grid of Summaries (Revenues, Expenses, Balance, Invested) */}

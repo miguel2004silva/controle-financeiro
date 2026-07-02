@@ -17,6 +17,7 @@ export interface Transaction {
   descrição: string;
   data: string; // ISO Date String (YYYY-MM-DD or full timestamp)
   recorrente: boolean;
+  investment_movement_id?: string | null;
   created_at?: string;
 }
 

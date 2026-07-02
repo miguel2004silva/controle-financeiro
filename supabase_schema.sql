@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS public.transactions (
     descrição TEXT NOT NULL,
     data TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     recorrente BOOLEAN DEFAULT false NOT NULL,
+    investment_movement_id UUID REFERENCES public.investment_movements(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

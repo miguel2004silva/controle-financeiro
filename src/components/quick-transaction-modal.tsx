@@ -38,7 +38,7 @@ export const QuickTransactionModal: React.FC = () => {
     watch,
     reset,
     formState: { errors, isSubmitting }
-  } = useForm<TransactionFormValues>({
+  } = useForm<any>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       valor: undefined,
@@ -167,7 +167,7 @@ export const QuickTransactionModal: React.FC = () => {
                   />
                 </div>
                 {errors.valor && (
-                  <p className="text-xs text-danger font-medium mt-1">{errors.valor.message}</p>
+                  <p className="text-xs text-danger font-medium mt-1">{(errors.valor as any).message}</p>
                 )}
               </div>
 
@@ -221,7 +221,7 @@ export const QuickTransactionModal: React.FC = () => {
                   className="w-full bg-muted border border-border/50 rounded-xl px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
                 />
                 {errors.descrição && (
-                  <p className="text-xs text-danger font-medium">{errors.descrição.message}</p>
+                  <p className="text-xs text-danger font-medium">{(errors.descrição as any).message}</p>
                 )}
               </div>
 
