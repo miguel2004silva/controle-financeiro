@@ -79,9 +79,28 @@ export const QuickTransactionModal: React.FC = () => {
         if (existingCat) {
           catId = existingCat.id;
         } else {
+          const PREDEFINED_COLORS = [
+            '#4F46E5', // Indigo
+            '#10B981', // Emerald
+            '#F43F5E', // Rose
+            '#F59E0B', // Amber
+            '#8B5CF6', // Violet
+            '#0EA5E9', // Sky
+            '#EC4899', // Pink
+            '#14B8A6', // Teal
+            '#F97316', // Orange
+            '#EF4444', // Red
+            '#06B6D4', // Cyan
+            '#84CC16'  // Lime
+          ];
+          
+          const usedColors = categories.map(c => c.cor.toUpperCase());
+          const availableColor = PREDEFINED_COLORS.find(color => !usedColors.includes(color)) 
+            || PREDEFINED_COLORS[categories.length % PREDEFINED_COLORS.length];
+
           catId = await addCategory({
             nome: trimmedCatName,
-            cor: '#6366F1', // default indigo
+            cor: availableColor,
             icone: 'circle',
             orçamento_mensal: 0
           });
