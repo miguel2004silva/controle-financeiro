@@ -208,7 +208,7 @@ export default function TransacoesPage() {
                             >
                               <CategoryIcon name={cat?.icone || 'circle'} size={14} />
                             </div>
-                            <span className="font-bold text-slate-200 truncate">{cat?.nome || 'Entrada/Outros'}</span>
+                            <span className="font-bold text-foreground/90 truncate">{cat?.nome || 'Entrada/Outros'}</span>
                           </div>
                         )}
                       </td>
@@ -220,11 +220,11 @@ export default function TransacoesPage() {
                             type="text"
                             value={editDesc}
                             onChange={(e) => setEditDesc(e.target.value)}
-                            className="bg-muted border border-border/60 rounded-lg px-2 py-1 text-xs text-slate-100 focus:outline-none w-full max-w-[200px]"
+                            className="bg-muted border border-border/60 rounded-lg px-2 py-1 text-xs text-foreground focus:outline-none w-full max-w-[200px]"
                           />
                         ) : (
                           <div className="flex items-center gap-2">
-                            <span className="text-slate-100 font-bold">{tx.descrição}</span>
+                            <span className="text-foreground font-bold">{tx.descrição}</span>
                             {tx.recorrente && (
                               <span className="text-[7px] font-black uppercase tracking-widest bg-muted px-1.5 py-0.25 rounded text-muted-foreground shrink-0">
                                 Fixo
@@ -241,7 +241,7 @@ export default function TransacoesPage() {
                             type="date"
                             value={editDate}
                             onChange={(e) => setEditDate(e.target.value)}
-                            className="bg-muted border border-border/60 rounded-lg p-1 text-xs text-slate-100 focus:outline-none font-mono"
+                            className="bg-muted border border-border/60 rounded-lg p-1 text-xs text-foreground focus:outline-none font-mono"
                           />
                         ) : (
                           new Date(tx.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
@@ -258,11 +258,11 @@ export default function TransacoesPage() {
                               step="0.01"
                               value={editVal}
                               onChange={(e) => setEditVal(Number(e.target.value))}
-                              className="bg-muted border border-border/60 rounded-lg px-1.5 py-1 text-xs text-slate-100 focus:outline-none w-20 text-right font-mono"
+                              className="bg-muted border border-border/60 rounded-lg px-1.5 py-1 text-xs text-foreground focus:outline-none w-20 text-right font-mono"
                             />
                           </div>
                         ) : (
-                          <span className={isRevenue ? 'text-success' : 'text-slate-200'}>
+                          <span className={isRevenue ? 'text-success' : 'text-foreground/80'}>
                             {isRevenue ? '+' : '-'} {formatBRL(Number(tx.valor))}
                           </span>
                         )}
@@ -293,7 +293,7 @@ export default function TransacoesPage() {
                               {!tx.investment_movement_id ? (
                                 <button
                                   onClick={() => startEdit(tx.id, tx.descrição, Number(tx.valor), tx.categoria_id, tx.data)}
-                                  className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-slate-100 hover:bg-muted-foreground/10 transition-colors"
+                                  className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10 transition-colors"
                                   title="Editar"
                                 >
                                   <Edit2 size={13} />

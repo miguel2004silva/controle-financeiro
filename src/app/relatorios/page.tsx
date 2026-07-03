@@ -275,7 +275,7 @@ export default function RelatoriosPage() {
         {/* Left: Category share donut chart (2 cols) */}
         <div className="lg:col-span-2 bg-card border border-border/40 rounded-2xl p-5 space-y-6">
           <div>
-            <h3 className="font-bold text-sm text-slate-100 flex items-center gap-2">
+            <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
               <PieIcon size={16} className="text-primary" />
               Distribuição Histórica
             </h3>
@@ -321,7 +321,7 @@ export default function RelatoriosPage() {
 
         {/* Right: Category list breakdown analytics (3 cols) */}
         <div className="lg:col-span-3 bg-card border border-border/40 rounded-2xl p-5 space-y-4 shadow-sm overflow-hidden">
-          <h3 className="font-bold text-sm text-slate-100">Detalhamento dos Gastos</h3>
+          <h3 className="font-bold text-sm text-foreground">Detalhamento dos Gastos</h3>
           
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
@@ -333,7 +333,7 @@ export default function RelatoriosPage() {
                   <th className="py-2.5 px-3 text-right font-mono">Participação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/20 text-slate-200">
+              <tbody className="divide-y divide-border/20 text-foreground/90">
                 {breakdownDataWithPercentage.length > 0 ? (
                   breakdownDataWithPercentage.map(cat => (
                     <tr key={cat.id} className="hover:bg-muted/10 transition-colors">

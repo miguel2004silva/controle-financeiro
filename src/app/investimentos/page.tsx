@@ -162,7 +162,7 @@ export default function InvestimentosPage() {
       
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+        <h2 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
           <TrendingUp size={24} className="text-primary" />
           Investimentos e Reservas
         </h2>
@@ -178,7 +178,7 @@ export default function InvestimentosPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Conta Corrente</span>
-            <p className="text-3xl font-black text-white mt-1.5 font-mono">
+            <p className="text-3xl font-black text-foreground mt-1.5 font-mono">
               {formatBRL(accountBalance)}
             </p>
           </div>
@@ -192,7 +192,7 @@ export default function InvestimentosPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Guardado</span>
-            <p className="text-3xl font-black text-white mt-1.5 font-mono">
+            <p className="text-3xl font-black text-foreground mt-1.5 font-mono">
               {formatBRL(totalSaved)}
             </p>
           </div>
@@ -206,7 +206,7 @@ export default function InvestimentosPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Patrimônio Consolidado</span>
-            <p className="text-3xl font-black text-white mt-1.5 font-mono">
+            <p className="text-3xl font-black text-foreground mt-1.5 font-mono">
               {formatBRL(consolidatedBalance)}
             </p>
           </div>
@@ -222,7 +222,7 @@ export default function InvestimentosPage() {
           <div className="bg-card border border-border/40 rounded-2xl shadow-sm overflow-hidden">
             
             <div className="p-5 border-b border-border/30 bg-muted/10">
-              <h3 className="font-bold text-sm text-slate-100">Planilha de Investimentos</h3>
+              <h3 className="font-bold text-sm text-foreground">Planilha de Investimentos</h3>
               <p className="text-[10px] text-muted-foreground mt-0.5">Locais onde você possui dinheiro reservado</p>
             </div>
 
@@ -241,7 +241,7 @@ export default function InvestimentosPage() {
                     investments.map((inv) => (
                       <tr key={inv.id} className="hover:bg-muted/10 transition-colors">
                         {/* Name */}
-                        <td className="py-4 px-5 font-bold text-slate-100 max-w-[150px] truncate">
+                        <td className="py-4 px-5 font-bold text-foreground max-w-[150px] truncate">
                           {inv.ticker}
                         </td>
 
@@ -253,7 +253,7 @@ export default function InvestimentosPage() {
                         </td>
 
                         {/* Amount */}
-                        <td className="py-4 px-4 text-right font-mono font-bold text-slate-200 text-sm">
+                        <td className="py-4 px-4 text-right font-mono font-bold text-foreground text-sm">
                           {formatBRL(Number(inv.quantidade) * Number(inv.preço_atual))}
                         </td>
 
@@ -304,14 +304,14 @@ export default function InvestimentosPage() {
           <div className="bg-card border border-border/40 rounded-2xl p-6 space-y-5 relative overflow-hidden">
             
             <div className="flex justify-between items-center border-b border-border/30 pb-3">
-              <h3 className="font-bold text-sm text-slate-100 flex items-center gap-2">
+              <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
                 <PlusCircle size={16} className="text-primary" />
                 {selectedInvId ? 'Editar Investimento' : 'Novo Lançamento'}
               </h3>
               {selectedInvId && (
                 <button
                   onClick={handleCancelEdit}
-                  className="p-1 rounded text-muted-foreground hover:text-white"
+                  className="p-1 rounded text-muted-foreground hover:text-foreground"
                   title="Cancelar Edição"
                 >
                   <X size={15} />
@@ -332,7 +332,7 @@ export default function InvestimentosPage() {
                   maxLength={20}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-muted border border-border/60 rounded-xl p-3 text-xs text-slate-100 placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/50"
+                  className="w-full bg-muted border border-border/60 rounded-xl p-3 text-xs text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/50"
                   required
                 />
                 <span className="text-[9px] text-muted-foreground/60 block mt-1">Máximo de 20 caracteres</span>
@@ -351,7 +351,7 @@ export default function InvestimentosPage() {
                     placeholder="0,00"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full bg-muted border border-border/60 rounded-xl py-3 pl-9 pr-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-primary/50"
+                    className="w-full bg-muted border border-border/60 rounded-xl py-3 pl-9 pr-3 text-xs text-foreground font-mono focus:outline-none focus:border-primary/50"
                     required
                   />
                 </div>
@@ -365,7 +365,7 @@ export default function InvestimentosPage() {
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value as any)}
-                  className="w-full bg-muted border border-border/60 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-primary/50"
+                  className="w-full bg-muted border border-border/60 rounded-xl p-3 text-xs text-foreground focus:outline-none focus:border-primary/50"
                   required
                 >
                   <option value="renda_fixa">Renda Fixa (CDB, Selic, Poupança)</option>
@@ -388,7 +388,7 @@ export default function InvestimentosPage() {
                   <button
                     type="button"
                     onClick={handleCancelEdit}
-                    className="w-1/3 py-3 px-4 text-xs border border-border/60 hover:bg-muted text-slate-200 rounded-xl font-bold transition-all"
+                    className="w-1/3 py-3 px-4 text-xs border border-border/60 hover:bg-muted text-foreground/80 rounded-xl font-bold transition-all"
                   >
                     Cancelar
                   </button>

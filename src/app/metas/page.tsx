@@ -174,7 +174,7 @@ export default function MetaseOrcamentosPage() {
       
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-black text-white tracking-tight">Metas e Orçamentos</h2>
+        <h2 className="text-2xl font-black text-foreground tracking-tight">Metas e Orçamentos</h2>
         <p className="text-xs text-muted-foreground">Planeje suas despesas mensais e visualize seus sonhos de longo prazo</p>
       </div>
 
@@ -221,7 +221,7 @@ export default function MetaseOrcamentosPage() {
                             type="number"
                             value={editBudgetVal}
                             onChange={(e) => setEditBudgetVal(e.target.value)}
-                            className="bg-muted border border-border/60 rounded px-2 py-1 text-xs text-slate-100 font-mono w-24 text-right focus:outline-none"
+                            className="bg-muted border border-border/60 rounded px-2 py-1 text-xs text-foreground font-mono w-24 text-right focus:outline-none"
                             autoFocus
                           />
                           <button
@@ -241,7 +241,7 @@ export default function MetaseOrcamentosPage() {
                         <div className="flex items-center gap-2">
                           <div className="text-right">
                             <span className="text-[10px] text-muted-foreground block">Orçamento</span>
-                            <span className="text-xs font-mono font-extrabold text-slate-200">
+                            <span className="text-xs font-mono font-extrabold text-foreground/90">
                               {formatBRL(cat.orçamento_mensal)}
                             </span>
                           </div>
@@ -250,7 +250,7 @@ export default function MetaseOrcamentosPage() {
                               setEditingCatId(cat.id);
                               setEditBudgetVal(String(cat.orçamento_mensal));
                             }}
-                            className="p-1 rounded text-muted-foreground hover:text-slate-200"
+                            className="p-1 rounded text-muted-foreground hover:text-foreground"
                             title="Editar Orçamento"
                           >
                             <Edit2 size={12} />
@@ -293,7 +293,7 @@ export default function MetaseOrcamentosPage() {
           <div className="bg-card border border-border/40 rounded-2xl p-5 space-y-5">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-bold text-base text-slate-100">Metas de Longo Prazo</h3>
+                <h3 className="font-bold text-base text-foreground">Metas de Longo Prazo</h3>
                 <p className="text-xs text-muted-foreground">Acompanhe seus planos e reservas</p>
               </div>
               <button
@@ -308,7 +308,7 @@ export default function MetaseOrcamentosPage() {
             {/* FORM: Create new Goal */}
             {showAddGoal && (
               <form onSubmit={handleAddGoal} className="p-4 bg-muted/40 border border-border/30 rounded-xl space-y-3 animate-fade-in">
-                <h4 className="text-xs font-bold text-slate-200">Nova Meta Financeira</h4>
+                <h4 className="text-xs font-bold text-foreground/90">Nova Meta Financeira</h4>
                 
                 <div className="space-y-2">
                   <div>
@@ -411,7 +411,7 @@ export default function MetaseOrcamentosPage() {
 
                         {/* Values */}
                         <div className="text-right font-mono text-xs">
-                          <span className="font-extrabold text-slate-200">{formatBRL(current)}</span>
+                          <span className="font-extrabold text-foreground/90">{formatBRL(current)}</span>
                           <span className="text-[10px] text-muted-foreground block">Alvo: {formatBRL(target)}</span>
                         </div>
 
