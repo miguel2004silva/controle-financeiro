@@ -40,7 +40,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   // If loading, show a dark sleek loading screen
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0B0E14] flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
         <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary glow-primary animate-pulse mb-4">
           <Wallet size={24} />
         </div>
@@ -65,15 +65,15 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] text-foreground flex">
+    <div className="min-h-screen bg-background text-foreground flex">
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex md:w-64 lg:w-72 bg-[#12151D] border-r border-border/50 flex-col fixed inset-y-0 left-0 z-20">
+      <aside className="hidden md:flex md:w-64 lg:w-72 bg-card border-r border-border/50 flex-col fixed inset-y-0 left-0 z-20">
         {/* Brand */}
         <div className="h-16 px-6 border-b border-border/40 flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white glow-primary">
             <Wallet size={18} />
           </div>
-          <span className="font-extrabold tracking-tight text-white text-base">
+          <span className="font-extrabold tracking-tight text-foreground text-base">
             Controle<span className="text-primary font-medium">Financeiro</span>
           </span>
         </div>
@@ -82,7 +82,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
         <div className="p-4 border-b border-border/30 mx-3 my-4 bg-muted/40 rounded-xl flex items-center justify-between">
           <div className="truncate">
             <p className="text-xs text-muted-foreground">Logado como</p>
-            <p className="text-sm font-bold text-slate-100 truncate">{user?.name || user?.email}</p>
+            <p className="text-sm font-bold text-foreground truncate">{user?.name || user?.email}</p>
           </div>
           <button
             onClick={signOut}
@@ -105,7 +105,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${
                   isActive
                     ? 'bg-primary text-white font-semibold shadow-lg shadow-primary/10'
-                    : 'text-muted-foreground hover:text-slate-100 hover:bg-muted/50'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 }`}
               >
                 <Icon className={`transition-transform duration-200 group-hover:scale-110 ${
@@ -126,20 +126,20 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* Main Content Area */}
       <div className="flex-1 md:pl-64 lg:pl-72 flex flex-col min-h-screen">
         {/* Top Header - Mobile & Desktop info */}
-        <header className="h-16 px-4 md:px-8 border-b border-border/30 flex items-center justify-between bg-[#12151D]/60 backdrop-blur-md sticky top-0 z-10 md:bg-transparent md:backdrop-blur-none md:border-b-0 md:h-12 md:mt-4 md:mb-2">
+        <header className="h-16 px-4 md:px-8 border-b border-border/30 flex items-center justify-between bg-card/60 backdrop-blur-md sticky top-0 z-10 md:bg-transparent md:backdrop-blur-none md:border-b-0 md:h-12 md:mt-4 md:mb-2">
           {/* Mobile menu trigger / Brand */}
           <div className="flex items-center gap-3 md:hidden">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white">
               <Wallet size={16} />
             </div>
-            <span className="font-black text-sm tracking-tight text-white">
+            <span className="font-black text-sm tracking-tight text-foreground">
               Controle<span className="text-primary font-normal">Financeiro</span>
             </span>
           </div>
 
           <div className="hidden md:block">
             <p className="text-xs text-muted-foreground">Seja bem vindo,</p>
-            <h1 className="text-sm font-bold text-slate-200">{user?.name}</h1>
+            <h1 className="text-sm font-bold text-foreground">{user?.name}</h1>
           </div>
 
           <div className="flex items-center gap-2">
@@ -172,7 +172,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       </div>
 
       {/* Mobile Bottom Bar Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#12151D]/90 backdrop-blur-lg border-t border-border/50 z-30 flex items-center justify-around px-2 shadow-2xl">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card/90 backdrop-blur-lg border-t border-border/50 z-30 flex items-center justify-around px-2 shadow-2xl">
         {NAV_ITEMS.slice(0, 4).map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -181,7 +181,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
               key={item.name}
               href={item.href}
               className={`flex flex-col items-center justify-center flex-grow py-2 gap-1 text-[10px] font-medium transition-colors ${
-                isActive ? 'text-primary font-bold' : 'text-muted-foreground hover:text-slate-100'
+                isActive ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <Icon className={isActive ? 'text-primary scale-110' : ''} size={18} />

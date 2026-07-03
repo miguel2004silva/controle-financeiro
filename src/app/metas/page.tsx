@@ -184,7 +184,7 @@ export default function MetaseOrcamentosPage() {
         {/* Left Column: Monthly Budgets (3 cols) */}
         <div className="lg:col-span-3 bg-card border border-border/40 rounded-2xl p-5 space-y-5">
           <div>
-            <h3 className="font-bold text-base text-slate-100">Orçamento por Categorias</h3>
+            <h3 className="font-bold text-base text-foreground">Orçamento por Categorias</h3>
             <p className="text-xs text-muted-foreground">Monitore o teto de gastos planejados para este mês</p>
           </div>
 
@@ -193,7 +193,7 @@ export default function MetaseOrcamentosPage() {
               const isEditing = editingCatId === cat.id;
               
               return (
-                <div key={cat.id} className="p-4 bg-[#0B0E14]/40 border border-border/20 rounded-xl space-y-3 hover:border-border/40 transition-colors">
+                <div key={cat.id} className="p-4 bg-muted border border-border/20 rounded-xl space-y-3 hover:border-border/40 transition-colors">
                   <div className="flex justify-between items-center">
                     
                     {/* Category Label */}
@@ -205,7 +205,7 @@ export default function MetaseOrcamentosPage() {
                         <CategoryIcon name={cat.icone} size={15} />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-100">{cat.nome}</h4>
+                        <h4 className="text-xs font-bold text-foreground">{cat.nome}</h4>
                         <span className="text-[9px] text-muted-foreground font-semibold">
                           Usado: {formatBRL(cat.spent)}
                         </span>
@@ -318,7 +318,7 @@ export default function MetaseOrcamentosPage() {
                       placeholder="Ex: Reserva Emergência, Viagem Disney..."
                       value={goalName}
                       onChange={(e) => setGoalName(e.target.value)}
-                      className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-slate-100"
+                      className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-foreground"
                     />
                   </div>
 
@@ -330,7 +330,7 @@ export default function MetaseOrcamentosPage() {
                         placeholder="R$ 15.000"
                         value={goalTarget}
                         onChange={(e) => setGoalTarget(e.target.value)}
-                        className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-slate-100"
+                        className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-foreground"
                       />
                     </div>
                     <div>
@@ -340,7 +340,7 @@ export default function MetaseOrcamentosPage() {
                         placeholder="R$ 2.000"
                         value={goalCurrent}
                         onChange={(e) => setGoalCurrent(e.target.value)}
-                        className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-slate-100"
+                        className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-foreground"
                       />
                     </div>
                   </div>
@@ -351,7 +351,7 @@ export default function MetaseOrcamentosPage() {
                       type="date"
                       value={goalDeadline}
                       onChange={(e) => setGoalDeadline(e.target.value)}
-                      className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-slate-100 font-mono"
+                      className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-foreground font-mono"
                     />
                   </div>
                 </div>
@@ -390,13 +390,13 @@ export default function MetaseOrcamentosPage() {
                   return (
                     <div 
                       key={goal.id} 
-                      className="p-4 bg-[#0B0E14]/40 border border-border/20 rounded-xl space-y-3 hover:border-border/40 transition-colors"
+                      className="p-4 bg-muted border border-border/20 rounded-xl space-y-3 hover:border-border/40 transition-colors"
                     >
                       <div className="flex justify-between items-start">
                         
                         {/* Name */}
                         <div>
-                          <h4 className="text-xs font-bold text-slate-100 flex items-center gap-1.5">
+                          <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
                             <span className="p-1 rounded bg-primary/10 text-primary">
                               <Target size={12} />
                             </span>

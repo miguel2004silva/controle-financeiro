@@ -16,7 +16,7 @@ const transactionSchema = z.object({
   ),
   descrição: z.string().min(1, 'A descrição é obrigatória'),
   tipo: z.enum(['receita', 'despesa']),
-  categoria_id: z.string().nullable().optional(),
+  categoria_nome: z.string().min(1, 'A categoria é obrigatória'),
   data: z.string().min(1, 'A data é obrigatória'),
   recorrente: z.boolean().default(false),
 });
@@ -28,7 +28,8 @@ export const QuickTransactionModal: React.FC = () => {
     isTransactionModalOpen, 
     setTransactionModalOpen, 
     categories, 
-    addTransaction 
+    addTransaction,
+    addCategory
   } = useFinance();
 
   const {
@@ -44,14 +45,13 @@ export const QuickTransactionModal: React.FC = () => {
       valor: undefined,
       descrição: '',
       tipo: 'despesa',
-      categoria_id: null,
+      categoria_nome: '',
       data: new Date().toISOString().split('T')[0],
       recorrente: false,
     }
   });
 
   const selectedTipo = watch('tipo');
-  const selectedCategory = watch('categoria_id');
 
   // Reset form when modal closes or opens
   useEffect(() => {
@@ -60,19 +60,38 @@ export const QuickTransactionModal: React.FC = () => {
         valor: undefined,
         descrição: '',
         tipo: 'despesa',
-        categoria_id: categories.length > 0 ? categories[0].id : null,
+        categoria_nome: '',
         data: new Date().toISOString().split('T')[0],
         recorrente: false,
       });
     }
-  }, [isTransactionModalOpen, categories, reset]);
+  }, [isTransactionModalOpen, reset]);
 
-  const onSubmit = async (data: TransactionFormValues) => {
+  const onSubmit = async (data: any) => {
     try {
+      const trimmedCatName = data.categoria_nome.trim();
+      let catId: string | null = null;
+
+      if (trimmedCatName) {
+        const existingCat = categories.find(
+          c => c.nome.toLowerCase() === trimmedCatName.toLowerCase()
+        );
+        if (existingCat) {
+          catId = existingCat.id;
+        } else {
+          catId = await addCategory({
+            nome: trimmedCatName,
+            cor: '#6366F1', // default indigo
+            icone: 'circle',
+            orçamento_mensal: 0
+          });
+        }
+      }
+
       await addTransaction({
         tipo: data.tipo,
         valor: Number(data.valor),
-        categoria_id: data.categoria_id || null,
+        categoria_id: catId,
         descrição: data.descrição,
         data: new Date(data.data + 'T12:00:00Z').toISOString(), // Set UTC midday to avoid TZ offset issues
         recorrente: data.recorrente,
@@ -171,42 +190,21 @@ export const QuickTransactionModal: React.FC = () => {
                 )}
               </div>
 
-              {/* Categories Selector */}
-              {selectedTipo === 'despesa' && (
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Categoria
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {categories.filter(c => c.nome !== 'Investimentos').map((cat) => {
-                      const isSelected = selectedCategory === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          onClick={() => setValue('categoria_id', cat.id)}
-                          className={`p-2.5 rounded-xl border text-left flex flex-col justify-between h-20 transition-all ${
-                            isSelected
-                              ? 'border-transparent text-white'
-                              : 'border-border/50 bg-card hover:bg-muted text-muted-foreground hover:text-foreground'
-                          }`}
-                          style={{
-                            backgroundColor: isSelected ? cat.cor : undefined,
-                            boxShadow: isSelected ? `0 0 15px ${cat.cor}30` : undefined,
-                          }}
-                        >
-                          <CategoryIcon
-                            name={cat.icone}
-                            className={isSelected ? 'text-white' : 'text-muted-foreground'}
-                            size={18}
-                          />
-                          <span className="text-xs font-bold truncate block">{cat.nome}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+              {/* Category Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Categoria
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: Alimentação, Transporte, Lazer..."
+                  {...register('categoria_nome')}
+                  className="w-full bg-muted border border-border/50 rounded-xl px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                />
+                {errors.categoria_nome && (
+                  <p className="text-xs text-danger font-medium">{(errors.categoria_nome as any).message}</p>
+                )}
+              </div>
 
               {/* Description Input */}
               <div className="space-y-1.5">

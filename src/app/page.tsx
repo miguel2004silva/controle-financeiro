@@ -210,7 +210,7 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-2">
         <div>
           <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Patrimônio Consolidado</p>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mt-1 font-mono">
+          <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight mt-1 font-mono">
             {formatBRL(consolidatedBalance)}
           </h2>
           <div className="flex items-center gap-2 mt-1.5 text-xs">
@@ -236,7 +236,7 @@ export default function DashboardPage() {
       <div className="bg-card border border-border/40 rounded-2xl p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
           <div>
-            <h3 className="font-bold text-base text-slate-100">Distribuição do Patrimônio</h3>
+            <h3 className="font-bold text-base text-foreground">Distribuição do Patrimônio</h3>
             <p className="text-xs text-muted-foreground font-medium">Divisão entre saldo líquido e investimentos (Base MultiCap)</p>
           </div>
         </div>
@@ -266,32 +266,32 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-3 bg-[#12151D]/60 border border-border/20 rounded-xl flex items-center justify-between hover:border-indigo-500/30 transition-all">
+          <div className="p-3 bg-muted border border-border/50 rounded-xl flex items-center justify-between hover:border-indigo-500/30 transition-all">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
                 <Wallet size={16} />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground font-semibold">Liquidez (Saldo em Conta)</p>
-                <p className="text-lg font-bold text-white font-mono">{formatBRL(accountBalance)}</p>
+                <p className="text-lg font-bold text-foreground font-mono">{formatBRL(accountBalance)}</p>
               </div>
             </div>
-            <span className="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-mono font-bold text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded-full">
               {(consolidatedBalance > 0 ? (Math.max(0, accountBalance) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100 : 0).toFixed(1)}%
             </span>
           </div>
 
-          <div className="p-3 bg-[#12151D]/60 border border-border/20 rounded-xl flex items-center justify-between hover:border-emerald-500/30 transition-all">
+          <div className="p-3 bg-muted border border-border/50 rounded-xl flex items-center justify-between hover:border-emerald-500/30 transition-all">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                 <TrendingUp size={16} />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground font-semibold">Investimentos (Ativos)</p>
-                <p className="text-lg font-bold text-white font-mono">{formatBRL(currentInvestmentsValuation)}</p>
+                <p className="text-lg font-bold text-foreground font-mono">{formatBRL(currentInvestmentsValuation)}</p>
               </div>
             </div>
-            <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-mono font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
               {(consolidatedBalance > 0 ? (Math.max(0, currentInvestmentsValuation) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100 : 0).toFixed(1)}%
             </span>
           </div>
@@ -307,7 +307,7 @@ export default function DashboardPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold">Receitas</span>
-            <p className="text-xl sm:text-2xl font-black text-white mt-1 truncate font-mono">
+            <p className="text-xl sm:text-2xl font-black text-foreground mt-1 truncate font-mono">
               {formatBRL(monthRevenues)}
             </p>
           </div>
@@ -321,7 +321,7 @@ export default function DashboardPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold">Despesas</span>
-            <p className="text-xl sm:text-2xl font-black text-white mt-1 truncate font-mono">
+            <p className="text-xl sm:text-2xl font-black text-foreground mt-1 truncate font-mono">
               {formatBRL(monthExpenses)}
             </p>
           </div>
@@ -335,7 +335,7 @@ export default function DashboardPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold">Saldo Mensal</span>
-            <p className={`text-xl sm:text-2xl font-black mt-1 truncate font-mono ${monthBalance >= 0 ? 'text-white' : 'text-danger'}`}>
+            <p className={`text-xl sm:text-2xl font-black mt-1 truncate font-mono ${monthBalance >= 0 ? 'text-foreground' : 'text-danger'}`}>
               {formatBRL(monthBalance)}
             </p>
           </div>
@@ -349,7 +349,7 @@ export default function DashboardPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold">Investido</span>
-            <p className="text-xl sm:text-2xl font-black text-white mt-1 truncate font-mono">
+            <p className="text-xl sm:text-2xl font-black text-foreground mt-1 truncate font-mono">
               {formatBRL(monthInvested)}
             </p>
           </div>
@@ -361,7 +361,7 @@ export default function DashboardPage() {
       <div className="bg-card border border-border/40 rounded-2xl p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <div>
-            <h3 className="font-bold text-base text-slate-100">Evolução do Patrimônio</h3>
+            <h3 className="font-bold text-base text-foreground">Evolução do Patrimônio</h3>
             <p className="text-xs text-muted-foreground">Evolução combinada de conta corrente e investimentos</p>
           </div>
           
@@ -373,8 +373,8 @@ export default function DashboardPage() {
                 onClick={() => setChartRange(range)}
                 className={`flex-1 sm:flex-initial py-1.5 px-3.5 text-xs font-semibold rounded-md transition-all ${
                   chartRange === range
-                    ? 'bg-[#12151D] text-white shadow-sm'
-                    : 'text-muted-foreground hover:text-slate-200'
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {range}
@@ -410,12 +410,12 @@ export default function DashboardPage() {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#12151D',
-                    border: '1px solid #1F2937',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #E2E8F0',
                     borderRadius: '12px'
                   }}
-                  labelStyle={{ color: '#94A3B8', fontWeight: 'bold', fontSize: '11px' }}
-                  itemStyle={{ color: '#F8FAFC', fontWeight: 'black', fontSize: '13px' }}
+                  labelStyle={{ color: '#64748B', fontWeight: 'bold', fontSize: '11px' }}
+                  itemStyle={{ color: '#0F172A', fontWeight: 'black', fontSize: '13px' }}
                   formatter={(val: any) => [formatBRL(Number(val)), 'Patrimônio']}
                 />
                 <Area 
@@ -440,7 +440,7 @@ export default function DashboardPage() {
         {/* Left Side: Category Budgets (Donut + Bars) (3 cols) */}
         <div className="lg:col-span-3 bg-card border border-border/40 rounded-2xl p-5 space-y-6">
           <div>
-            <h3 className="font-bold text-base text-slate-100">Despesas por Categoria</h3>
+            <h3 className="font-bold text-base text-foreground">Despesas por Categoria</h3>
             <p className="text-xs text-muted-foreground">Consumo do orçamento planejado para este mês</p>
           </div>
 
@@ -465,11 +465,11 @@ export default function DashboardPage() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#12151D',
-                        border: '1px solid #1F2937',
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid #E2E8F0',
                         borderRadius: '12px'
                       }}
-                      itemStyle={{ color: '#F8FAFC', fontSize: '12px' }}
+                      itemStyle={{ color: '#0F172A', fontSize: '12px' }}
                       formatter={(val: any) => [formatBRL(Number(val)), 'Gasto']}
                     />
                   </PieChart>
@@ -490,7 +490,7 @@ export default function DashboardPage() {
                 categoryExpenses.slice(0, 4).map(cat => (
                   <div key={cat.id} className="space-y-1">
                     <div className="flex justify-between text-xs font-bold">
-                      <span className="text-slate-200 flex items-center gap-1.5">
+                      <span className="text-foreground/90 flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.cor }} />
                         {cat.nome}
                       </span>
@@ -530,7 +530,7 @@ export default function DashboardPage() {
                 {alerts.map((alert, index) => (
                   <div 
                     key={index}
-                    className="p-3 bg-danger/5 border border-danger/15 rounded-xl flex gap-2 text-xs text-slate-200"
+                    className="p-3 bg-danger/5 border border-danger/15 rounded-xl flex gap-2 text-xs text-foreground/95"
                   >
                     <AlertCircle className="text-danger shrink-0 mt-0.5" size={14} />
                     <p className="leading-snug">{alert}</p>
@@ -543,7 +543,7 @@ export default function DashboardPage() {
           {/* Recent Ledger table widget */}
           <div className="bg-card border border-border/40 rounded-2xl p-5 space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="font-bold text-base text-slate-100">Transações Recentes</h3>
+              <h3 className="font-bold text-base text-foreground">Transações Recentes</h3>
               <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                 Últimas 5
               </span>
@@ -558,7 +558,7 @@ export default function DashboardPage() {
                   return (
                     <div 
                       key={tx.id} 
-                      className="p-3 bg-[#0B0E14]/40 hover:bg-muted/30 border border-border/20 rounded-xl flex items-center justify-between transition-colors group"
+                      className="p-3 bg-muted hover:bg-muted/80 border border-border/20 rounded-xl flex items-center justify-between transition-colors group"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         {/* Circle Icon */}
@@ -569,7 +569,7 @@ export default function DashboardPage() {
                           <CategoryIcon name={cat?.icone || 'circle'} size={16} />
                         </div>
                         <div className="truncate">
-                          <p className="text-xs font-bold text-slate-100 truncate">{tx.descrição}</p>
+                          <p className="text-xs font-bold text-foreground truncate">{tx.descrição}</p>
                           <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-muted-foreground">
                             <span>{new Date(tx.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</span>
                             {tx.recorrente && (
@@ -582,7 +582,7 @@ export default function DashboardPage() {
                       </div>
                       
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className={`text-xs font-mono font-extrabold ${isRevenue ? 'text-success' : 'text-slate-300'}`}>
+                        <span className={`text-xs font-mono font-extrabold ${isRevenue ? 'text-success' : 'text-foreground/80'}`}>
                           {isRevenue ? '+' : '-'} {formatBRL(Number(tx.valor))}
                         </span>
                         

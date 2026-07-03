@@ -98,7 +98,7 @@ export default function TransacoesPage() {
       {/* Header and Add Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-white tracking-tight">Transações</h2>
+          <h2 className="text-2xl font-black text-foreground tracking-tight">Transações</h2>
           <p className="text-xs text-muted-foreground">Histórico e gerenciamento de todos os seus lançamentos</p>
         </div>
         <button
@@ -134,8 +134,8 @@ export default function TransacoesPage() {
                 onClick={() => setTypeFilter(t)}
                 className={`flex-1 sm:flex-initial py-1.5 px-3 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${
                   typeFilter === t
-                    ? 'bg-[#12151D] text-white shadow-sm'
-                    : 'text-muted-foreground hover:text-slate-200'
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {t === 'todos' ? 'Todos' : t === 'receita' ? 'Receitas' : 'Despesas'}
@@ -149,7 +149,7 @@ export default function TransacoesPage() {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-transparent text-slate-200 focus:outline-none w-full cursor-pointer pr-4"
+              className="bg-transparent text-foreground/90 focus:outline-none w-full cursor-pointer pr-4"
             >
               <option value="todas">Todas as categorias</option>
               {categories.map(c => (
@@ -193,7 +193,7 @@ export default function TransacoesPage() {
                           <select
                             value={editCatId || ''}
                             onChange={(e) => setEditCatId(e.target.value || null)}
-                            className="bg-muted border border-border/60 rounded-lg p-1.5 text-xs text-slate-100 focus:outline-none w-32"
+                            className="bg-muted border border-border/60 rounded-lg p-1.5 text-xs text-foreground/90 focus:outline-none w-32"
                           >
                             <option value="">Nenhuma</option>
                             {categories.filter(c => c.nome !== 'Investimentos').map(c => (

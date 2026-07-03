@@ -5,17 +5,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #0B0E14;
-  --foreground: #F8FAFC;
-  --card: #12151D;
-  --card-foreground: #E2E8F0;
-  --primary: #6366F1;
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #1E293B;
+  --primary: #4F46E5;
   --primary-foreground: #FFFFFF;
-  --accent: #3B82F6;
+  --accent: #2563EB;
   --accent-foreground: #FFFFFF;
-  --muted: #1A1F2C;
-  --muted-foreground: #94A3B8;
-  --border: #1F2937;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --border: #E2E8F0;
   --radius: 1rem;
 }
 
@@ -40,24 +40,24 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0E14;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1F2937;
+  background: var(--border);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #374151;
+  background: #CBD5E1;
 }
 
 /* Custom Utilities */
 .glassmorphism {
-  background: rgba(18, 21, 29, 0.7);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .gradient-accent {

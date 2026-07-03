@@ -142,7 +142,7 @@ export default function RelatoriosPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-white tracking-tight">Relatórios Analíticos</h2>
+          <h2 className="text-2xl font-black text-foreground tracking-tight">Relatórios Analíticos</h2>
           <p className="text-xs text-muted-foreground">Estatísticas, taxas de poupança e demonstrativo de fluxos</p>
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function RelatoriosPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold">Total Recebido</span>
-            <p className="text-2xl font-black text-white mt-1 font-mono">
+            <p className="text-2xl font-black text-foreground mt-1 font-mono">
               {formatBRL(totalRevenues)}
             </p>
           </div>
@@ -170,7 +170,7 @@ export default function RelatoriosPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold">Total Gasto</span>
-            <p className="text-2xl font-black text-white mt-1 font-mono">
+            <p className="text-2xl font-black text-foreground mt-1 font-mono">
               {formatBRL(totalExpenses)}
             </p>
           </div>
@@ -184,7 +184,7 @@ export default function RelatoriosPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold">Sobras Acumuladas</span>
-            <p className={`text-2xl font-black mt-1 font-mono ${netSavings >= 0 ? 'text-white' : 'text-danger'}`}>
+            <p className={`text-2xl font-black mt-1 font-mono ${netSavings >= 0 ? 'text-foreground' : 'text-danger'}`}>
               {formatBRL(netSavings)}
             </p>
           </div>
@@ -198,7 +198,7 @@ export default function RelatoriosPage() {
           </div>
           <div>
             <span className="text-xs text-muted-foreground font-bold">Taxa de Poupança</span>
-            <p className="text-2xl font-black text-white mt-1 font-mono">
+            <p className="text-2xl font-black text-foreground mt-1 font-mono">
               {savingsRate.toFixed(1)}%
             </p>
           </div>
@@ -212,7 +212,7 @@ export default function RelatoriosPage() {
       <div className="bg-card border border-border/40 rounded-2xl p-5">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <div>
-            <h3 className="font-bold text-base text-slate-100">Entradas vs Saídas Mensais</h3>
+            <h3 className="font-bold text-base text-foreground">Entradas vs Saídas Mensais</h3>
             <p className="text-xs text-muted-foreground">Comparativo de fluxo de caixa por competência de mês</p>
           </div>
           
@@ -221,7 +221,7 @@ export default function RelatoriosPage() {
             <button
               onClick={() => setReportTimeframe('6M')}
               className={`flex-1 sm:flex-initial py-1 px-3 text-xs font-semibold rounded transition-all ${
-                reportTimeframe === '6M' ? 'bg-[#12151D] text-white shadow' : 'text-muted-foreground'
+                reportTimeframe === '6M' ? 'bg-primary text-white shadow' : 'text-muted-foreground'
               }`}
             >
               6 Meses
@@ -229,7 +229,7 @@ export default function RelatoriosPage() {
             <button
               onClick={() => setReportTimeframe('1A')}
               className={`flex-1 sm:flex-initial py-1 px-3 text-xs font-semibold rounded transition-all ${
-                reportTimeframe === '1A' ? 'bg-[#12151D] text-white shadow' : 'text-muted-foreground'
+                reportTimeframe === '1A' ? 'bg-primary text-white shadow' : 'text-muted-foreground'
               }`}
             >
               1 Ano
@@ -251,11 +251,11 @@ export default function RelatoriosPage() {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#12151D',
-                    border: '1px solid #1F2937',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #E2E8F0',
                     borderRadius: '12px'
                   }}
-                  itemStyle={{ fontSize: '12px', color: '#FFF' }}
+                  itemStyle={{ fontSize: '12px', color: '#0F172A' }}
                   formatter={(val: any) => [formatBRL(Number(val))]}
                 />
                 <Legend iconSize={10} wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
@@ -301,11 +301,11 @@ export default function RelatoriosPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#12151D',
-                      border: '1px solid #1F2937',
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #E2E8F0',
                       borderRadius: '12px'
                     }}
-                    itemStyle={{ color: '#F8FAFC', fontSize: '11px' }}
+                    itemStyle={{ color: '#0F172A', fontSize: '11px' }}
                     formatter={(val: any) => [formatBRL(Number(val)), 'Gasto total']}
                   />
                 </PieChart>

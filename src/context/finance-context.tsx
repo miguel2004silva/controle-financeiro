@@ -23,7 +23,7 @@ interface FinanceContextType {
   deleteTransaction: (id: string) => Promise<void>;
   
   // Category actions
-  addCategory: (category: Omit<Category, 'id' | 'created_at'>) => Promise<void>;
+  addCategory: (category: Omit<Category, 'id' | 'created_at'>) => Promise<string>;
   editCategory: (id: string, category: Partial<Category>) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
   
@@ -60,40 +60,11 @@ const generateId = () => {
 };
 
 // Seed data definitions
-const SEED_CATEGORIES: Category[] = [
-  { id: 'cat-1', nome: 'Alimentação', cor: '#F43F5E', icone: 'utensils', orçamento_mensal: 1200 },
-  { id: 'cat-2', nome: 'Transporte', cor: '#3B82F6', icone: 'car', orçamento_mensal: 400 },
-  { id: 'cat-3', nome: 'Moradia', cor: '#6366F1', icone: 'home', orçamento_mensal: 2500 },
-  { id: 'cat-4', nome: 'Lazer', cor: '#EC4899', icone: 'tv', orçamento_mensal: 600 },
-  { id: 'cat-5', nome: 'Investimentos', cor: '#10B981', icone: 'trending-up', orçamento_mensal: 2000 },
-  { id: 'cat-6', nome: 'Outros', cor: '#6B7280', icone: 'circle', orçamento_mensal: 300 }
-];
-
-const SEED_TRANSACTIONS: Transaction[] = [
-  { id: 'tx-1', tipo: 'receita', valor: 6500.00, categoria_id: null, descrição: 'Salário Mensal', data: new Date(new Date().getFullYear(), new Date().getMonth(), 5).toISOString().split('T')[0], recorrente: true },
-  { id: 'tx-2', tipo: 'despesa', valor: 1200.00, categoria_id: 'cat-3', descrição: 'Aluguel do Apê', data: new Date(new Date().getFullYear(), new Date().getMonth(), 10).toISOString().split('T')[0], recorrente: true },
-  { id: 'tx-3', tipo: 'despesa', valor: 350.20, categoria_id: 'cat-1', descrição: 'Supermercado Mensal', data: new Date(new Date().getFullYear(), new Date().getMonth(), 12).toISOString().split('T')[0], recorrente: false },
-  { id: 'tx-4', tipo: 'despesa', valor: 55.90, categoria_id: 'cat-4', descrição: 'Assinatura Netflix', data: new Date(new Date().getFullYear(), new Date().getMonth(), 15).toISOString().split('T')[0], recorrente: true },
-  { id: 'tx-5', tipo: 'despesa', valor: 85.00, categoria_id: 'cat-2', descrição: 'Combustível Carro', data: new Date(new Date().getFullYear(), new Date().getMonth(), 18).toISOString().split('T')[0], recorrente: false },
-  { id: 'tx-6', tipo: 'despesa', valor: 1000.00, categoria_id: 'cat-5', descrição: 'Aporte Carteira de Ações', data: new Date(new Date().getFullYear(), new Date().getMonth(), 20).toISOString().split('T')[0], recorrente: false },
-  { id: 'tx-7', tipo: 'receita', valor: 150.00, categoria_id: 'cat-5', descrição: 'Dividendos Mensais', data: new Date(new Date().getFullYear(), new Date().getMonth(), 22).toISOString().split('T')[0], recorrente: false },
-  { id: 'tx-8', tipo: 'despesa', valor: 154.50, categoria_id: 'cat-1', descrição: 'Jantar Restaurante', data: new Date(new Date().getFullYear(), new Date().getMonth(), 25).toISOString().split('T')[0], recorrente: false }
-];
-
-const SEED_INVESTMENTS: Investment[] = [
-  { id: 'inv-1', tipo: 'renda_fixa', ticker: 'CDB 100% CDI (Nubank)', quantidade: 8500, preço_medio: 1.00, preço_atual: 1.02, data_atualização: new Date().toISOString() },
-  { id: 'inv-2', tipo: 'renda_fixa', ticker: 'CDB 110% CDI (Inter)', quantidade: 4000, preço_medio: 1.00, preço_atual: 1.05, data_atualização: new Date().toISOString() }
-];
-
-const SEED_MOVEMENTS: InvestmentMovement[] = [
-  { id: 'mov-1', investment_id: 'inv-1', tipo: 'aporte', valor: 8500.00, quantidade: 8500, data: '2026-05-10' },
-  { id: 'mov-2', investment_id: 'inv-2', tipo: 'aporte', valor: 4000.00, quantidade: 4000, data: '2026-05-12' }
-];
-
-const SEED_GOALS: Goal[] = [
-  { id: 'goal-1', nome: 'Reserva de Emergência', valor_alvo: 20000, valor_atual: 8000, prazo: '2026-12-31' },
-  { id: 'goal-2', nome: 'Viagem dos Sonhos', valor_alvo: 10000, valor_atual: 4500, prazo: '2026-11-30' }
-];
+const SEED_CATEGORIES: Category[] = [];
+const SEED_TRANSACTIONS: Transaction[] = [];
+const SEED_INVESTMENTS: Investment[] = [];
+const SEED_MOVEMENTS: InvestmentMovement[] = [];
+const SEED_GOALS: Goal[] = [];
 
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -463,22 +434,25 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // Categories
-  const addCategory = async (cat: Omit<Category, 'id' | 'created_at'>) => {
+  const addCategory = async (cat: Omit<Category, 'id' | 'created_at'>): Promise<string> => {
+    const id = generateId();
     if (isSupabaseConfigured && user) {
       const { error } = await supabase!
         .from('categories')
-        .insert([{ ...cat, user_id: user.id }]);
+        .insert([{ ...cat, id, user_id: user.id }]);
       if (error) throw error;
-      loadSupabaseData(user.id);
+      await loadSupabaseData(user.id);
+      return id;
     } else {
       const newCat: Category = {
         ...cat,
-        id: generateId(),
+        id,
         created_at: new Date().toISOString()
       };
       const updated = [...categories, newCat];
       setCategories(updated);
       localStorage.setItem('fin_categories', JSON.stringify(updated));
+      return id;
     }
   };
 

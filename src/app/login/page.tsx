@@ -111,7 +111,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] text-foreground flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
       {/* Background radial highlight */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -122,7 +122,7 @@ export default function LoginPage() {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white glow-primary mb-3">
             <Wallet size={24} />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-white">
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
             Controle<span className="text-primary font-medium">Financeiro</span>
           </h1>
           <p className="text-xs text-muted-foreground mt-1.5">
@@ -213,7 +213,7 @@ export default function LoginPage() {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-border/40" />
           </div>
-          <span className="relative z-10 px-3 bg-[#0B0E14] text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+          <span className="relative z-10 px-3 bg-background text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
             Ou continuar com
           </span>
         </div>
