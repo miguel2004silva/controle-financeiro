@@ -28,7 +28,8 @@ interface FinanceContextType {
   deleteCategory: (id: string) => Promise<void>;
   
   // Investment actions
-  addInvestment: (investment: Omit<Investment, 'id' | 'created_at' | 'quantidade' | 'preço_medio'>) => Promise<string>;
+  addInvestment: (investment: Omit<Investment, 'id' | 'created_at'>) => Promise<string>;
+  editInvestment: (id: string, investment: Partial<Investment>) => Promise<void>;
   updateInvestmentPrice: (id: string, newPrice: number) => Promise<void>;
   deleteInvestment: (id: string) => Promise<void>;
   
@@ -516,14 +517,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // Investments
-  const addInvestment = async (inv: Omit<Investment, 'id' | 'created_at' | 'quantidade' | 'preço_medio'>): Promise<string> => {
+  const addInvestment = async (inv: Omit<Investment, 'id' | 'created_at'>): Promise<string> => {
     if (isSupabaseConfigured && user) {
       const { data, error } = await supabase!
         .from('investments')
         .insert([{ 
           ...inv, 
-          quantidade: 0, 
-          preço_medio: 0, 
           user_id: user.id 
         }])
         .select()
@@ -535,8 +534,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const id = generateId();
       const newInv: Investment = {
         ...inv,
-        quantidade: 0,
-        preço_medio: 0,
         id,
         created_at: new Date().toISOString()
       };
@@ -544,6 +541,21 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setInvestments(updated);
       localStorage.setItem('fin_investments', JSON.stringify(updated));
       return id;
+    }
+  };
+
+  const editInvestment = async (id: string, updatedFields: Partial<Investment>) => {
+    if (isSupabaseConfigured && user) {
+      const { error } = await supabase!
+        .from('investments')
+        .update(updatedFields)
+        .eq('id', id);
+      if (error) throw error;
+      await loadSupabaseData(user.id);
+    } else {
+      const updated = investments.map(i => i.id === id ? { ...i, ...updatedFields } : i);
+      setInvestments(updated);
+      localStorage.setItem('fin_investments', JSON.stringify(updated));
     }
   };
 
@@ -776,6 +788,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       editCategory,
       deleteCategory,
       addInvestment,
+      editInvestment,
       updateInvestmentPrice,
       deleteInvestment,
       addInvestmentMovement,
