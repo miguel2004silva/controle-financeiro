@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
@@ -11,9 +11,10 @@ import {
   BarChart3, 
   LogOut, 
   Plus, 
-  Menu,
   Wallet,
-  Settings
+  Sun,
+  Moon,
+  User
 } from 'lucide-react';
 import { useFinance } from '@/context/finance-context';
 import { QuickTransactionModal } from './quick-transaction-modal';
@@ -36,6 +37,24 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   const pathname = usePathname();
   const router = useRouter();
   const { user, isLoading, signOut, setTransactionModalOpen } = useFinance();
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [mounted, setMounted] = useState(false);
+
+  // Sync theme with document attributes and local storage
+  useEffect(() => {
+    setMounted(true);
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    const initialTheme = savedTheme || 'dark';
+    setTheme(initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
 
   // If loading, show a dark sleek loading screen
   if (isLoading) {
@@ -65,114 +84,131 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
-      {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex md:w-64 lg:w-72 bg-card border-r border-border/50 flex-col fixed inset-y-0 left-0 z-20">
-        {/* Brand */}
-        <div className="h-16 px-6 border-b border-border/40 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white glow-primary">
-            <Wallet size={18} />
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Top Navbar - Desktop */}
+      <header className="hidden md:block fixed top-0 left-0 right-0 h-16 border-b border-border/40 glassmorphism z-40 transition-colors duration-200">
+        <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
+          
+          {/* Logo & Brand */}
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white glow-primary group-hover:scale-105 transition-transform duration-200">
+              <Wallet size={18} />
+            </div>
+            <span className="font-extrabold tracking-tight text-foreground text-sm">
+              Controle<span className="text-primary font-medium">Financeiro</span>
+            </span>
+          </Link>
+
+          {/* Navigation Links */}
+          <nav className="flex items-center gap-1 bg-muted/30 p-1 rounded-xl border border-border/30">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all relative ${
+                    isActive
+                      ? 'bg-card text-primary shadow-sm border border-border/50'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                  }`}
+                >
+                  <Icon size={14} className={isActive ? 'text-primary' : 'text-muted-foreground'} />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* User Controls & Theme Switcher */}
+          <div className="flex items-center gap-3">
+            
+            {/* Theme Toggle Button */}
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg bg-muted/50 border border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                title={theme === 'light' ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'}
+              >
+                {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+              </button>
+            )}
+
+            {/* Quick transaction add button */}
+            <button
+              onClick={() => setTransactionModalOpen(true)}
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-extrabold text-white rounded-lg bg-gradient-to-r from-accent to-primary hover:opacity-90 transition-all shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Plus size={14} />
+              Lançar
+            </button>
+
+            {/* User Dropdown/Card */}
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/40 border border-border/30 rounded-xl">
+              <User size={14} className="text-muted-foreground" />
+              <span className="text-xs font-bold text-foreground max-w-[100px] truncate">
+                {user?.name || user?.email}
+              </span>
+            </div>
+
+            {/* Logout Button */}
+            <button
+              onClick={signOut}
+              className="p-2 rounded-lg border border-border/40 text-muted-foreground hover:text-danger hover:bg-danger/5 hover:border-danger/20 transition-all"
+              title="Sair"
+            >
+              <LogOut size={15} />
+            </button>
+
           </div>
-          <span className="font-extrabold tracking-tight text-foreground text-base">
+
+        </div>
+      </header>
+
+      {/* Top Header - Mobile */}
+      <header className="h-16 px-4 border-b border-border/30 flex items-center justify-between bg-card/60 backdrop-blur-md sticky top-0 z-40 md:hidden transition-colors duration-200">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white">
+            <Wallet size={15} />
+          </div>
+          <span className="font-extrabold text-xs tracking-tight text-foreground">
             Controle<span className="text-primary font-medium">Financeiro</span>
           </span>
         </div>
 
-        {/* User Card */}
-        <div className="p-4 border-b border-border/30 mx-3 my-4 bg-muted/40 rounded-xl flex items-center justify-between">
-          <div className="truncate">
-            <p className="text-xs text-muted-foreground">Logado como</p>
-            <p className="text-sm font-bold text-foreground truncate">{user?.name || user?.email}</p>
-          </div>
-          <button
+        <div className="flex items-center gap-2">
+          {/* Mobile Theme Toggle */}
+          {mounted && (
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground"
+            >
+              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+            </button>
+          )}
+
+          <span className="text-[10px] bg-muted border border-border/50 text-muted-foreground px-2 py-0.5 rounded font-black">
+            Premium
+          </span>
+          
+          <button 
             onClick={signOut}
-            className="p-2 rounded-lg bg-card hover:bg-muted border border-border/40 text-muted-foreground hover:text-danger hover:border-danger/30 transition-colors"
+            className="p-2 rounded-lg bg-muted text-muted-foreground hover:text-white"
             title="Sair"
           >
             <LogOut size={15} />
           </button>
         </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 px-4 space-y-1">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${
-                  isActive
-                    ? 'bg-primary text-white font-semibold shadow-lg shadow-primary/10'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }`}
-              >
-                <Icon className={`transition-transform duration-200 group-hover:scale-110 ${
-                  isActive ? 'text-white' : 'text-muted-foreground group-hover:text-primary'
-                }`} size={18} />
-                {item.name}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Settings / Info Footer */}
-        <div className="p-4 border-t border-border/40 text-xs text-muted-foreground text-center">
-          <p>© 2026 Antigravity Premium</p>
-        </div>
-      </aside>
+      </header>
 
       {/* Main Content Area */}
-      <div className="flex-1 md:pl-64 lg:pl-72 flex flex-col min-h-screen">
-        {/* Top Header - Mobile & Desktop info */}
-        <header className="h-16 px-4 md:px-8 border-b border-border/30 flex items-center justify-between bg-card/60 backdrop-blur-md sticky top-0 z-10 md:bg-transparent md:backdrop-blur-none md:border-b-0 md:h-12 md:mt-4 md:mb-2">
-          {/* Mobile menu trigger / Brand */}
-          <div className="flex items-center gap-3 md:hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white">
-              <Wallet size={16} />
-            </div>
-            <span className="font-black text-sm tracking-tight text-foreground">
-              Controle<span className="text-primary font-normal">Financeiro</span>
-            </span>
-          </div>
-
-          <div className="hidden md:block">
-            <p className="text-xs text-muted-foreground">Seja bem vindo,</p>
-            <h1 className="text-sm font-bold text-foreground">{user?.name}</h1>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Quick action button top right desktop */}
-            <button
-              onClick={() => setTransactionModalOpen(true)}
-              className="hidden md:flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white rounded-lg bg-gradient-to-r from-accent to-primary hover:opacity-90 transition-all shadow-md shadow-primary/20"
-            >
-              <Plus size={14} />
-              Lançar
-            </button>
-            <div className="md:hidden flex items-center gap-2">
-              <span className="text-xs bg-muted border border-border/50 text-muted-foreground px-2 py-1 rounded-md">
-                Sandbox
-              </span>
-              <button 
-                onClick={signOut}
-                className="p-2 rounded-lg bg-muted text-muted-foreground hover:text-white"
-              >
-                <LogOut size={16} />
-              </button>
-            </div>
-          </div>
-        </header>
-
-        {/* Content Body */}
-        <main className="flex-grow p-4 md:p-8 pb-24 md:pb-8 max-w-7xl w-full mx-auto animate-fade-in">
-          {children}
-        </main>
-      </div>
+      <main className="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 pt-6 md:pt-24 pb-24 md:pb-12 animate-fade-in transition-all duration-200">
+        {children}
+      </main>
 
       {/* Mobile Bottom Bar Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card/90 backdrop-blur-lg border-t border-border/50 z-30 flex items-center justify-around px-2 shadow-2xl">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card/90 backdrop-blur-lg border-t border-border/50 z-40 flex items-center justify-around px-2 shadow-2xl transition-colors duration-200">
         {NAV_ITEMS.slice(0, 4).map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -194,7 +230,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* Floating Action Button (FAB) for Mobile Quick Add */}
       <button
         onClick={() => setTransactionModalOpen(true)}
-        className="md:hidden fixed right-4 bottom-20 z-40 w-12 h-12 rounded-full text-white bg-gradient-to-r from-accent to-primary shadow-xl shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all glow-primary"
+        className="md:hidden fixed right-4 bottom-20 z-30 w-12 h-12 rounded-full text-white bg-gradient-to-r from-accent to-primary shadow-xl shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all glow-primary"
         aria-label="Adicionar transação"
       >
         <Plus size={24} />

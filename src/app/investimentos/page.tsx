@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useFinance } from '@/context/finance-context';
 import { 
   PlusCircle,
@@ -21,7 +21,8 @@ export default function InvestimentosPage() {
     transactions,
     addInvestment, 
     editInvestment,
-    deleteInvestment
+    deleteInvestment,
+    addInvestmentMovement
   } = useFinance();
 
   const [mounted, setMounted] = useState(false);
@@ -168,26 +169,51 @@ export default function InvestimentosPage() {
       setIsSubmitting(true);
 
       if (selectedInvId) {
-        // Edit flow
+        // Edit flow: calculate difference and trigger movement
+        const targetInv = investments.find(i => i.id === selectedInvId);
+        if (!targetInv) throw new Error('Investimento não encontrado.');
+        
+        const currentQty = Number(targetInv.quantidade);
+        const diff = val - currentQty;
+
+        // 1. Update basic information
         await editInvestment(selectedInvId, {
           ticker: name.trim(),
           tipo: type,
-          quantidade: val,
-          preço_atual: 1.00,
-          preço_medio: 1.00,
           data_atualização: new Date().toISOString()
         });
+
+        // 2. Add movement if quantity changed
+        if (diff !== 0) {
+          await addInvestmentMovement({
+            investment_id: selectedInvId,
+            tipo: diff > 0 ? 'aporte' : 'resgate',
+            valor: Math.abs(diff),
+            quantidade: Math.abs(diff),
+            data: new Date().toISOString().split('T')[0]
+          });
+        }
         alert('Investimento atualizado com sucesso!');
       } else {
-        // Add flow
-        await addInvestment({
+        // Add flow: create investment with 0 quantity first, then add movement
+        const newId = await addInvestment({
           ticker: name.trim(),
           tipo: type,
-          quantidade: val,
+          quantidade: 0,
           preço_atual: 1.00,
           preço_medio: 1.00,
           data_atualização: new Date().toISOString()
         });
+
+        if (val > 0) {
+          await addInvestmentMovement({
+            investment_id: newId,
+            tipo: 'aporte',
+            valor: val,
+            quantidade: val,
+            data: new Date().toISOString().split('T')[0]
+          });
+        }
         alert('Investimento adicionado com sucesso!');
       }
 
