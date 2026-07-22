@@ -1,19 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useFinance } from '@/context/finance-context';
 import { CategoryIcon } from '@/components/category-icon';
 import { 
-  Search, 
   Trash2, 
   Edit2, 
   Check, 
   X, 
-  Filter, 
   Plus,
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react';
+import { FilterPanel, FilterState, initialFilterState } from '@/components/filter-panel';
 
 export default function TransacoesPage() {
   const { 
@@ -25,9 +24,7 @@ export default function TransacoesPage() {
   } = useFinance();
 
   // Search and Filter States
-  const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState<'todos' | 'receita' | 'despesa'>('todos');
-  const [categoryFilter, setCategoryFilter] = useState<string>('todas');
+  const [activeFilters, setActiveFilters] = useState<FilterState>(initialFilterState);
 
   // Inline editing state
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -85,12 +82,77 @@ export default function TransacoesPage() {
   // ----------------------------------------------------
   // FILTERING TRANSACTIONS
   // ----------------------------------------------------
-  const filteredTransactions = transactions.filter(t => {
-    const matchesSearch = t.descrição.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = typeFilter === 'todos' ? true : t.tipo === typeFilter;
-    const matchesCategory = categoryFilter === 'todas' ? true : t.categoria_id === categoryFilter;
-    return matchesSearch && matchesType && matchesCategory;
-  });
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter(t => {
+      // 1. Text search
+      if (activeFilters.search) {
+        const matchesSearch = t.descrição.toLowerCase().includes(activeFilters.search.toLowerCase());
+        if (!matchesSearch) return false;
+      }
+
+      // 2. Type (receita / despesa / investimento)
+      if (activeFilters.type !== 'todos') {
+        if (activeFilters.type === 'investimento') {
+          const cat = categories.find(c => c.id === t.categoria_id);
+          const isInvCat = cat?.nome.toLowerCase() === 'investimentos';
+          const hasInvMov = !!t.investment_movement_id;
+          if (!isInvCat && !hasInvMov) return false;
+        } else {
+          if (t.tipo !== activeFilters.type) return false;
+        }
+      }
+
+      // 3. Category (multi-select)
+      if (activeFilters.selectedCategories.length > 0) {
+        if (!t.categoria_id || !activeFilters.selectedCategories.includes(t.categoria_id)) {
+          return false;
+        }
+      }
+
+      // 4. Value Range
+      if (activeFilters.minVal !== '') {
+        if (t.valor < activeFilters.minVal) return false;
+      }
+      if (activeFilters.maxVal !== '') {
+        if (t.valor > activeFilters.maxVal) return false;
+      }
+
+      // 5. Date Period
+      if (activeFilters.periodType !== 'todos') {
+        const tDate = new Date(t.data);
+        const tYear = tDate.getUTCFullYear();
+        const tMonth = tDate.getUTCMonth();
+        const tDay = tDate.getUTCDate();
+
+        if (activeFilters.periodType === 'dia') {
+          const filterDate = new Date(activeFilters.selectedDate + 'T00:00:00Z');
+          const isSameDay = tYear === filterDate.getUTCFullYear() &&
+                            tMonth === filterDate.getUTCMonth() &&
+                            tDay === filterDate.getUTCDate();
+          if (!isSameDay) return false;
+        } else if (activeFilters.periodType === 'mes') {
+          const [fYear, fMonth] = activeFilters.selectedMonth.split('-').map(Number);
+          const isSameMonth = tYear === fYear && (tMonth + 1) === fMonth;
+          if (!isSameMonth) return false;
+        } else if (activeFilters.periodType === 'ano') {
+          const fYear = Number(activeFilters.selectedYear);
+          const isSameYear = tYear === fYear;
+          if (!isSameYear) return false;
+        } else if (activeFilters.periodType === 'personalizado') {
+          if (activeFilters.startDate) {
+            const start = new Date(activeFilters.startDate + 'T00:00:00Z');
+            if (tDate < start) return false;
+          }
+          if (activeFilters.endDate) {
+            const end = new Date(activeFilters.endDate + 'T23:59:59Z');
+            if (tDate > end) return false;
+          }
+        }
+      }
+
+      return true;
+    });
+  }, [transactions, activeFilters, categories]);
 
   return (
     <div className="space-y-6">
@@ -111,54 +173,11 @@ export default function TransacoesPage() {
       </div>
 
       {/* Filter and Search Panel */}
-      <div className="bg-card border border-border/40 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center">
-        {/* Search */}
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-          <input
-            type="text"
-            placeholder="Pesquisar por descrição..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-muted border border-border/50 rounded-xl pl-10 pr-4 py-2 text-xs text-foreground focus:outline-none focus:border-primary/50 transition-colors"
-          />
-        </div>
+      <FilterPanel 
+        categories={categories}
+        onFilterChange={setActiveFilters}
+      />
 
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto md:ml-auto">
-          {/* Type togglers */}
-          <div className="flex bg-muted p-0.5 rounded-lg border border-border/30 w-full sm:w-auto">
-            {(['todos', 'receita', 'despesa'] as const).map(t => (
-              <button
-                key={t}
-                onClick={() => setTypeFilter(t)}
-                className={`flex-1 sm:flex-initial py-1.5 px-3 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${
-                  typeFilter === t
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {t === 'todos' ? 'Todos' : t === 'receita' ? 'Receitas' : 'Despesas'}
-              </button>
-            ))}
-          </div>
-
-          {/* Category Dropdown */}
-          <div className="relative w-full sm:w-44 flex items-center bg-muted border border-border/50 rounded-xl px-3 py-1.5 text-xs text-muted-foreground">
-            <Filter size={12} className="mr-2" />
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-transparent text-foreground/90 focus:outline-none w-full cursor-pointer pr-4"
-            >
-              <option value="todas">Todas as categorias</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.id}>{c.nome}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
 
       {/* Transactions Table Card */}
       <div className="bg-card border border-border/40 rounded-2xl shadow-sm overflow-hidden">

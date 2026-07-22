@@ -16,7 +16,8 @@ const config: Config = {
         primary: "var(--primary)",
         accent: "var(--accent)",
         success: "#10B981",
-        danger: "#EF4444",
+        danger: "#F43F5E", // Modern Coral/Rose
+
         border: "var(--border)",
         muted: "var(--muted)",
         "muted-foreground": "var(--muted-foreground)",

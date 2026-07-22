@@ -5,18 +5,18 @@
 @tailwind utilities;
 
 :root {
-  --background: #F8FAFC;
-  --foreground: #0F172A;
-  --card: #FFFFFF;
-  --card-foreground: #1E293B;
-  --primary: #4F46E5;
+  --background: #090D16; /* Deep dark slate-blue premium */
+  --foreground: #F8FAFC; /* Crisp white-gray text */
+  --card: #111827; /* Dark slate card background */
+  --card-foreground: #F1F5F9;
+  --primary: #6366F1; /* Indigo brand */
   --primary-foreground: #FFFFFF;
-  --accent: #2563EB;
+  --accent: #3B82F6; /* Blue accent */
   --accent-foreground: #FFFFFF;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --border: #E2E8F0;
-  --radius: 1rem;
+  --muted: #1E293B; /* Darker slate for input/muted blocks */
+  --muted-foreground: #94A3B8; /* Slate-400 for secondary text */
+  --border: #2D3748; /* Slate-700 for borders */
+  --radius: 1.25rem; /* Generous rounded corners */
 }
 
 * {
@@ -49,15 +49,29 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #CBD5E1;
+  background: #4A5568;
 }
 
 /* Custom Utilities */
 .glassmorphism {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.premium-card {
+  background-color: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.12);
 }
 
 .gradient-accent {
@@ -69,15 +83,20 @@ body {
 }
 
 .glow-primary {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
 }
 
 .glow-success {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
 }
 
 .glow-danger {
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.2);
+}
+
+/* Smooth globally interactive elements */
+button, a, input, select, textarea {
+  transition: all 200ms ease-in-out;
 }
 
 /* Animation utilities */
@@ -95,3 +114,4 @@ body {
     transform: translateY(0);
   }
 }
+

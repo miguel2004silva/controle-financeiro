@@ -13,6 +13,7 @@ import {
   X,
   TrendingUp
 } from 'lucide-react';
+import { FilterPanel, FilterState, initialFilterState } from '@/components/filter-panel';
 
 export default function InvestimentosPage() {
   const { 
@@ -24,6 +25,7 @@ export default function InvestimentosPage() {
   } = useFinance();
 
   const [mounted, setMounted] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<FilterState>(initialFilterState);
 
   // Form States
   const [selectedInvId, setSelectedInvId] = useState<string | null>(null);
@@ -43,6 +45,71 @@ export default function InvestimentosPage() {
     }).format(val);
   };
 
+  // ----------------------------------------------------
+  // FILTERING INVESTMENTS
+  // ----------------------------------------------------
+  const filteredInvestments = useMemo(() => {
+    return investments.filter(inv => {
+      // 1. Text search ticker
+      if (activeFilters.search) {
+        const matchesSearch = inv.ticker.toLowerCase().includes(activeFilters.search.toLowerCase());
+        if (!matchesSearch) return false;
+      }
+
+      // 2. Type (renda_fixa, ação, fii, cripto)
+      if (activeFilters.type !== 'todos') {
+        if (inv.tipo !== activeFilters.type) return false;
+      }
+
+      // 3. Value Range (qty * current price)
+      const totalVal = Number(inv.quantidade) * Number(inv.preço_atual);
+      if (activeFilters.minVal !== '') {
+        if (totalVal < activeFilters.minVal) return false;
+      }
+      if (activeFilters.maxVal !== '') {
+        if (totalVal > activeFilters.maxVal) return false;
+      }
+
+      // 4. Date range (on data_atualização or created_at)
+      if (activeFilters.periodType !== 'todos') {
+        const dateStr = inv.data_atualização || inv.created_at;
+        if (!dateStr) return false;
+        
+        const invDate = new Date(dateStr);
+        const invYear = invDate.getUTCFullYear();
+        const invMonth = invDate.getUTCMonth();
+        const invDay = invDate.getUTCDate();
+
+        if (activeFilters.periodType === 'dia') {
+          const filterDate = new Date(activeFilters.selectedDate + 'T00:00:00Z');
+          const isSameDay = invYear === filterDate.getUTCFullYear() &&
+                            invMonth === filterDate.getUTCMonth() &&
+                            invDay === filterDate.getUTCDate();
+          if (!isSameDay) return false;
+        } else if (activeFilters.periodType === 'mes') {
+          const [fYear, fMonth] = activeFilters.selectedMonth.split('-').map(Number);
+          const isSameMonth = invYear === fYear && (invMonth + 1) === fMonth;
+          if (!isSameMonth) return false;
+        } else if (activeFilters.periodType === 'ano') {
+          const fYear = Number(activeFilters.selectedYear);
+          const isSameYear = invYear === fYear;
+          if (!isSameYear) return false;
+        } else if (activeFilters.periodType === 'personalizado') {
+          if (activeFilters.startDate) {
+            const start = new Date(activeFilters.startDate + 'T00:00:00Z');
+            if (invDate < start) return false;
+          }
+          if (activeFilters.endDate) {
+            const end = new Date(activeFilters.endDate + 'T23:59:59Z');
+            if (invDate > end) return false;
+          }
+        }
+      }
+
+      return true;
+    });
+  }, [investments, activeFilters]);
+
   // Real checking account balance (revenues - expenses)
   const totalRevenuesAllTime = transactions
     .filter(t => t.tipo === 'receita')
@@ -53,12 +120,13 @@ export default function InvestimentosPage() {
   const accountBalance = totalRevenuesAllTime - totalExpensesAllTime;
 
   // Total saved in all investments (qty * price)
-  const totalSaved = investments.reduce(
+  const totalSaved = filteredInvestments.reduce(
     (sum, inv) => sum + (Number(inv.quantidade) * Number(inv.preço_atual)),
     0
   );
 
   const consolidatedBalance = accountBalance + totalSaved;
+
 
   // Handle Edit Action Setup
   const handleEditClick = (inv: any) => {
@@ -214,6 +282,12 @@ export default function InvestimentosPage() {
         </div>
       </div>
 
+      {/* Filter Panel */}
+      <FilterPanel 
+        isInvestmentsPage={true}
+        onFilterChange={setActiveFilters}
+      />
+
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         
@@ -237,8 +311,8 @@ export default function InvestimentosPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/20">
-                  {investments.length > 0 ? (
-                    investments.map((inv) => (
+                  {filteredInvestments.length > 0 ? (
+                    filteredInvestments.map((inv) => (
                       <tr key={inv.id} className="hover:bg-muted/10 transition-colors">
                         {/* Name */}
                         <td className="py-4 px-5 font-bold text-foreground max-w-[150px] truncate">
@@ -287,7 +361,7 @@ export default function InvestimentosPage() {
                       <td colSpan={4} className="py-12 text-center text-muted-foreground">
                         <div className="flex flex-col items-center justify-center gap-2">
                           <PiggyBank size={32} className="text-muted-foreground/30" />
-                          <span>Nenhum valor guardado ainda.</span>
+                          <span>Nenhum investimento encontrado com os filtros selecionados.</span>
                         </div>
                       </td>
                     </tr>

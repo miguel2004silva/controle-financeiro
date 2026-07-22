@@ -410,12 +410,12 @@ export default function DashboardPage() {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
-                    border: '1px solid #E2E8F0',
+                    backgroundColor: '#1E293B',
+                    border: '1px solid #334155',
                     borderRadius: '12px'
                   }}
-                  labelStyle={{ color: '#64748B', fontWeight: 'bold', fontSize: '11px' }}
-                  itemStyle={{ color: '#0F172A', fontWeight: 'black', fontSize: '13px' }}
+                  labelStyle={{ color: '#94A3B8', fontWeight: 'bold', fontSize: '11px' }}
+                  itemStyle={{ color: '#F8FAFC', fontWeight: 'black', fontSize: '13px' }}
                   formatter={(val: any) => [formatBRL(Number(val)), 'Patrimônio']}
                 />
                 <Area 
@@ -465,11 +465,11 @@ export default function DashboardPage() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#FFFFFF',
-                        border: '1px solid #E2E8F0',
+                        backgroundColor: '#1E293B',
+                        border: '1px solid #334155',
                         borderRadius: '12px'
                       }}
-                      itemStyle={{ color: '#0F172A', fontSize: '12px' }}
+                      itemStyle={{ color: '#F8FAFC', fontSize: '12px' }}
                       formatter={(val: any) => [formatBRL(Number(val)), 'Gasto']}
                     />
                   </PieChart>

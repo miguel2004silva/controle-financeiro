@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useFinance } from '@/context/finance-context';
 import { CategoryIcon } from '@/components/category-icon';
 import { 
@@ -24,11 +24,13 @@ import {
   PieChart as PieIcon,
   TrendingUp
 } from 'lucide-react';
+import { FilterPanel, FilterState, initialFilterState } from '@/components/filter-panel';
 
 export default function RelatoriosPage() {
   const { transactions, categories } = useFinance();
   const [mounted, setMounted] = useState(false);
   const [reportTimeframe, setReportTimeframe] = useState<'6M' | '1A'>('6M');
+  const [activeFilters, setActiveFilters] = useState<FilterState>(initialFilterState);
 
   useEffect(() => {
     setMounted(true);
@@ -43,15 +45,94 @@ export default function RelatoriosPage() {
   };
 
   // ----------------------------------------------------
+  // FILTERING TRANSACTIONS FOR STATS & CHARTS
+  // ----------------------------------------------------
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter(t => {
+      // 1. Text search
+      if (activeFilters.search) {
+        const matchesSearch = t.descrição.toLowerCase().includes(activeFilters.search.toLowerCase());
+        if (!matchesSearch) return false;
+      }
+
+      // 2. Type (receita / despesa / investimento)
+      if (activeFilters.type !== 'todos') {
+        if (activeFilters.type === 'investimento') {
+          const cat = categories.find(c => c.id === t.categoria_id);
+          const isInvCat = cat?.nome.toLowerCase() === 'investimentos';
+          const hasInvMov = !!t.investment_movement_id;
+          if (!isInvCat && !hasInvMov) return false;
+        } else {
+          if (t.tipo !== activeFilters.type) return false;
+        }
+      }
+
+      // 3. Category (multi-select)
+      if (activeFilters.selectedCategories.length > 0) {
+        if (!t.categoria_id || !activeFilters.selectedCategories.includes(t.categoria_id)) {
+          return false;
+        }
+      }
+
+      // 4. Value Range
+      if (activeFilters.minVal !== '') {
+        if (t.valor < activeFilters.minVal) return false;
+      }
+      if (activeFilters.maxVal !== '') {
+        if (t.valor > activeFilters.maxVal) return false;
+      }
+
+      // 5. Date Period
+      if (activeFilters.periodType !== 'todos') {
+        const tDate = new Date(t.data);
+        const tYear = tDate.getUTCFullYear();
+        const tMonth = tDate.getUTCMonth();
+        const tDay = tDate.getUTCDate();
+
+        if (activeFilters.periodType === 'dia') {
+          const filterDate = new Date(activeFilters.selectedDate + 'T00:00:00Z');
+          const isSameDay = tYear === filterDate.getUTCFullYear() &&
+                            tMonth === filterDate.getUTCMonth() &&
+                            tDay === filterDate.getUTCDate();
+          if (!isSameDay) return false;
+        } else if (activeFilters.periodType === 'mes') {
+          const [fYear, fMonth] = activeFilters.selectedMonth.split('-').map(Number);
+          const isSameMonth = tYear === fYear && (tMonth + 1) === fMonth;
+          if (!isSameMonth) return false;
+        } else if (activeFilters.periodType === 'ano') {
+          const fYear = Number(activeFilters.selectedYear);
+          const isSameYear = tYear === fYear;
+          if (!isSameYear) return false;
+        } else if (activeFilters.periodType === 'personalizado') {
+          if (activeFilters.startDate) {
+            const start = new Date(activeFilters.startDate + 'T00:00:00Z');
+            if (tDate < start) return false;
+          }
+          if (activeFilters.endDate) {
+            const end = new Date(activeFilters.endDate + 'T23:59:59Z');
+            if (tDate > end) return false;
+          }
+        }
+      }
+
+      return true;
+    });
+  }, [transactions, activeFilters, categories]);
+
+  // ----------------------------------------------------
   // REPORT AGGREGATES
   // ----------------------------------------------------
-  const totalRevenues = transactions
-    .filter(t => t.tipo === 'receita')
-    .reduce((sum, t) => sum + Number(t.valor), 0);
+  const totalRevenues = useMemo(() => {
+    return filteredTransactions
+      .filter(t => t.tipo === 'receita')
+      .reduce((sum, t) => sum + Number(t.valor), 0);
+  }, [filteredTransactions]);
 
-  const totalExpenses = transactions
-    .filter(t => t.tipo === 'despesa')
-    .reduce((sum, t) => sum + Number(t.valor), 0);
+  const totalExpenses = useMemo(() => {
+    return filteredTransactions
+      .filter(t => t.tipo === 'despesa')
+      .reduce((sum, t) => sum + Number(t.valor), 0);
+  }, [filteredTransactions]);
 
   const netSavings = totalRevenues - totalExpenses;
   const savingsRate = totalRevenues > 0 ? (netSavings / totalRevenues) * 100 : 0;
@@ -59,7 +140,7 @@ export default function RelatoriosPage() {
   // ----------------------------------------------------
   // REVENUES VS EXPENSES MONTHLY GROUPING
   // ----------------------------------------------------
-  const getMonthlyComparisonData = () => {
+  const barChartData = useMemo(() => {
     const pointsCount = reportTimeframe === '6M' ? 6 : 12;
     interface MonthlyComparison {
       label: string;
@@ -82,8 +163,8 @@ export default function RelatoriosPage() {
       });
     }
 
-    // Accumulate transactions into monthly slots
-    transactions.forEach(t => {
+    // Accumulate filtered transactions into monthly slots
+    filteredTransactions.forEach(t => {
       const tDate = new Date(t.data);
       const tMonth = tDate.getUTCMonth();
       const tYear = tDate.getUTCFullYear();
@@ -99,42 +180,45 @@ export default function RelatoriosPage() {
     });
 
     return months;
-  };
-
-  const barChartData = getMonthlyComparisonData();
+  }, [filteredTransactions, reportTimeframe]);
 
   // ----------------------------------------------------
-  // TOTAL EXPENSES BY CATEGORY (All-time or filter)
+  // TOTAL EXPENSES BY CATEGORY
   // ----------------------------------------------------
-  const expensesBreakdown = categories.map(cat => {
-    const spent = transactions
-      .filter(t => t.tipo === 'despesa' && t.categoria_id === cat.id)
-      .reduce((sum, t) => sum + Number(t.valor), 0);
-    
-    const txCount = transactions.filter(t => t.tipo === 'despesa' && t.categoria_id === cat.id).length;
+  const expensesBreakdown = useMemo(() => {
+    return categories.map(cat => {
+      const spent = filteredTransactions
+        .filter(t => t.tipo === 'despesa' && t.categoria_id === cat.id)
+        .reduce((sum, t) => sum + Number(t.valor), 0);
+      
+      const txCount = filteredTransactions.filter(t => t.tipo === 'despesa' && t.categoria_id === cat.id).length;
 
-    return {
-      ...cat,
-      spent,
-      txCount
-    };
-  })
-  .filter(c => c.spent > 0)
-  .sort((a, b) => b.spent - a.spent);
+      return {
+        ...cat,
+        spent,
+        txCount
+      };
+    })
+    .filter(c => c.spent > 0)
+    .sort((a, b) => b.spent - a.spent);
+  }, [filteredTransactions, categories]);
 
-  const totalSpentInBreakdown = expensesBreakdown.reduce((sum, c) => sum + c.spent, 0);
-
-  const breakdownDataWithPercentage = expensesBreakdown.map(c => ({
-    ...c,
-    percentage: totalSpentInBreakdown > 0 ? (c.spent / totalSpentInBreakdown) * 100 : 0
-  }));
+  const breakdownDataWithPercentage = useMemo(() => {
+    const totalSpentInBreakdown = expensesBreakdown.reduce((sum, c) => sum + c.spent, 0);
+    return expensesBreakdown.map(c => ({
+      ...c,
+      percentage: totalSpentInBreakdown > 0 ? (c.spent / totalSpentInBreakdown) * 100 : 0
+    }));
+  }, [expensesBreakdown]);
 
   // Pie chart data
-  const pieChartData = breakdownDataWithPercentage.map(c => ({
-    name: c.nome,
-    value: Math.round(c.spent),
-    color: c.cor
-  }));
+  const pieChartData = useMemo(() => {
+    return breakdownDataWithPercentage.map(c => ({
+      name: c.nome,
+      value: Math.round(c.spent),
+      color: c.cor
+    }));
+  }, [breakdownDataWithPercentage]);
 
   return (
     <div className="space-y-6">
@@ -146,6 +230,12 @@ export default function RelatoriosPage() {
           <p className="text-xs text-muted-foreground">Estatísticas, taxas de poupança e demonstrativo de fluxos</p>
         </div>
       </div>
+
+      {/* Filter Panel */}
+      <FilterPanel 
+        categories={categories}
+        onFilterChange={setActiveFilters}
+      />
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -160,7 +250,7 @@ export default function RelatoriosPage() {
               {formatBRL(totalRevenues)}
             </p>
           </div>
-          <span className="text-[10px] text-muted-foreground font-semibold">Toda a receita lançada</span>
+          <span className="text-[10px] text-muted-foreground font-semibold">Volume filtrado de receitas</span>
         </div>
 
         {/* Total Expenses */}
@@ -174,7 +264,7 @@ export default function RelatoriosPage() {
               {formatBRL(totalExpenses)}
             </p>
           </div>
-          <span className="text-[10px] text-muted-foreground font-semibold">Toda a despesa lançada</span>
+          <span className="text-[10px] text-muted-foreground font-semibold">Volume filtrado de despesas</span>
         </div>
 
         {/* Cash Flow */}
@@ -188,7 +278,7 @@ export default function RelatoriosPage() {
               {formatBRL(netSavings)}
             </p>
           </div>
-          <span className="text-[10px] text-muted-foreground font-semibold">Saldo líquido disponível</span>
+          <span className="text-[10px] text-muted-foreground font-semibold">Saldo líquido do filtro</span>
         </div>
 
         {/* Savings Rate */}
@@ -251,16 +341,17 @@ export default function RelatoriosPage() {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
-                    border: '1px solid #E2E8F0',
+                    backgroundColor: '#1E293B',
+                    border: '1px solid #334155',
                     borderRadius: '12px'
                   }}
-                  itemStyle={{ fontSize: '12px', color: '#0F172A' }}
+                  itemStyle={{ fontSize: '12px', color: '#F8FAFC' }}
+                  labelStyle={{ color: '#94A3B8', fontWeight: 'bold' }}
                   formatter={(val: any) => [formatBRL(Number(val))]}
                 />
                 <Legend iconSize={10} wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
                 <Bar dataKey="Receitas" fill="#10B981" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="Despesas" fill="#EF4444" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="Despesas" fill="#F43F5E" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -301,11 +392,12 @@ export default function RelatoriosPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#FFFFFF',
-                      border: '1px solid #E2E8F0',
+                      backgroundColor: '#1E293B',
+                      border: '1px solid #334155',
                       borderRadius: '12px'
                     }}
-                    itemStyle={{ color: '#0F172A', fontSize: '11px' }}
+                    itemStyle={{ color: '#F8FAFC', fontSize: '11px' }}
+                    labelStyle={{ color: '#94A3B8' }}
                     formatter={(val: any) => [formatBRL(Number(val)), 'Gasto total']}
                   />
                 </PieChart>
