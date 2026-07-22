@@ -221,13 +221,21 @@ export default function TransacoesPage() {
                           </select>
                         ) : (
                           <div className="flex items-center gap-2">
-                            <div 
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0"
-                              style={{ backgroundColor: cat?.cor || '#6B7280' }}
-                            >
-                              <CategoryIcon name={cat?.icone || 'circle'} size={14} />
-                            </div>
-                            <span className="font-bold text-foreground/90 truncate">{cat?.nome || 'Entrada/Outros'}</span>
+                             <div 
+                               className="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0"
+                               style={{ backgroundColor: cat?.cor || (isRevenue ? '#10B981' : '#F43F5E') }}
+                             >
+                               {cat ? (
+                                 <CategoryIcon name={cat.icone || 'circle'} size={14} />
+                               ) : isRevenue ? (
+                                 <ArrowUpRight size={14} />
+                               ) : (
+                                 <ArrowDownRight size={14} />
+                               )}
+                             </div>
+                             <span className="font-bold text-foreground/90 truncate">
+                               {cat?.nome || (isRevenue ? 'Receita/Outros' : 'Despesa/Outros')}
+                             </span>
                           </div>
                         )}
                       </td>

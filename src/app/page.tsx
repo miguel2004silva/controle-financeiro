@@ -206,154 +206,62 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       
-      {/* Top Consolidado Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-2">
-        <div>
-          <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Patrimônio Consolidado</p>
-          <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight mt-1 font-mono">
-            {formatBRL(consolidatedBalance)}
-          </h2>
-          <div className="flex items-center gap-2 mt-1.5 text-xs">
-            <span className="text-success bg-success/10 px-2 py-0.5 rounded-full flex items-center font-bold">
-              <TrendingUp size={12} className="mr-0.5" />
-              +2.4%
-            </span>
-            <span className="text-muted-foreground">este mês</span>
-          </div>
-        </div>
-        
-        {/* Quick launcher button for mobile */}
-        <button
-          onClick={() => setTransactionModalOpen(true)}
-          className="md:hidden w-full py-3 bg-gradient-to-r from-accent to-primary rounded-xl text-sm font-bold text-white text-center flex items-center justify-center gap-2"
-        >
-          <Layers size={16} />
-          Lançamento Rápido
-        </button>
-      </div>
-
-      {/* Net Worth Breakdown Card */}
-      <div className="bg-card border border-border/40 rounded-2xl p-5 shadow-sm">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-          <div>
-            <h3 className="font-bold text-base text-foreground">Distribuição do Patrimônio</h3>
-            <p className="text-xs text-muted-foreground font-medium">Divisão entre saldo líquido e investimentos (Base MultiCap)</p>
-          </div>
-        </div>
-        
-        {/* Progress Bar Split */}
-        <div className="w-full h-3 bg-muted/30 rounded-full overflow-hidden flex mb-4">
-          {consolidatedBalance > 0 ? (
-            <>
-              {accountBalance > 0 && (
-                <div 
-                  className="h-full bg-indigo-500 transition-all duration-500" 
-                  style={{ width: `${(Math.max(0, accountBalance) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100}%` }}
-                  title={`Liquidez: ${((Math.max(0, accountBalance) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100).toFixed(1)}%`}
-                />
-              )}
-              {currentInvestmentsValuation > 0 && (
-                <div 
-                  className="h-full bg-emerald-500 transition-all duration-500" 
-                  style={{ width: `${(Math.max(0, currentInvestmentsValuation) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100}%` }}
-                  title={`Investimentos: ${((Math.max(0, currentInvestmentsValuation) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100).toFixed(1)}%`}
-                />
-              )}
-            </>
-          ) : (
-            <div className="w-full h-full bg-muted/40" />
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-3 bg-muted border border-border/50 rounded-xl flex items-center justify-between hover:border-indigo-500/30 transition-all">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
-                <Wallet size={16} />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-semibold">Liquidez (Saldo em Conta)</p>
-                <p className="text-lg font-bold text-foreground font-mono">{formatBRL(accountBalance)}</p>
-              </div>
-            </div>
-            <span className="text-xs font-mono font-bold text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded-full">
-              {(consolidatedBalance > 0 ? (Math.max(0, accountBalance) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100 : 0).toFixed(1)}%
-            </span>
-          </div>
-
-          <div className="p-3 bg-muted border border-border/50 rounded-xl flex items-center justify-between hover:border-emerald-500/30 transition-all">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                <TrendingUp size={16} />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-semibold">Investimentos (Ativos)</p>
-                <p className="text-lg font-bold text-foreground font-mono">{formatBRL(currentInvestmentsValuation)}</p>
-              </div>
-            </div>
-            <span className="text-xs font-mono font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              {(consolidatedBalance > 0 ? (Math.max(0, currentInvestmentsValuation) / (Math.max(0, accountBalance) + Math.max(0, currentInvestmentsValuation))) * 100 : 0).toFixed(1)}%
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Grid of Summaries (Revenues, Expenses, Balance, Invested) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Revenues Card */}
-        <div className="bg-card border border-border/40 rounded-2xl p-4 flex flex-col justify-between h-28 relative overflow-hidden group hover:border-success/30 transition-all">
-          <div className="absolute right-3 top-3 w-8 h-8 rounded-xl bg-success/10 text-success flex items-center justify-center">
-            <ArrowUpRight size={16} />
+      {/* Grid of Summaries (Patrimônio Consolidado, Conta Corrente, Total Guardado, Despesas do Mês) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Patrimônio Consolidado */}
+        <div className="bg-card border border-border/40 rounded-2xl p-6 flex flex-col justify-between h-32 relative overflow-hidden group hover:border-primary/30 transition-all premium-card">
+          <div className="absolute right-5 top-5 w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <DollarSign size={20} />
           </div>
           <div>
-            <span className="text-xs text-muted-foreground font-bold">Receitas</span>
-            <p className="text-xl sm:text-2xl font-black text-foreground mt-1 truncate font-mono">
-              {formatBRL(monthRevenues)}
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Patrimônio Consolidado</span>
+            <p className="text-2xl sm:text-3xl font-black text-foreground mt-1.5 font-mono">
+              {formatBRL(consolidatedBalance)}
             </p>
           </div>
-          <span className="text-[10px] text-muted-foreground font-semibold">Entradas do mês</span>
+          <span className="text-[10px] text-muted-foreground font-semibold">Conta Corrente + Investidos</span>
         </div>
 
-        {/* Expenses Card */}
-        <div className="bg-card border border-border/40 rounded-2xl p-4 flex flex-col justify-between h-28 relative overflow-hidden group hover:border-danger/30 transition-all">
-          <div className="absolute right-3 top-3 w-8 h-8 rounded-xl bg-danger/10 text-danger flex items-center justify-center">
-            <ArrowDownRight size={16} />
+        {/* Conta Corrente */}
+        <div className="bg-card border border-border/40 rounded-2xl p-6 flex flex-col justify-between h-32 relative overflow-hidden group hover:border-accent/30 transition-all premium-card">
+          <div className="absolute right-5 top-5 w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
+            <Wallet size={20} />
           </div>
           <div>
-            <span className="text-xs text-muted-foreground font-bold">Despesas</span>
-            <p className="text-xl sm:text-2xl font-black text-foreground mt-1 truncate font-mono">
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Saldo em Conta</span>
+            <p className="text-2xl sm:text-3xl font-black text-foreground mt-1.5 font-mono">
+              {formatBRL(accountBalance)}
+            </p>
+          </div>
+          <span className="text-[10px] text-muted-foreground font-semibold">Saldo atual na conta</span>
+        </div>
+
+        {/* Total Guardado */}
+        <div className="bg-card border border-border/40 rounded-2xl p-6 flex flex-col justify-between h-32 relative overflow-hidden group hover:border-success/30 transition-all premium-card">
+          <div className="absolute right-5 top-5 w-10 h-10 rounded-xl bg-success/10 text-success flex items-center justify-center">
+            <TrendingUp size={20} />
+          </div>
+          <div>
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Investido</span>
+            <p className="text-2xl sm:text-3xl font-black text-foreground mt-1.5 font-mono">
+              {formatBRL(currentInvestmentsValuation)}
+            </p>
+          </div>
+          <span className="text-[10px] text-muted-foreground font-semibold">Dinheiro em investimentos</span>
+        </div>
+
+        {/* Despesas do Mês */}
+        <div className="bg-card border border-border/40 rounded-2xl p-6 flex flex-col justify-between h-32 relative overflow-hidden group hover:border-danger/30 transition-all premium-card">
+          <div className="absolute right-5 top-5 w-10 h-10 rounded-xl bg-danger/10 text-danger flex items-center justify-center">
+            <ArrowDownRight size={20} />
+          </div>
+          <div>
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Despesas do Mês</span>
+            <p className="text-2xl sm:text-3xl font-black text-foreground mt-1.5 font-mono">
               {formatBRL(monthExpenses)}
             </p>
           </div>
-          <span className="text-[10px] text-muted-foreground font-semibold">Saídas do mês</span>
-        </div>
-
-        {/* Month Balance Card */}
-        <div className="bg-card border border-border/40 rounded-2xl p-4 flex flex-col justify-between h-28 relative overflow-hidden group hover:border-primary/30 transition-all">
-          <div className="absolute right-3 top-3 w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-            <DollarSign size={16} />
-          </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold">Saldo Mensal</span>
-            <p className={`text-xl sm:text-2xl font-black mt-1 truncate font-mono ${monthBalance >= 0 ? 'text-foreground' : 'text-danger'}`}>
-              {formatBRL(monthBalance)}
-            </p>
-          </div>
-          <span className="text-[10px] text-muted-foreground font-semibold">Sobrou na conta</span>
-        </div>
-
-        {/* Invested Card */}
-        <div className="bg-card border border-border/40 rounded-2xl p-4 flex flex-col justify-between h-28 relative overflow-hidden group hover:border-accent/30 transition-all">
-          <div className="absolute right-3 top-3 w-8 h-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
-            <PiggyBank size={16} />
-          </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold">Investido</span>
-            <p className="text-xl sm:text-2xl font-black text-foreground mt-1 truncate font-mono">
-              {formatBRL(monthInvested)}
-            </p>
-          </div>
-          <span className="text-[10px] text-muted-foreground font-semibold">Aportes do mês</span>
+          <span className="text-[10px] text-muted-foreground font-semibold">Total gasto no mês atual</span>
         </div>
       </div>
 
@@ -561,12 +469,18 @@ export default function DashboardPage() {
                       className="p-3 bg-muted hover:bg-muted/80 border border-border/20 rounded-xl flex items-center justify-between transition-colors group"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        {/* Circle Icon */}
+                        {/* Category/Direction Icon */}
                         <div 
                           className="w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0"
-                          style={{ backgroundColor: cat?.cor || '#6B7280' }}
+                          style={{ backgroundColor: cat?.cor || (isRevenue ? '#10B981' : '#F43F5E') }}
                         >
-                          <CategoryIcon name={cat?.icone || 'circle'} size={16} />
+                          {cat ? (
+                            <CategoryIcon name={cat.icone || 'circle'} size={16} />
+                          ) : isRevenue ? (
+                            <ArrowUpRight size={16} />
+                          ) : (
+                            <ArrowDownRight size={16} />
+                          )}
                         </div>
                         <div className="truncate">
                           <p className="text-xs font-bold text-foreground truncate">{tx.descrição}</p>

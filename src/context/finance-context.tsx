@@ -60,7 +60,16 @@ const generateId = () => {
 };
 
 // Seed data definitions
-const SEED_CATEGORIES: Category[] = [];
+const SEED_CATEGORIES: Category[] = [
+  { id: 'cat-alimentacao', nome: 'Alimentação', cor: '#10B981', icone: 'utensils', orçamento_mensal: 1000 },
+  { id: 'cat-transporte', nome: 'Transporte', cor: '#3B82F6', icone: 'car', orçamento_mensal: 500 },
+  { id: 'cat-moradia', nome: 'Moradia', cor: '#8B5CF6', icone: 'home', orçamento_mensal: 2000 },
+  { id: 'cat-lazer', nome: 'Lazer', cor: '#EC4899', icone: 'tv', orçamento_mensal: 400 },
+  { id: 'cat-saude', nome: 'Saúde', cor: '#F43F5E', icone: 'activity', orçamento_mensal: 300 },
+  { id: 'cat-investimentos', nome: 'Investimentos', cor: '#10B981', icone: 'trending-up', orçamento_mensal: 0 },
+  { id: 'cat-receita', nome: 'Receitas', cor: '#10B981', icone: 'dollar-sign', orçamento_mensal: 0 },
+  { id: 'cat-educacao', nome: 'Educação', cor: '#F59E0B', icone: 'book', orçamento_mensal: 300 }
+];
 const SEED_TRANSACTIONS: Transaction[] = [];
 const SEED_INVESTMENTS: Investment[] = [];
 const SEED_MOVEMENTS: InvestmentMovement[] = [];
@@ -88,7 +97,21 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const storedGoals = localStorage.getItem('fin_goals');
 
     if (storedCategories) {
-      setCategories(JSON.parse(storedCategories));
+      const parsed = JSON.parse(storedCategories);
+      if (parsed.length === 0) {
+        localStorage.setItem('fin_categories', JSON.stringify(SEED_CATEGORIES));
+        setCategories(SEED_CATEGORIES);
+      } else {
+        // Merge missing seed categories
+        const merged = [...parsed];
+        SEED_CATEGORIES.forEach(seed => {
+          if (!merged.some(c => c.nome.toLowerCase() === seed.nome.toLowerCase())) {
+            merged.push(seed);
+          }
+        });
+        localStorage.setItem('fin_categories', JSON.stringify(merged));
+        setCategories(merged);
+      }
     } else {
       localStorage.setItem('fin_categories', JSON.stringify(SEED_CATEGORIES));
       setCategories(SEED_CATEGORIES);

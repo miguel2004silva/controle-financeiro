@@ -51,6 +51,10 @@ export const CategoryIcon: React.FC<CategoryIconProps> = ({ name, className = ''
       return <Icons.Activity className={className} size={size} />;
     case 'gift':
       return <Icons.Gift className={className} size={size} />;
+    case 'book':
+    case 'education':
+    case 'educação':
+      return <Icons.BookOpen className={className} size={size} />;
     default:
       return <Icons.Circle className={className} size={size} />;
   }
