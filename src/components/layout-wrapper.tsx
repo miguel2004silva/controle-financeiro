@@ -86,21 +86,21 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Top Navbar - Desktop */}
-      <header className="hidden md:block fixed top-0 left-0 right-0 h-16 border-b border-border/40 glassmorphism z-40 transition-colors duration-200">
+      <header className="hidden md:block fixed top-0 left-0 right-0 h-16 border-b-4 border-border bg-card z-40 transition-colors duration-200">
         <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
           
           {/* Logo & Brand */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white glow-primary group-hover:scale-105 transition-transform duration-200">
-              <Wallet size={18} />
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 rounded border-2 border-border bg-primary flex items-center justify-center text-primary-foreground shadow-[2px_2px_0px_0px_var(--border)] group-hover:scale-105 transition-transform duration-200">
+              <Wallet size={16} />
             </div>
-            <span className="font-extrabold tracking-tight text-foreground text-sm">
-              Controle<span className="text-primary font-medium">Financeiro</span>
+            <span className="font-serif font-black tracking-tight text-foreground text-sm">
+              Controle<span className="text-primary italic font-serif font-normal">Financeiro</span>
             </span>
           </Link>
 
           {/* Navigation Links */}
-          <nav className="flex items-center gap-1 bg-muted/30 p-1 rounded-xl border border-border/30">
+          <nav className="flex items-center gap-1.5 p-1">
             {NAV_ITEMS.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -108,13 +108,13 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all relative ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 border-2 text-[10px] font-bold uppercase tracking-wider transition-all relative ${
                     isActive
-                      ? 'bg-card text-primary shadow-sm border border-border/50'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                      ? 'bg-primary text-primary-foreground border-border shadow-[2px_2px_0px_0px_var(--border)] -translate-x-[1px] -translate-y-[1px] rounded'
+                      : 'text-muted-foreground hover:text-foreground border-transparent hover:bg-muted/40 rounded'
                   }`}
                 >
-                  <Icon size={14} className={isActive ? 'text-primary' : 'text-muted-foreground'} />
+                  <Icon size={12} className={isActive ? 'text-primary-foreground' : 'text-muted-foreground'} />
                   {item.name}
                 </Link>
               );
@@ -128,26 +128,26 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             {mounted && (
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-muted/50 border border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                className="retro-btn"
                 title={theme === 'light' ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'}
               >
-                {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+                {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
               </button>
             )}
 
             {/* Quick transaction add button */}
             <button
               onClick={() => setTransactionModalOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-extrabold text-white rounded-lg bg-gradient-to-r from-accent to-primary hover:opacity-90 transition-all shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]"
+              className="retro-btn retro-btn-primary"
             >
               <Plus size={14} />
               Lançar
             </button>
 
             {/* User Dropdown/Card */}
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/40 border border-border/30 rounded-xl">
-              <User size={14} className="text-muted-foreground" />
-              <span className="text-xs font-bold text-foreground max-w-[100px] truncate">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-muted border-2 border-border rounded text-xs font-bold">
+              <User size={12} className="text-muted-foreground" />
+              <span className="text-foreground max-w-[100px] truncate">
                 {user?.name || user?.email}
               </span>
             </div>
@@ -155,10 +155,10 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             {/* Logout Button */}
             <button
               onClick={signOut}
-              className="p-2 rounded-lg border border-border/40 text-muted-foreground hover:text-danger hover:bg-danger/5 hover:border-danger/20 transition-all"
+              className="retro-btn hover:bg-danger/10 border-danger hover:border-danger hover:text-danger text-muted-foreground"
               title="Sair"
             >
-              <LogOut size={15} />
+              <LogOut size={13} />
             </button>
 
           </div>
@@ -167,13 +167,13 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       </header>
 
       {/* Top Header - Mobile */}
-      <header className="h-16 px-4 border-b border-border/30 flex items-center justify-between bg-card/60 backdrop-blur-md sticky top-0 z-40 md:hidden transition-colors duration-200">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white">
-            <Wallet size={15} />
+      <header className="h-16 px-4 border-b-4 border-border flex items-center justify-between bg-card sticky top-0 z-40 md:hidden transition-colors duration-200">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded border-2 border-border bg-primary flex items-center justify-center text-primary-foreground shadow-[1px_1px_0px_0px_var(--border)]">
+            <Wallet size={14} />
           </div>
-          <span className="font-extrabold text-xs tracking-tight text-foreground">
-            Controle<span className="text-primary font-medium">Financeiro</span>
+          <span className="font-serif font-black text-xs tracking-tight text-foreground">
+            Controle<span className="text-primary italic font-serif font-normal">Financeiro</span>
           </span>
         </div>
 
@@ -182,22 +182,22 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
           {mounted && (
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground"
+              className="p-2 border-2 border-border rounded bg-muted text-muted-foreground hover:text-foreground"
             >
-              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+              {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
             </button>
           )}
 
-          <span className="text-[10px] bg-muted border border-border/50 text-muted-foreground px-2 py-0.5 rounded font-black">
-            Premium
+          <span className="text-[9px] bg-muted border-2 border-border text-muted-foreground px-2 py-0.5 rounded font-black">
+            PRO
           </span>
           
           <button 
             onClick={signOut}
-            className="p-2 rounded-lg bg-muted text-muted-foreground hover:text-white"
+            className="p-2 border-2 border-border rounded bg-muted text-muted-foreground hover:text-danger"
             title="Sair"
           >
-            <LogOut size={15} />
+            <LogOut size={14} />
           </button>
         </div>
       </header>
@@ -208,7 +208,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       </main>
 
       {/* Mobile Bottom Bar Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card/90 backdrop-blur-lg border-t border-border/50 z-40 flex items-center justify-around px-2 shadow-2xl transition-colors duration-200">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card border-t-4 border-border z-40 flex items-center justify-around px-2 transition-colors duration-200">
         {NAV_ITEMS.slice(0, 4).map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -216,8 +216,8 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             <Link
               key={item.name}
               href={item.href}
-              className={`flex flex-col items-center justify-center flex-grow py-2 gap-1 text-[10px] font-medium transition-colors ${
-                isActive ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+              className={`flex flex-col items-center justify-center flex-grow py-2 gap-1 text-[9px] font-bold transition-colors ${
+                isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <Icon className={isActive ? 'text-primary scale-110' : ''} size={18} />
@@ -230,7 +230,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* Floating Action Button (FAB) for Mobile Quick Add */}
       <button
         onClick={() => setTransactionModalOpen(true)}
-        className="md:hidden fixed right-4 bottom-20 z-30 w-12 h-12 rounded-full text-white bg-gradient-to-r from-accent to-primary shadow-xl shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all glow-primary"
+        className="md:hidden fixed right-4 bottom-20 z-30 w-12 h-12 rounded border-2 border-border text-primary-foreground bg-primary shadow-[3px_3px_0px_0px_var(--border)] flex items-center justify-center hover:scale-105 active:scale-95 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
         aria-label="Adicionar transação"
       >
         <Plus size={24} />

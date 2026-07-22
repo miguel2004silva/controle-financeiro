@@ -160,14 +160,14 @@ export default function TransacoesPage() {
       {/* Header and Add Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-foreground tracking-tight">Transações</h2>
-          <p className="text-xs text-muted-foreground">Histórico e gerenciamento de todos os seus lançamentos</p>
+          <h2 className="text-2xl font-bold text-foreground font-serif">Transações</h2>
+          <p className="text-xs text-muted-foreground font-serif">Histórico e gerenciamento de todos os seus lançamentos de caixa</p>
         </div>
         <button
           onClick={() => setTransactionModalOpen(true)}
-          className="w-full sm:w-auto py-2.5 px-4 rounded-xl font-bold text-xs text-white gradient-accent hover:opacity-90 flex items-center justify-center gap-2 transition-all glow-primary shadow-md shadow-primary/10"
+          className="w-full sm:w-auto retro-btn retro-btn-primary"
         >
-          <Plus size={16} />
+          <Plus size={14} />
           Nova Transação
         </button>
       </div>
@@ -180,16 +180,16 @@ export default function TransacoesPage() {
 
 
       {/* Transactions Table Card */}
-      <div className="bg-card border border-border/40 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-card premium-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left">
+          <table className="retro-table w-full text-left">
             <thead>
-              <tr className="border-b border-border/30 bg-muted/20 text-[10px] uppercase tracking-wider text-muted-foreground font-black">
-                <th className="py-3.5 px-5">Categoria</th>
-                <th className="py-3.5 px-5">Descrição</th>
-                <th className="py-3.5 px-5 font-mono">Data</th>
-                <th className="py-3.5 px-5 text-right font-mono">Valor</th>
-                <th className="py-3.5 px-5 text-center">Ações</th>
+              <tr>
+                <th className="py-3 px-4 font-serif">Categoria</th>
+                <th className="py-3 px-4 font-serif">Descrição</th>
+                <th className="py-3 px-4 font-serif font-mono-retro">Data</th>
+                <th className="py-3 px-4 font-serif font-mono-retro text-right">Valor</th>
+                <th className="py-3 px-4 font-serif text-center">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/20 text-xs">
@@ -207,12 +207,12 @@ export default function TransacoesPage() {
                       }`}
                     >
                       {/* Category cell */}
-                      <td className="py-3.5 px-5">
+                      <td className="py-3 px-4">
                         {isEditing && tx.tipo === 'despesa' ? (
                           <select
                             value={editCatId || ''}
                             onChange={(e) => setEditCatId(e.target.value || null)}
-                            className="bg-muted border border-border/60 rounded-lg p-1.5 text-xs text-foreground/90 focus:outline-none w-32"
+                            className="retro-input p-1.5 text-xs focus:outline-none w-32"
                           >
                             <option value="">Nenhuma</option>
                             {categories.filter(c => c.nome !== 'Investimentos').map(c => (
@@ -222,7 +222,7 @@ export default function TransacoesPage() {
                         ) : (
                           <div className="flex items-center gap-2">
                              <div 
-                               className="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0"
+                               className="w-7 h-7 rounded flex items-center justify-center text-white shrink-0 border border-border/20 shadow-[1px_1px_0px_0px_var(--border)]"
                                style={{ backgroundColor: cat?.cor || (isRevenue ? '#10B981' : '#F43F5E') }}
                              >
                                {cat ? (
@@ -241,19 +241,19 @@ export default function TransacoesPage() {
                       </td>
 
                       {/* Description cell */}
-                      <td className="py-3.5 px-5 font-medium">
+                      <td className="py-3 px-4 font-medium">
                         {isEditing ? (
                           <input
                             type="text"
                             value={editDesc}
                             onChange={(e) => setEditDesc(e.target.value)}
-                            className="bg-muted border border-border/60 rounded-lg px-2 py-1 text-xs text-foreground focus:outline-none w-full max-w-[200px]"
+                            className="retro-input px-2 py-1 text-xs w-full max-w-[200px]"
                           />
                         ) : (
                           <div className="flex items-center gap-2">
                             <span className="text-foreground font-bold">{tx.descrição}</span>
                             {tx.recorrente && (
-                              <span className="text-[7px] font-black uppercase tracking-widest bg-muted px-1.5 py-0.25 rounded text-muted-foreground shrink-0">
+                              <span className="text-[8px] font-bold uppercase tracking-wider bg-muted border border-border/40 px-1.5 py-0.25 rounded text-muted-foreground shrink-0">
                                 Fixo
                               </span>
                             )}
@@ -262,13 +262,13 @@ export default function TransacoesPage() {
                       </td>
 
                       {/* Date cell */}
-                      <td className="py-3.5 px-5 font-mono text-muted-foreground whitespace-nowrap">
+                      <td className="py-3 px-4 font-mono-retro text-muted-foreground whitespace-nowrap">
                         {isEditing ? (
                           <input
                             type="date"
                             value={editDate}
                             onChange={(e) => setEditDate(e.target.value)}
-                            className="bg-muted border border-border/60 rounded-lg p-1 text-xs text-foreground focus:outline-none font-mono"
+                            className="retro-input p-1 text-xs font-mono-retro"
                           />
                         ) : (
                           new Date(tx.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
@@ -276,7 +276,7 @@ export default function TransacoesPage() {
                       </td>
 
                       {/* Value cell */}
-                      <td className="py-3.5 px-5 text-right font-mono font-extrabold whitespace-nowrap">
+                      <td className="py-3 px-4 text-right font-mono-retro whitespace-nowrap">
                         {isEditing ? (
                           <div className="flex items-center justify-end">
                             <span className="text-muted-foreground mr-1">R$</span>
@@ -285,34 +285,34 @@ export default function TransacoesPage() {
                               step="0.01"
                               value={editVal}
                               onChange={(e) => setEditVal(Number(e.target.value))}
-                              className="bg-muted border border-border/60 rounded-lg px-1.5 py-1 text-xs text-foreground focus:outline-none w-20 text-right font-mono"
+                              className="retro-input px-1.5 py-1 text-xs w-20 text-right font-mono-retro"
                             />
                           </div>
                         ) : (
-                          <span className={isRevenue ? 'text-success' : 'text-foreground/80'}>
+                          <span className={`font-bold ${isRevenue ? 'text-success' : 'text-foreground/80'}`}>
                             {isRevenue ? '+' : '-'} {formatBRL(Number(tx.valor))}
                           </span>
                         )}
                       </td>
 
                       {/* Actions cell */}
-                      <td className="py-3.5 px-5 text-center">
+                      <td className="py-3 px-4 text-center">
                         <div className="flex items-center justify-center gap-1.5">
                           {isEditing ? (
                             <>
                               <button
                                 onClick={() => saveEdit(tx.id)}
-                                className="p-1.5 rounded-lg bg-success/10 text-success hover:bg-success/20 transition-colors"
+                                className="p-1 rounded border-2 border-border bg-success text-white hover:opacity-90"
                                 title="Salvar"
                               >
-                                <Check size={14} />
+                                <Check size={12} />
                               </button>
                               <button
                                 onClick={cancelEdit}
-                                className="p-1.5 rounded-lg bg-danger/10 text-danger hover:bg-danger/20 transition-colors"
+                                className="p-1 rounded border-2 border-border bg-danger text-white hover:opacity-90"
                                 title="Cancelar"
                               >
-                                <X size={14} />
+                                <X size={12} />
                               </button>
                             </>
                           ) : (
@@ -320,25 +320,25 @@ export default function TransacoesPage() {
                               {!tx.investment_movement_id ? (
                                 <button
                                   onClick={() => startEdit(tx.id, tx.descrição, Number(tx.valor), tx.categoria_id, tx.data)}
-                                  className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10 transition-colors"
+                                  className="p-1 border border-border/40 rounded text-muted-foreground hover:text-foreground hover:bg-muted"
                                   title="Editar"
                                 >
-                                  <Edit2 size={13} />
+                                  <Edit2 size={12} />
                                 </button>
                               ) : (
                                 <span 
-                                  className="p-1.5 rounded-lg bg-muted/30 text-muted-foreground/40 cursor-not-allowed"
+                                  className="p-1 border border-border/10 rounded text-muted-foreground/30 cursor-not-allowed bg-muted/20"
                                   title="Transação vinculada a investimento. Edite ou remova o ativo na aba de Investimentos."
                                 >
-                                  <Edit2 size={13} />
+                                  <Edit2 size={12} />
                                 </span>
                               )}
                               <button
                                 onClick={() => deleteTransaction(tx.id)}
-                                className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-danger hover:bg-danger/10 transition-colors"
+                                className="p-1 border border-border/40 rounded text-muted-foreground hover:text-danger hover:bg-muted"
                                 title="Excluir"
                               >
-                                <Trash2 size={13} />
+                                <Trash2 size={12} />
                               </button>
                             </>
                           )}
@@ -349,7 +349,7 @@ export default function TransacoesPage() {
                 })
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-muted-foreground">
+                  <td colSpan={5} className="py-12 text-center text-muted-foreground font-serif">
                     Nenhuma transação encontrada com os filtros selecionados.
                   </td>
                 </tr>

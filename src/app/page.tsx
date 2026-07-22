@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useFinance } from '@/context/finance-context';
 import { CategoryIcon } from '@/components/category-icon';
 import { 
@@ -104,27 +104,61 @@ export default function DashboardPage() {
   // ----------------------------------------------------
   // CATEGORIES PROGRESS & DONUT
   // ----------------------------------------------------
-  const categoryExpenses = categories.map(cat => {
-    const spent = currentMonthTransactions
-      .filter(t => t.tipo === 'despesa' && t.categoria_id === cat.id)
-      .reduce((sum, t) => sum + Number(t.valor), 0);
-
-    const pct = cat.orçamento_mensal > 0 ? (spent / cat.orçamento_mensal) * 100 : 0;
-
-    return {
-      ...cat,
-      spent,
-      percentage: Math.min(100, pct),
-      rawPercentage: pct
-    };
-  }).filter(c => c.spent > 0);
+  const categoryExpenses = useMemo(() => {
+    const map = new Map<string | null, number>();
+    
+    currentMonthTransactions
+      .filter(t => t.tipo === 'despesa')
+      .forEach(t => {
+        const catId = t.categoria_id || null;
+        map.set(catId, (map.get(catId) || 0) + Number(t.valor));
+      });
+      
+    const result: Array<{ id: string; nome: string; cor: string; icone: string; orçamento_mensal: number; spent: number; percentage: number; rawPercentage: number }> = [];
+    
+    map.forEach((spent, catId) => {
+      if (catId) {
+        const cat = categories.find(c => c.id === catId);
+        if (cat) {
+          const pct = cat.orçamento_mensal > 0 ? (spent / cat.orçamento_mensal) * 100 : 0;
+          result.push({
+            id: cat.id,
+            nome: cat.nome,
+            cor: cat.cor,
+            icone: cat.icone || 'circle',
+            orçamento_mensal: cat.orçamento_mensal,
+            spent,
+            percentage: Math.min(100, pct),
+            rawPercentage: pct
+          });
+          return;
+        }
+      }
+      
+      // Fallback for null or deleted category
+      result.push({
+        id: 'sem-categoria',
+        nome: 'Sem Categoria',
+        cor: '#605E59',
+        icone: 'circle',
+        orçamento_mensal: 0,
+        spent,
+        percentage: 0,
+        rawPercentage: 0
+      });
+    });
+    
+    return result.sort((a, b) => b.spent - a.spent);
+  }, [categories, currentMonthTransactions]);
 
   // Pie chart data
-  const pieData = categoryExpenses.map(c => ({
-    name: c.nome,
-    value: c.spent,
-    color: c.cor
-  }));
+  const pieData = useMemo(() => {
+    return categoryExpenses.map(c => ({
+      name: c.nome,
+      value: c.spent,
+      color: c.cor
+    }));
+  }, [categoryExpenses]);
 
   // Recent transactions list (5 items)
   const recentTransactions = [...transactions]
@@ -204,18 +238,18 @@ export default function DashboardPage() {
   const evolutionData = generateHistoryData();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       
       {/* Grid of Summaries (Patrimônio Consolidado, Conta Corrente, Total Guardado, Despesas do Mês) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Patrimônio Consolidado */}
-        <div className="bg-card border border-border/40 rounded-2xl p-6 flex flex-col justify-between h-32 relative overflow-hidden group hover:border-primary/30 transition-all premium-card">
-          <div className="absolute right-5 top-5 w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+        <div className="bg-card border-2 border-border rounded-lg p-6 flex flex-col justify-between h-32 relative overflow-hidden premium-card">
+          <div className="absolute right-5 top-5 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-border/20">
             <DollarSign size={20} />
           </div>
           <div>
-            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Patrimônio Consolidado</span>
-            <p className="text-2xl sm:text-3xl font-black text-foreground mt-1.5 font-mono">
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider font-serif">Patrimônio Consolidado</span>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1.5 font-mono-retro">
               {formatBRL(consolidatedBalance)}
             </p>
           </div>
@@ -223,13 +257,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Conta Corrente */}
-        <div className="bg-card border border-border/40 rounded-2xl p-6 flex flex-col justify-between h-32 relative overflow-hidden group hover:border-accent/30 transition-all premium-card">
-          <div className="absolute right-5 top-5 w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
+        <div className="bg-card border-2 border-border rounded-lg p-6 flex flex-col justify-between h-32 relative overflow-hidden premium-card">
+          <div className="absolute right-5 top-5 w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center border border-border/20">
             <Wallet size={20} />
           </div>
           <div>
-            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Saldo em Conta</span>
-            <p className="text-2xl sm:text-3xl font-black text-foreground mt-1.5 font-mono">
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider font-serif">Saldo em Conta</span>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1.5 font-mono-retro">
               {formatBRL(accountBalance)}
             </p>
           </div>
@@ -237,13 +271,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Total Guardado */}
-        <div className="bg-card border border-border/40 rounded-2xl p-6 flex flex-col justify-between h-32 relative overflow-hidden group hover:border-success/30 transition-all premium-card">
-          <div className="absolute right-5 top-5 w-10 h-10 rounded-xl bg-success/10 text-success flex items-center justify-center">
+        <div className="bg-card border-2 border-border rounded-lg p-6 flex flex-col justify-between h-32 relative overflow-hidden premium-card">
+          <div className="absolute right-5 top-5 w-10 h-10 rounded-lg bg-success/10 text-success flex items-center justify-center border border-border/20">
             <TrendingUp size={20} />
           </div>
           <div>
-            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Investido</span>
-            <p className="text-2xl sm:text-3xl font-black text-foreground mt-1.5 font-mono">
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider font-serif">Total Investido</span>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1.5 font-mono-retro">
               {formatBRL(currentInvestmentsValuation)}
             </p>
           </div>
@@ -251,13 +285,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Despesas do Mês */}
-        <div className="bg-card border border-border/40 rounded-2xl p-6 flex flex-col justify-between h-32 relative overflow-hidden group hover:border-danger/30 transition-all premium-card">
-          <div className="absolute right-5 top-5 w-10 h-10 rounded-xl bg-danger/10 text-danger flex items-center justify-center">
+        <div className="bg-card border-2 border-border rounded-lg p-6 flex flex-col justify-between h-32 relative overflow-hidden premium-card">
+          <div className="absolute right-5 top-5 w-10 h-10 rounded-lg bg-danger/10 text-danger flex items-center justify-center border border-border/20">
             <ArrowDownRight size={20} />
           </div>
           <div>
-            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Despesas do Mês</span>
-            <p className="text-2xl sm:text-3xl font-black text-foreground mt-1.5 font-mono">
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider font-serif">Despesas do Mês</span>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1.5 font-mono-retro">
               {formatBRL(monthExpenses)}
             </p>
           </div>
@@ -266,22 +300,22 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Graph (Evolution of Wealth) */}
-      <div className="bg-card border border-border/40 rounded-2xl p-5 shadow-sm">
+      <div className="bg-card p-6 premium-card">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <div>
-            <h3 className="font-bold text-base text-foreground">Evolução do Patrimônio</h3>
-            <p className="text-xs text-muted-foreground">Evolução combinada de conta corrente e investimentos</p>
+            <h3 className="font-bold text-base text-foreground font-serif">Evolução do Patrimônio</h3>
+            <p className="text-xs text-muted-foreground font-serif">Evolução combinada de conta corrente e investimentos</p>
           </div>
           
           {/* Range filter buttons */}
-          <div className="flex bg-muted p-1 rounded-lg border border-border/30 w-full sm:w-auto">
+          <div className="flex bg-muted p-1 rounded-lg border-2 border-border w-full sm:w-auto">
             {(['7D', '1M', '6M', '1A'] as const).map(range => (
               <button
                 key={range}
                 onClick={() => setChartRange(range)}
-                className={`flex-1 sm:flex-initial py-1.5 px-3.5 text-xs font-semibold rounded-md transition-all ${
+                className={`flex-1 sm:flex-initial py-1 px-3 text-xs font-bold transition-all ${
                   chartRange === range
-                    ? 'bg-primary text-white shadow-sm'
+                    ? 'bg-card text-foreground border-2 border-border shadow-[2px_2px_0px_0px_var(--border)] -translate-x-[1px] -translate-y-[1px] rounded'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -298,19 +332,19 @@ export default function DashboardPage() {
               <AreaChart data={evolutionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorPatrimonio" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366F1" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#6366F1" stopOpacity={0.0}/>
+                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.25}/>
+                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.0}/>
                   </linearGradient>
                 </defs>
                 <XAxis 
                   dataKey="name" 
-                  stroke="#475569" 
+                  stroke="var(--muted-foreground)" 
                   fontSize={10} 
                   tickLine={false} 
                   axisLine={false} 
                 />
                 <YAxis 
-                  stroke="#475569" 
+                  stroke="var(--muted-foreground)" 
                   fontSize={10} 
                   tickLine={false} 
                   axisLine={false}
@@ -318,26 +352,27 @@ export default function DashboardPage() {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1E293B',
-                    border: '1px solid #334155',
-                    borderRadius: '12px'
+                    backgroundColor: 'var(--card)',
+                    border: '2px solid var(--border)',
+                    borderRadius: 'var(--radius)',
+                    color: 'var(--foreground)'
                   }}
-                  labelStyle={{ color: '#94A3B8', fontWeight: 'bold', fontSize: '11px' }}
-                  itemStyle={{ color: '#F8FAFC', fontWeight: 'black', fontSize: '13px' }}
+                  labelStyle={{ color: 'var(--muted-foreground)', fontWeight: 'bold', fontSize: '11px' }}
+                  itemStyle={{ color: 'var(--foreground)', fontWeight: 'bold', fontSize: '13px' }}
                   formatter={(val: any) => [formatBRL(Number(val)), 'Patrimônio']}
                 />
                 <Area 
                   type="monotone" 
                   dataKey="Patrimônio" 
-                  stroke="#6366F1" 
-                  strokeWidth={2.5}
+                  stroke="var(--primary)" 
+                  strokeWidth={3}
                   fillOpacity={1} 
                   fill="url(#colorPatrimonio)" 
                 />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="w-full h-full bg-muted/20 animate-pulse rounded-xl" />
+            <div className="w-full h-full bg-muted/20 animate-pulse rounded-lg" />
           )}
         </div>
       </div>
@@ -346,12 +381,12 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         
         {/* Left Side: Category Budgets (Donut + Bars) (3 cols) */}
-        <div className="lg:col-span-3 bg-card border border-border/40 rounded-2xl p-5 space-y-6">
+        <div className="lg:col-span-3 bg-card p-6 premium-card space-y-6">
           <div>
-            <h3 className="font-bold text-base text-foreground">Despesas por Categoria</h3>
-            <p className="text-xs text-muted-foreground">Consumo do orçamento planejado para este mês</p>
+            <h3 className="font-bold text-base text-foreground font-serif">Despesas por Categoria</h3>
+            <p className="text-xs text-muted-foreground font-serif">Distribuição de todas as saídas no mês atual</p>
           </div>
-
+ 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
             {/* Donut Chart */}
             <div className="h-[180px] flex items-center justify-center relative">
@@ -373,11 +408,12 @@ export default function DashboardPage() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#1E293B',
-                        border: '1px solid #334155',
-                        borderRadius: '12px'
+                        backgroundColor: 'var(--card)',
+                        border: '2px solid var(--border)',
+                        borderRadius: 'var(--radius)',
+                        color: 'var(--foreground)'
                       }}
-                      itemStyle={{ color: '#F8FAFC', fontSize: '12px' }}
+                      itemStyle={{ color: 'var(--foreground)', fontSize: '12px' }}
                       formatter={(val: any) => [formatBRL(Number(val)), 'Gasto']}
                     />
                   </PieChart>
@@ -386,41 +422,46 @@ export default function DashboardPage() {
                 <div className="w-32 h-32 rounded-full border-4 border-muted/20 animate-pulse" />
               )}
               {pieData.length === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground font-semibold">
+                <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground font-bold font-serif">
                   Sem gastos este mês
                 </div>
               )}
             </div>
-
+ 
             {/* Progress Bars */}
             <div className="space-y-4">
               {categoryExpenses.length > 0 ? (
-                categoryExpenses.slice(0, 4).map(cat => (
+                categoryExpenses.map(cat => (
                   <div key={cat.id} className="space-y-1">
                     <div className="flex justify-between text-xs font-bold">
                       <span className="text-foreground/90 flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.cor }} />
+                        <span className="w-2.5 h-2.5 rounded border border-border shrink-0" style={{ backgroundColor: cat.cor }} />
                         {cat.nome}
                       </span>
-                      <span className="text-muted-foreground font-mono">
-                        {formatBRL(cat.spent)} <span className="text-[10px] font-normal">/ {formatBRL(cat.orçamento_mensal)}</span>
+                      <span className="text-muted-foreground font-mono-retro">
+                        {formatBRL(cat.spent)}
+                        {cat.orçamento_mensal > 0 ? (
+                          <span className="text-[10px] font-normal text-muted-foreground/60"> / {formatBRL(cat.orçamento_mensal)}</span>
+                        ) : (
+                          <span className="text-[10px] font-normal text-muted-foreground/40"> (Sem Limite)</span>
+                        )}
                       </span>
                     </div>
                     {/* Progress Bar background */}
-                    <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                    <div className="w-full h-2.5 bg-muted border border-border/20 rounded-full overflow-hidden">
                       <div 
-                        className="h-full rounded-full transition-all duration-500"
+                        className="h-full transition-all duration-500"
                         style={{ 
-                          width: `${cat.percentage}%`,
-                          backgroundColor: cat.cor 
+                          width: cat.orçamento_mensal > 0 ? `${cat.percentage}%` : '100%',
+                          backgroundColor: cat.orçamento_mensal > 0 ? cat.cor : 'var(--muted-foreground)'
                         }}
                       />
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-muted-foreground text-center py-4">
-                  Cadastre gastos para visualizar o progresso dos orçamentos.
+                <p className="text-xs text-muted-foreground text-center py-4 font-serif">
+                  Nenhum gasto registrado neste período.
                 </p>
               )}
             </div>
@@ -432,13 +473,13 @@ export default function DashboardPage() {
           
           {/* Quick Alerts Widget */}
           {alerts.length > 0 && (
-            <div className="bg-card border border-border/40 rounded-2xl p-5 space-y-3">
-              <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Alertas Ativos</h4>
+            <div className="bg-card p-5 premium-card space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground font-serif">Alertas Ativos</h4>
               <div className="space-y-2.5">
                 {alerts.map((alert, index) => (
                   <div 
                     key={index}
-                    className="p-3 bg-danger/5 border border-danger/15 rounded-xl flex gap-2 text-xs text-foreground/95"
+                    className="p-3 bg-danger/5 border-2 border-border/40 rounded flex gap-2 text-xs text-foreground/95"
                   >
                     <AlertCircle className="text-danger shrink-0 mt-0.5" size={14} />
                     <p className="leading-snug">{alert}</p>
@@ -449,10 +490,10 @@ export default function DashboardPage() {
           )}
 
           {/* Recent Ledger table widget */}
-          <div className="bg-card border border-border/40 rounded-2xl p-5 space-y-4">
+          <div className="bg-card p-5 premium-card space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="font-bold text-base text-foreground">Transações Recentes</h3>
-              <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+              <h3 className="font-bold text-base text-foreground font-serif">Transações Recentes</h3>
+              <span className="text-[10px] font-bold text-primary bg-primary/10 border border-border/20 px-2 py-0.5 rounded">
                 Últimas 5
               </span>
             </div>
@@ -466,12 +507,12 @@ export default function DashboardPage() {
                   return (
                     <div 
                       key={tx.id} 
-                      className="p-3 bg-muted hover:bg-muted/80 border border-border/20 rounded-xl flex items-center justify-between transition-colors group"
+                      className="p-3 bg-muted/40 hover:bg-muted border-2 border-border/10 rounded flex items-center justify-between transition-all group"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         {/* Category/Direction Icon */}
                         <div 
-                          className="w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0"
+                          className="w-9 h-9 rounded flex items-center justify-center text-white shrink-0 border border-border/20 shadow-[1px_1px_0px_0px_var(--border)]"
                           style={{ backgroundColor: cat?.cor || (isRevenue ? '#10B981' : '#F43F5E') }}
                         >
                           {cat ? (
@@ -487,7 +528,7 @@ export default function DashboardPage() {
                           <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-muted-foreground">
                             <span>{new Date(tx.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</span>
                             {tx.recorrente && (
-                              <span className="bg-muted px-1.5 py-0.25 rounded text-[8px] uppercase tracking-wider font-extrabold text-slate-400">
+                              <span className="bg-muted border border-border/40 px-1 py-0.25 rounded text-[8px] uppercase tracking-wider font-bold">
                                 Fixo
                               </span>
                             )}
@@ -496,14 +537,14 @@ export default function DashboardPage() {
                       </div>
                       
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className={`text-xs font-mono font-extrabold ${isRevenue ? 'text-success' : 'text-foreground/80'}`}>
+                        <span className={`text-xs font-mono-retro ${isRevenue ? 'text-success' : 'text-foreground/80'}`}>
                           {isRevenue ? '+' : '-'} {formatBRL(Number(tx.valor))}
                         </span>
                         
                         {/* Inline Delete Icon */}
                         <button
                           onClick={() => deleteTransaction(tx.id)}
-                          className="p-1 rounded-md text-muted-foreground hover:text-danger hover:bg-danger/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          className="p-1 rounded text-muted-foreground hover:text-danger hover:bg-danger/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                           title="Excluir"
                         >
                           <Trash2 size={13} />
@@ -514,7 +555,7 @@ export default function DashboardPage() {
                 })
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-xs text-muted-foreground">Nenhuma transação lançada ainda.</p>
+                  <p className="text-xs text-muted-foreground font-serif">Nenhuma transação lançada ainda.</p>
                 </div>
               )}
             </div>

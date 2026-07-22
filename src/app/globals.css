@@ -1,45 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,700;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Light Theme - Clean Modern Slate */
-  --background: #F8FAFC;
-  --foreground: #0F172A;
-  --card: #FFFFFF;
-  --card-foreground: #1E293B;
-  --primary: #2563EB; /* Royal Electric Blue */
-  --primary-foreground: #FFFFFF;
-  --accent: #0EA5E9; /* Cyan */
+  /* Light Theme - Vintage Warm Book/Newspaper Paper */
+  --background: #F9F6F0; /* Soft warm paper */
+  --foreground: #1A1A18; /* Dark ink black */
+  --card: #FFFFFF; /* Clean page background */
+  --card-foreground: #1A1A18;
+  --primary: #8B4513; /* Saddle Brown / Terracotta */
+  --primary-foreground: #F9F6F0;
+  --accent: #2E5A50; /* Vintage Pine Green */
   --accent-foreground: #FFFFFF;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --border: #E2E8F0;
-  --radius: 1.25rem;
+  --muted: #EFECE6; /* Warm grey paper */
+  --muted-foreground: #605E59; /* Aged ink grey */
+  --border: #1A1A18; /* Thick dark ink border */
+  --radius: 0.5rem; /* Classic blocky card layout */
   
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-bg: #FFFFFF;
+  --glass-border: #1A1A18;
 }
 
 [data-theme='dark'] {
-  /* Dark Theme - Deep Premium Titanium Black */
-  --background: #030712; /* Slate-950 */
-  --foreground: #F9FAFB; /* Gray-50 */
-  --card: #111827; /* Slate-900 */
-  --card-foreground: #F3F4F6; /* Gray-100 */
-  --primary: #3B82F6; /* Bright Blue */
-  --primary-foreground: #FFFFFF;
-  --accent: #38BDF8; /* Sky Blue */
-  --accent-foreground: #030712;
-  --muted: #1F2937; /* Slate-800 */
-  --muted-foreground: #9CA3AF; /* Gray-400 */
-  --border: #1F2937; /* Slate-800 */
-  --radius: 1.25rem;
+  /* Dark Theme - Warm Ink/Charcoal Terminal */
+  --background: #151513; /* Warm dark carbon */
+  --foreground: #F4EFE3; /* Soft cream ink */
+  --card: #20201E; /* Lighter carbon card */
+  --card-foreground: #F4EFE3;
+  --primary: #D29A42; /* Vintage gold */
+  --primary-foreground: #151513;
+  --accent: #529E85; /* Sage green */
+  --accent-foreground: #151513;
+  --muted: #2E2E2A; /* Warm dark grey */
+  --muted-foreground: #A8A59C; /* Faded cream ink */
+  --border: #F4EFE3; /* Thick cream ink border */
+  --radius: 0.5rem;
   
-  --glass-bg: rgba(17, 24, 39, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-bg: #20201E;
+  --glass-border: #F4EFE3;
 }
 
 * {
@@ -50,104 +50,172 @@
 body {
   color: var(--foreground);
   background-color: var(--background);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar */
+/* Headings: Elegant Serif Vintage */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lora', Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+}
+
+/* Custom Scrollbar - Vintage Style */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
   background: var(--background);
+  border-left: 2px solid var(--border);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 9999px;
+  background: var(--muted-foreground);
+  border: 2px solid var(--background);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-foreground);
-  opacity: 0.5;
+  background: var(--foreground);
 }
 
-/* Custom Utilities */
+/* Custom Retro Brutalist Utilities */
 .glassmorphism {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
+  border: 2px solid var(--border) !important;
+  box-shadow: 4px 4px 0px 0px var(--border);
 }
 
 .premium-card {
   background-color: var(--card);
-  border: 1px solid var(--glass-border);
+  border: 2px solid var(--border) !important;
   border-radius: var(--radius);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-[data-theme='dark'] .premium-card {
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: 4px 4px 0px 0px var(--border);
+  transition: all 120ms ease-in-out;
 }
 
 .premium-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(37, 99, 235, 0.25);
-  box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.08);
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0px 0px var(--border);
 }
 
-[data-theme='dark'] .premium-card:hover {
-  border-color: rgba(59, 130, 246, 0.25);
-  box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.12);
+.premium-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--border);
 }
 
+/* Retro buttons (pressable key style) */
+.retro-btn {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--border) !important;
+  border-radius: var(--radius);
+  background-color: var(--card);
+  color: var(--foreground);
+  box-shadow: 3px 3px 0px 0px var(--border);
+  cursor: pointer;
+  transition: all 100ms ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.retro-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px 0px var(--border);
+}
+
+.retro-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px var(--border);
+}
+
+.retro-btn-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.retro-btn-accent {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.retro-btn-danger {
+  background-color: #F43F5E;
+  color: #FFFFFF;
+}
+
+.retro-btn-success {
+  background-color: #10B981;
+  color: #FFFFFF;
+}
+
+/* Vintage input fields */
+.retro-input {
+  background-color: var(--card);
+  border: 2px solid var(--border) !important;
+  border-radius: var(--radius);
+  padding: 0.6rem 0.85rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  transition: border-color 150ms ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.retro-input:focus {
+  outline: none;
+  background-color: var(--muted);
+}
+
+.font-mono-retro {
+  font-family: 'Courier Prime', Courier, monospace;
+  font-weight: 700;
+}
+
+/* Gradients are disabled for retro theme. We use solid lines and textures */
 .gradient-accent {
-  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  background: var(--primary);
 }
 
 .gradient-accent-hover:hover {
-  background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
+  background: var(--primary);
+  opacity: 0.95;
 }
 
-.glow-primary {
-  box-shadow: 0 0 25px rgba(37, 99, 235, 0.15);
+.glow-primary, .glow-success, .glow-danger {
+  box-shadow: none !important;
 }
 
-[data-theme='dark'] .glow-primary {
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.2);
+/* Table Vintage styling */
+.retro-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.glow-success {
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
+.retro-table th {
+  font-family: 'Lora', serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--muted);
+  border: 2px solid var(--border);
+  padding: 0.75rem 1rem;
+  text-align: left;
 }
 
-.glow-danger {
-  box-shadow: 0 0 25px rgba(244, 63, 94, 0.15);
-}
-
-/* Smooth globally interactive elements */
-button, a, input, select, textarea {
-  transition: all 180ms ease-in-out;
-}
-
-/* Animation utilities */
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.retro-table td {
+  border: 2px solid var(--border);
+  padding: 0.75rem 1rem;
+  font-size: 0.825rem;
 }
