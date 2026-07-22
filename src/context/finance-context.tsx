@@ -614,7 +614,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       if (newMov) {
         // Insert linked transaction
         const targetInv = investments.find(i => i.id === mov.investment_id);
-        const invCategory = categories.find(c => c.nome.toLowerCase() === 'investimentos');
+        const invCategory = categories.find(c => 
+          c.id === 'cat-investimentos' ||
+          c.nome.toLowerCase() === 'investimentos' || 
+          c.nome.toLowerCase() === 'investimento' ||
+          c.nome.toLowerCase().includes('investiment')
+        );
         const { error: txErr } = await supabase!
           .from('transactions')
           .insert([{
@@ -668,7 +673,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       // Add linked transaction in mock mode
       const targetInv = investments.find(i => i.id === mov.investment_id);
-      const invCategory = categories.find(c => c.nome.toLowerCase() === 'investimentos');
+      const invCategory = categories.find(c => 
+        c.id === 'cat-investimentos' ||
+        c.nome.toLowerCase() === 'investimentos' || 
+        c.nome.toLowerCase() === 'investimento' ||
+        c.nome.toLowerCase().includes('investiment')
+      );
       const newTx: Transaction = {
         id: generateId(),
         tipo: mov.tipo === 'aporte' ? 'despesa' : 'receita',
