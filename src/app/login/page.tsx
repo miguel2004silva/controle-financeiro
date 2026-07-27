@@ -260,7 +260,7 @@ export default function LoginPage() {
           <div className="text-center mt-6">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-xs text-muted-foreground hover:text-white transition-colors"
+              className="text-xs text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
             >
               {isLogin 
                 ? 'Ainda não tem conta? Crie uma conta' 

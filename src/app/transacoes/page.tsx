@@ -45,14 +45,14 @@ export default function TransacoesPage() {
   const [isCatModalOpen, setIsCatModalOpen] = useState(false);
   const [editingCatId, setEditingCatId] = useState<string | null>(null);
   const [newCatName, setNewCatName] = useState('');
-  const [newCatColor, setNewCatColor] = useState('#6366F1');
+  const [newCatColor, setNewCatColor] = useState('#16A34A');
   const [newCatBudget, setNewCatBudget] = useState('');
   const [editCatName, setEditCatName] = useState('');
   const [editCatColor, setEditCatColor] = useState('');
   const [editCatBudget, setEditCatBudget] = useState('');
 
   const PREDEFINED_COLORS = [
-    '#6366F1', // Indigo
+    '#16A34A', // Green
     '#10B981', // Emerald
     '#F43F5E', // Rose/Coral
     '#F59E0B', // Amber
@@ -225,7 +225,7 @@ export default function TransacoesPage() {
       });
       setNewCatName('');
       setNewCatBudget('');
-      setNewCatColor('#6366F1');
+      setNewCatColor('#16A34A');
     } catch (err) {
       console.error(err);
       alert('Erro ao criar categoria.');
@@ -315,6 +315,7 @@ export default function TransacoesPage() {
                       outerRadius={78}
                       paddingAngle={3}
                       dataKey="spent"
+                      nameKey="nome"
                     >
                       {categoryExpenses.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.cor} style={{ outline: 'none' }} />
@@ -328,7 +329,7 @@ export default function TransacoesPage() {
                         color: 'var(--foreground)'
                       }}
                       itemStyle={{ color: 'var(--foreground)', fontSize: '12px' }}
-                      formatter={(val: any) => [formatBRL(Number(val)), 'Gasto']}
+                      formatter={(val: any, name: any) => [formatBRL(Number(val)), name]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -394,7 +395,7 @@ export default function TransacoesPage() {
                         <tr 
                           key={tx.id}
                           className={`hover:bg-slate-50/50 dark:hover:bg-zinc-800/10 transition-colors ${
-                            isEditing ? 'bg-indigo-500/5' : ''
+                            isEditing ? 'bg-green-500/5' : ''
                           }`}
                         >
                           {/* Category cell */}

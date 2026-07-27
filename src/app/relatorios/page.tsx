@@ -411,8 +411,8 @@ export default function RelatoriosPage() {
                     data={pieChartData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={55}
-                    outerRadius={75}
+                    innerRadius={60}
+                    outerRadius={80}
                     paddingAngle={3}
                     dataKey="value"
                   >
@@ -429,7 +429,7 @@ export default function RelatoriosPage() {
                     }}
                     itemStyle={{ color: 'var(--foreground)', fontSize: '11px', fontWeight: 'bold' }}
                     labelStyle={{ color: 'var(--muted-foreground)', fontWeight: 'bold' }}
-                    formatter={(val: any) => [formatBRL(Number(val)), 'Gasto total']}
+                    formatter={(val: any, name: any) => [formatBRL(Number(val)), name]}
                   />
                 </PieChart>
               </ResponsiveContainer>

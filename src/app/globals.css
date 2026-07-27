@@ -5,17 +5,17 @@
 @tailwind utilities;
 
 :root {
-  /* Modern Premium Light Theme - Sleek Slate/Zinc and Violet Accent */
+  /* Modern Premium Light Theme - Sleek Slate/Zinc and Green Accent */
   --background: #F8FAFC; /* Slate 50 - Very clean off-white */
-  --foreground: #0F172A; /* Slate 900 - Deep slate ink */
+  --foreground: #090D16; /* Slate 950 - Extra dark slate for maximum text legibility */
   --card: #FFFFFF; /* Pure white for cards */
   --card-foreground: #1E293B; /* Slate 800 */
-  --primary: #6366F1; /* Modern Indigo */
+  --primary: #16A34A; /* Modern Rich Green (Green 600) */
   --primary-foreground: #FFFFFF;
-  --accent: #10B981; /* Emerald Green */
+  --accent: #15803D; /* Deep Green (Green 700) */
   --accent-foreground: #FFFFFF;
   --muted: #F1F5F9; /* Slate 100 */
-  --muted-foreground: #64748B; /* Slate 500 */
+  --muted-foreground: #475569; /* Slate 600 - High contrast text helper */
   --border: #E2E8F0; /* Slate 200 - Clean thin border */
   --radius: 1rem; /* Sleek rounded corners */
   
@@ -24,14 +24,14 @@
 }
 
 [data-theme='dark'] {
-  /* Modern Premium Dark Theme - Zinc/Carbon and Gold/Indigo Accent */
+  /* Modern Premium Dark Theme - Zinc/Carbon and Mint Green Accent */
   --background: #09090B; /* Zinc 950 - Deep dark */
   --foreground: #FAFAFA; /* Zinc 50 - Soft white */
   --card: #18181B; /* Zinc 900 */
   --card-foreground: #E4E4E7; /* Zinc 200 */
-  --primary: #818CF8; /* Soft Indigo */
+  --primary: #22C55E; /* Bright Green (Green 500) */
   --primary-foreground: #09090B;
-  --accent: #34D399; /* Mint Emerald */
+  --accent: #4ADE80; /* Soft Green (Green 400) */
   --accent-foreground: #09090B;
   --muted: #27272A; /* Zinc 800 */
   --muted-foreground: #A1A1AA; /* Zinc 400 */
@@ -146,8 +146,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .retro-btn-primary:hover {
   background-color: var(--primary);
-  opacity: 0.9;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  opacity: 0.95;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
 .retro-btn-accent {
@@ -177,6 +177,21 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #10B981 !important;
 }
 
+/* Gradient Accent */
+.gradient-accent {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%) !important;
+}
+
+.gradient-accent-hover:hover {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%) !important;
+  opacity: 0.95;
+  box-shadow: 0 4px 14px 0 rgba(22, 163, 74, 0.35);
+}
+
+.glow-primary {
+  box-shadow: 0 4px 14px 0 rgba(22, 163, 74, 0.2) !important;
+}
+
 /* Modern input fields */
 .retro-input {
   background-color: var(--card);
@@ -193,7 +208,7 @@ h1, h2, h3, h4, h5, h6 {
 .retro-input:focus {
   outline: none;
   border-color: var(--primary) !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
 .font-mono-retro {

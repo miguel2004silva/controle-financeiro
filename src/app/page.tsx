@@ -30,11 +30,11 @@ import {
 } from 'recharts';
 
 const DONUT_COLORS = [
-  '#6366F1', // Indigo
+  '#16A34A', // Green
   '#10B981', // Emerald
   '#F59E0B', // Amber
   '#EC4899', // Pink
-  '#8B5CF6', // Violet
+  '#84CC16', // Lime
   '#3B82F6', // Blue
   '#14B8A6', // Teal
   '#F97316', // Orange
@@ -94,8 +94,12 @@ export default function DashboardPage() {
   // CALCULATING MONTHLY METRICS REACTIVELY
   // ----------------------------------------------------
   const getValueAtMonth = (invId: string) => {
-    const movementsUpToMonth = investmentMovements.filter(m => 
-      m.investment_id === invId && 
+    const movementsOfInv = investmentMovements.filter(m => m.investment_id === invId);
+    if (movementsOfInv.length === 0) {
+      const inv = investments.find(i => i.id === invId);
+      return inv ? Number(inv.preço_atual) * Number(inv.quantidade) : 0;
+    }
+    const movementsUpToMonth = movementsOfInv.filter(m => 
       new Date(m.data) <= endOfSelectedMonth
     );
     const totalAportes = movementsUpToMonth
@@ -108,8 +112,12 @@ export default function DashboardPage() {
   };
 
   const getQtyAtMonth = (invId: string) => {
-    const movementsUpToMonth = investmentMovements.filter(m => 
-      m.investment_id === invId && 
+    const movementsOfInv = investmentMovements.filter(m => m.investment_id === invId);
+    if (movementsOfInv.length === 0) {
+      const inv = investments.find(i => i.id === invId);
+      return inv ? Number(inv.quantidade) : 0;
+    }
+    const movementsUpToMonth = movementsOfInv.filter(m => 
       new Date(m.data) <= endOfSelectedMonth
     );
     const qtyAportes = movementsUpToMonth
@@ -201,13 +209,20 @@ export default function DashboardPage() {
   // ----------------------------------------------------
   const getPatrimonioAtDate = (date: Date) => {
     const movementsUpTo = investmentMovements.filter(m => new Date(m.data) <= date);
-    
     let total = 0;
+
     investments.forEach(inv => {
-      const invMovs = movementsUpTo.filter(m => m.investment_id === inv.id);
-      const totalAportes = invMovs.filter(m => m.tipo === 'aporte').reduce((sum, m) => sum + Number(m.valor), 0);
-      const totalResgates = invMovs.filter(m => m.tipo === 'resgate').reduce((sum, m) => sum + Number(m.valor), 0);
-      const val = totalAportes - totalResgates;
+      const totalMovsOfInv = investmentMovements.filter(m => m.investment_id === inv.id);
+      let val = 0;
+      
+      if (totalMovsOfInv.length === 0) {
+        val = Number(inv.preço_atual) * Number(inv.quantidade);
+      } else {
+        const invMovs = movementsUpTo.filter(m => m.investment_id === inv.id);
+        const totalAportes = invMovs.filter(m => m.tipo === 'aporte').reduce((sum, m) => sum + Number(m.valor), 0);
+        const totalResgates = invMovs.filter(m => m.tipo === 'resgate').reduce((sum, m) => sum + Number(m.valor), 0);
+        val = totalAportes - totalResgates;
+      }
       
       if (inv.tipo === 'divida') {
         total -= val;
@@ -352,10 +367,10 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         
         {/* Card Destaque: Patrimônio Total */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 lg:col-span-1 shadow-sm premium-card bg-gradient-to-br from-indigo-500/5 via-transparent to-transparent">
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 lg:col-span-1 shadow-sm premium-card bg-gradient-to-br from-green-500/5 via-transparent to-transparent">
           <div className="flex justify-between items-start">
             <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Patrimônio Total</span>
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center">
               <DollarSign size={18} />
             </div>
           </div>

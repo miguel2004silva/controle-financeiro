@@ -132,14 +132,14 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
       
-      {/* 1. FIXED DESKTOP SIDEBAR - DARK BACKGROUND */}
-      <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-64 bg-zinc-950 text-zinc-100 flex-col z-40 border-r border-zinc-800">
+      {/* 1. FIXED DESKTOP SIDEBAR - THEME AWARE (WHITE & GREEN) */}
+      <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-64 bg-white dark:bg-zinc-950 text-slate-800 dark:text-zinc-100 flex-col z-40 border-r border-slate-200 dark:border-zinc-800">
         {/* Sidebar Logo */}
-        <div className="h-16 px-6 border-b border-zinc-800 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-[0_4px_12px_rgba(99,102,241,0.3)]">
+        <div className="h-16 px-6 border-b border-slate-200 dark:border-zinc-800 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-[0_4px_12px_rgba(22,163,74,0.3)]">
             <Wallet size={18} />
           </div>
-          <span className="font-semibold text-sm tracking-tight text-white">
+          <span className="font-semibold text-sm tracking-tight text-slate-800 dark:text-white">
             Controle<span className="text-primary italic font-normal">Financeiro</span>
           </span>
         </div>
@@ -155,11 +155,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${
                   isActive
-                    ? 'bg-primary text-white shadow-[0_4px_12px_rgba(99,102,241,0.25)]'
-                    : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                    ? 'bg-primary text-white shadow-[0_4px_12px_rgba(22,163,74,0.25)]'
+                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-900'
                 }`}
               >
-                <Icon size={16} className={isActive ? 'text-white' : 'text-zinc-400'} />
+                <Icon size={16} className={isActive ? 'text-white' : 'text-slate-500 dark:text-zinc-400'} />
                 {item.name}
               </Link>
             );
@@ -167,15 +167,15 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
         </nav>
 
         {/* Sidebar Footer Controls */}
-        <div className="p-4 border-t border-zinc-800 space-y-3">
+        <div className="p-4 border-t border-slate-200 dark:border-zinc-800 space-y-3">
           {/* User profile */}
-          <div className="flex items-center gap-3 px-3 py-2 bg-zinc-900/50 rounded-xl border border-zinc-800/60">
-            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300">
+          <div className="flex items-center gap-3 px-3 py-2 bg-slate-50 dark:bg-zinc-900/50 rounded-xl border border-slate-200/60 dark:border-zinc-800/60">
+            <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-zinc-800 flex items-center justify-center text-slate-600 dark:text-zinc-300">
               <User size={14} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Usuário</p>
-              <p className="text-xs font-semibold text-zinc-200 truncate">
+              <p className="text-[10px] text-slate-400 dark:text-zinc-500 uppercase tracking-wider font-bold">Usuário</p>
+              <p className="text-xs font-semibold text-slate-800 dark:text-zinc-200 truncate">
                 {user?.name || user?.email}
               </p>
             </div>
@@ -186,7 +186,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             {mounted && (
               <button
                 onClick={toggleTheme}
-                className="flex-1 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors"
+                className="flex-1 py-2 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-colors"
                 title={theme === 'light' ? 'Modo Escuro' : 'Modo Claro'}
               >
                 {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
@@ -196,7 +196,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             {/* Logout Button */}
             <button
               onClick={signOut}
-              className="flex-1 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-rose-400 flex items-center justify-center transition-colors"
+              className="flex-1 py-2 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-rose-500 flex items-center justify-center transition-colors"
               title="Sair"
             >
               <LogOut size={14} />
@@ -303,7 +303,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* Floating Action Button (FAB) for Mobile Quick Add */}
       <button
         onClick={() => setTransactionModalOpen(true)}
-        className="md:hidden fixed right-4 bottom-20 z-30 w-12 h-12 rounded-full border border-border text-white bg-primary shadow-[0_4px_12px_rgba(99,102,241,0.4)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
+        className="md:hidden fixed right-4 bottom-20 z-30 w-12 h-12 rounded-full border border-border text-white bg-primary shadow-[0_4px_12px_rgba(22,163,74,0.4)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
         aria-label="Adicionar transação"
       >
         <Plus size={24} />

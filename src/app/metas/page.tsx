@@ -36,18 +36,18 @@ export default function MetaseOrcamentosPage() {
   // Category management state
   const [newCatName, setNewCatName] = useState('');
   const [newCatBudget, setNewCatBudget] = useState('');
-  const [newCatColor, setNewCatColor] = useState('#4F46E5');
+  const [newCatColor, setNewCatColor] = useState('#16A34A');
   const [editingCatIdForManage, setEditingCatIdForManage] = useState<string | null>(null);
   const [editCatName, setEditCatName] = useState('');
   const [editCatBudget, setEditCatBudget] = useState('');
   const [editCatColor, setEditCatColor] = useState('');
 
   const PREDEFINED_COLORS = [
-    '#4F46E5', // Indigo
+    '#16A34A', // Green
     '#10B981', // Emerald
     '#F43F5E', // Rose
     '#F59E0B', // Amber
-    '#8B5CF6', // Violet
+    '#84CC16', // Lime
     '#0EA5E9', // Sky
     '#EC4899', // Pink
     '#14B8A6', // Teal
