@@ -93,14 +93,23 @@ export default function DashboardPage() {
   // ----------------------------------------------------
   // CALCULATING MONTHLY METRICS REACTIVELY
   // ----------------------------------------------------
+  const isCreatedInOrBefore = (inv: any, monthStr: string) => {
+    const dateStr = inv.created_at || inv.data_atualização;
+    if (!dateStr) return true;
+    return dateStr.substring(0, 7) <= monthStr;
+  };
+
   const getValueAtMonth = (invId: string) => {
     const movementsOfInv = investmentMovements.filter(m => m.investment_id === invId);
     if (movementsOfInv.length === 0) {
       const inv = investments.find(i => i.id === invId);
-      return inv ? Number(inv.preço_atual) * Number(inv.quantidade) : 0;
+      if (inv && isCreatedInOrBefore(inv, selectedMonth)) {
+        return Number(inv.preço_atual) * Number(inv.quantidade);
+      }
+      return 0;
     }
     const movementsUpToMonth = movementsOfInv.filter(m => 
-      new Date(m.data) <= endOfSelectedMonth
+      m.data.substring(0, 7) <= selectedMonth
     );
     const totalAportes = movementsUpToMonth
       .filter(m => m.tipo === 'aporte')
@@ -115,10 +124,13 @@ export default function DashboardPage() {
     const movementsOfInv = investmentMovements.filter(m => m.investment_id === invId);
     if (movementsOfInv.length === 0) {
       const inv = investments.find(i => i.id === invId);
-      return inv ? Number(inv.quantidade) : 0;
+      if (inv && isCreatedInOrBefore(inv, selectedMonth)) {
+        return Number(inv.quantidade);
+      }
+      return 0;
     }
     const movementsUpToMonth = movementsOfInv.filter(m => 
-      new Date(m.data) <= endOfSelectedMonth
+      m.data.substring(0, 7) <= selectedMonth
     );
     const qtyAportes = movementsUpToMonth
       .filter(m => m.tipo === 'aporte')
@@ -144,6 +156,9 @@ export default function DashboardPage() {
         valor_no_mes: value
       };
     }).filter(item => {
+      const createdBefore = isCreatedInOrBefore(item, selectedMonth);
+      if (!createdBefore) return false;
+
       if (['liquidez', 'bens', 'divida'].includes(item.tipo)) {
         return item.valor_no_mes !== 0;
       }
@@ -186,18 +201,68 @@ export default function DashboardPage() {
   // ----------------------------------------------------
   const pieData = useMemo(() => {
     const positiveItems = activeItemsAtMonth.filter(item => item.tipo !== 'divida' && item.valor_no_mes > 0);
-    const total = positiveItems.reduce((sum, i) => sum + i.valor_no_mes, 0);
     
-    return positiveItems.map((item, idx) => {
-      const percentage = total > 0 ? (item.valor_no_mes / total) * 100 : 0;
+    // Group items by normalized ticker
+    const grouped = new Map<string, { id: string; name: string; value: number; colorIdx: number }>();
+    let colorCount = 0;
+
+    positiveItems.forEach(item => {
+      const normKey = item.ticker.trim().toUpperCase();
+      let displayName = item.ticker.trim();
+      
+      // Group variants of Mercado Libre/Livre/Live
+      if (normKey === 'MERCADO LIVE' || normKey === 'MERCADO LIVRE' || normKey.includes('MERCADO LI')) {
+        displayName = 'CDB Mercado Libre';
+      }
+
+      const key = displayName.toUpperCase();
+      const existing = grouped.get(key);
+      if (existing) {
+        existing.value += item.valor_no_mes;
+      } else {
+        grouped.set(key, {
+          id: item.id,
+          name: displayName,
+          value: item.valor_no_mes,
+          colorIdx: colorCount++
+        });
+      }
+    });
+
+    const list = Array.from(grouped.values());
+    const total = list.reduce((sum, i) => sum + i.value, 0);
+    
+    // Calculate raw percentage and initial rounded values
+    let roundedList = list.map(item => {
+      const percentage = total > 0 ? (item.value / total) * 100 : 0;
       return {
         id: item.id,
-        name: item.ticker,
-        value: item.valor_no_mes,
+        name: item.name,
+        value: item.value,
         percentage: percentage,
-        color: DONUT_COLORS[idx % DONUT_COLORS.length]
+        roundedPercentage: Math.round(percentage),
+        color: DONUT_COLORS[item.colorIdx % DONUT_COLORS.length]
       };
     });
+
+    // Sum rounded percentages
+    const roundedSum = roundedList.reduce((sum, item) => sum + item.roundedPercentage, 0);
+    const diff = 100 - roundedSum;
+
+    // Adjust rounding discrepancy at largest item
+    if (diff !== 0 && roundedList.length > 0) {
+      let maxIdx = 0;
+      let maxVal = -1;
+      for (let i = 0; i < roundedList.length; i++) {
+        if (roundedList[i].value > maxVal) {
+          maxVal = roundedList[i].value;
+          maxIdx = i;
+        }
+      }
+      roundedList[maxIdx].roundedPercentage += diff;
+    }
+
+    return roundedList;
   }, [activeItemsAtMonth]);
 
   const totalAtivos = useMemo(() => {
@@ -208,7 +273,8 @@ export default function DashboardPage() {
   // REAL HISTORICAL EVOLUTION DATA
   // ----------------------------------------------------
   const getPatrimonioAtDate = (date: Date) => {
-    const movementsUpTo = investmentMovements.filter(m => new Date(m.data) <= date);
+    const dateStr = date.toISOString().split('T')[0];
+    const monthStr = dateStr.substring(0, 7);
     let total = 0;
 
     investments.forEach(inv => {
@@ -216,9 +282,11 @@ export default function DashboardPage() {
       let val = 0;
       
       if (totalMovsOfInv.length === 0) {
-        val = Number(inv.preço_atual) * Number(inv.quantidade);
+        if (isCreatedInOrBefore(inv, monthStr)) {
+          val = Number(inv.preço_atual) * Number(inv.quantidade);
+        }
       } else {
-        const invMovs = movementsUpTo.filter(m => m.investment_id === inv.id);
+        const invMovs = investmentMovements.filter(m => m.investment_id === inv.id && m.data <= dateStr);
         const totalAportes = invMovs.filter(m => m.tipo === 'aporte').reduce((sum, m) => sum + Number(m.valor), 0);
         const totalResgates = invMovs.filter(m => m.tipo === 'resgate').reduce((sum, m) => sum + Number(m.valor), 0);
         val = totalAportes - totalResgates;
@@ -236,14 +304,19 @@ export default function DashboardPage() {
   const evolutionData = useMemo(() => {
     const pointsCount = chartRange === '7D' ? 7 : chartRange === '1M' ? 30 : chartRange === '6M' ? 6 : 12;
     const data = [];
-    const now = new Date(endOfSelectedMonth); // anchor history to the selected month
+    
+    // Dynamic timeline anchor (anchored to today if viewing the current month)
+    const today = new Date();
+    const [selYear, selMonth] = selectedMonth.split('-').map(Number);
+    const isCurrentMonth = today.getFullYear() === selYear && (today.getMonth() + 1) === selMonth;
+    const anchor = isCurrentMonth ? today : new Date(endOfSelectedMonth);
 
     for (let i = pointsCount - 1; i >= 0; i--) {
-      const d = new Date(now);
+      const d = new Date(anchor);
       if (chartRange === '7D' || chartRange === '1M') {
-        d.setDate(now.getDate() - i);
+        d.setDate(anchor.getDate() - i);
       } else {
-        d.setMonth(now.getMonth() - i);
+        d.setMonth(anchor.getMonth() - i);
       }
 
       // get end of that day/month
@@ -314,20 +387,50 @@ export default function DashboardPage() {
     }
 
     try {
-      if (modalMode === 'add') {
-        // 1. Add investment entity
-        const newId = await addInvestment({
-          ticker: modalName.trim(),
-          tipo: modalTipo,
-          quantidade: 1,
-          preço_medio: valNum,
-          preço_atual: valNum,
-          data_atualização: new Date().toISOString()
-        });
+      const getNormalizedCompareKey = (name: string): string => {
+        const key = name.trim().toUpperCase();
+        if (key === 'MERCADO LIVE' || key === 'MERCADO LIVRE' || key.includes('MERCADO LI')) {
+          return 'CDB MERCADO LIBRE';
+        }
+        return key;
+      };
 
-        // 2. Add initial movement on the selected month
+      if (modalMode === 'add') {
+        const inputCompareKey = getNormalizedCompareKey(modalName);
+        const existing = investments.find(inv => 
+          getNormalizedCompareKey(inv.ticker) === inputCompareKey && 
+          inv.tipo === modalTipo
+        );
+
+        let targetId = '';
+        if (existing) {
+          targetId = existing.id;
+          // Update the current value of the existing asset
+          const newPrice = Number(existing.preço_atual) + valNum;
+          await editInvestment(targetId, {
+            preço_atual: newPrice
+          });
+        } else {
+          // Normalize the name before creating
+          let finalTicker = modalName.trim();
+          const normName = finalTicker.toUpperCase();
+          if (normName === 'MERCADO LIVE' || normName === 'MERCADO LIVRE' || normName.includes('MERCADO LI')) {
+            finalTicker = 'CDB Mercado Libre';
+          }
+
+          targetId = await addInvestment({
+            ticker: finalTicker,
+            tipo: modalTipo,
+            quantidade: 1,
+            preço_medio: valNum,
+            preço_atual: valNum,
+            data_atualização: new Date().toISOString()
+          });
+        }
+
+        // Add movement
         await addInvestmentMovement({
-          investment_id: newId,
+          investment_id: targetId,
           tipo: 'aporte',
           valor: valNum,
           quantidade: 1,
@@ -367,10 +470,10 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         
         {/* Card Destaque: Patrimônio Total */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 lg:col-span-1 shadow-sm premium-card bg-gradient-to-br from-green-500/5 via-transparent to-transparent">
-          <div className="flex justify-between items-start">
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 lg:col-span-1 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card bg-gradient-to-br from-green-500/5 via-transparent to-transparent select-none">
+          <div className="flex justify-between items-center">
             <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Patrimônio Total</span>
-            <div className="w-9 h-9 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center shrink-0">
               <DollarSign size={18} />
             </div>
           </div>
@@ -383,10 +486,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Card Liquidez */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm premium-card">
-          <div className="flex justify-between items-start">
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card select-none">
+          <div className="flex justify-between items-center">
             <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Liquidez</span>
-            <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
               <Wallet size={18} />
             </div>
           </div>
@@ -399,10 +502,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Card Bens */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm premium-card">
-          <div className="flex justify-between items-start">
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card select-none">
+          <div className="flex justify-between items-center">
             <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Bens</span>
-            <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
               <Home size={18} />
             </div>
           </div>
@@ -415,10 +518,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Card Investimentos */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm premium-card">
-          <div className="flex justify-between items-start">
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card select-none">
+          <div className="flex justify-between items-center">
             <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Investimentos</span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
               <PiggyBank size={18} />
             </div>
           </div>
@@ -431,10 +534,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Card Dívidas */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm premium-card">
-          <div className="flex justify-between items-start">
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card select-none">
+          <div className="flex justify-between items-center">
             <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Dívidas</span>
-            <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
               <TrendingDown size={18} />
             </div>
           </div>
@@ -481,8 +584,8 @@ export default function DashboardPage() {
                 <AreaChart data={evolutionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorPatrimonio" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.0}/>
+                      <stop offset="5%" stopColor="#22C55E" stopOpacity={0.06}/>
+                      <stop offset="95%" stopColor="#22C55E" stopOpacity={0.00}/>
                     </linearGradient>
                   </defs>
                   <XAxis 
@@ -513,8 +616,8 @@ export default function DashboardPage() {
                   <Area 
                     type="monotone" 
                     dataKey="Patrimônio" 
-                    stroke="var(--primary)" 
-                    strokeWidth={2}
+                    stroke="#22C55E" 
+                    strokeWidth={3}
                     fillOpacity={1} 
                     fill="url(#colorPatrimonio)" 
                   />
@@ -561,15 +664,27 @@ export default function DashboardPage() {
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center px-6">
                   {activeSlice ? (
                     <>
-                      <p className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-wider truncate w-28">{activeSlice.name}</p>
-                      <p className="text-lg font-bold text-slate-800 dark:text-white leading-tight my-0.5">{activeSlice.percentage.toFixed(1)}%</p>
-                      <p className="text-[9px] text-muted-foreground font-semibold">{formatBRL(activeSlice.value)}</p>
+                      <span className="text-[9px] text-muted-foreground font-extrabold uppercase tracking-wider truncate w-24">
+                        {activeSlice.name}
+                      </span>
+                      <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-none my-1">
+                        {formatBRL(activeSlice.value)}
+                      </span>
+                      <span className="text-[10px] text-primary font-bold">
+                        {activeSlice.roundedPercentage}%
+                      </span>
                     </>
                   ) : (
                     <>
-                      <p className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-wider">Ativos Totais</p>
-                      <p className="text-base font-bold text-slate-800 dark:text-white leading-tight my-0.5">{formatBRL(totalAtivos)}</p>
-                      <p className="text-[9px] text-muted-foreground font-semibold">{pieData.length} itens cadastrados</p>
+                      <span className="text-[9px] text-muted-foreground font-extrabold uppercase tracking-wider">
+                        ATIVOS TOTAIS
+                      </span>
+                      <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-none my-1">
+                        {formatBRL(totalAtivos)}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground font-semibold">
+                        {pieData.length} {pieData.length === 1 ? 'item' : 'itens'}
+                      </span>
                     </>
                   )}
                 </div>
@@ -590,7 +705,7 @@ export default function DashboardPage() {
                   {item.name}
                 </span>
                 <span className="font-semibold text-foreground/90 font-mono-retro">
-                  {item.percentage.toFixed(0)}% <span className="text-[10px] text-muted-foreground/60 font-normal">({formatBRL(item.value)})</span>
+                  {item.roundedPercentage}% <span className="text-[10px] text-muted-foreground/60 font-normal">({formatBRL(item.value)})</span>
                 </span>
               </div>
             ))}
@@ -639,7 +754,7 @@ export default function DashboardPage() {
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-muted-foreground text-center py-8">Nenhum item de liquidez no mês.</p>
+                <p className="text-xs text-muted-foreground text-center py-8">Nenhum item ainda</p>
               )}
             </div>
           </div>
@@ -681,7 +796,7 @@ export default function DashboardPage() {
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-muted-foreground text-center py-8">Nenhum bem cadastrado no mês.</p>
+                <p className="text-xs text-muted-foreground text-center py-8">Nenhum item ainda</p>
               )}
             </div>
           </div>
@@ -723,7 +838,7 @@ export default function DashboardPage() {
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-muted-foreground text-center py-8">Nenhuma dívida cadastrada no mês.</p>
+                <p className="text-xs text-muted-foreground text-center py-8">Nenhum item ainda</p>
               )}
             </div>
           </div>

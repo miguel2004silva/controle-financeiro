@@ -27,19 +27,19 @@
   /* Modern Premium Dark Theme - Zinc/Carbon and Mint Green Accent */
   --background: #09090B; /* Zinc 950 - Deep dark */
   --foreground: #FAFAFA; /* Zinc 50 - Soft white */
-  --card: #18181B; /* Zinc 900 */
+  --card: #151518; /* Lighter slate-black (Zinc 900+) to separate cards from background */
   --card-foreground: #E4E4E7; /* Zinc 200 */
   --primary: #22C55E; /* Bright Green (Green 500) */
   --primary-foreground: #09090B;
   --accent: #4ADE80; /* Soft Green (Green 400) */
   --accent-foreground: #09090B;
-  --muted: #27272A; /* Zinc 800 */
+  --muted: #222225; /* Zinc 800 */
   --muted-foreground: #A1A1AA; /* Zinc 400 */
-  --border: #27272A; /* Zinc 800 - Subtle dark border */
+  --border: #2B2D31; /* Lighter border for clean contrast */
   --radius: 1rem;
   
-  --glass-bg: rgba(24, 24, 27, 0.7);
-  --glass-border: rgba(39, 39, 42, 0.8);
+  --glass-bg: rgba(21, 21, 24, 0.7);
+  --glass-border: rgba(43, 45, 49, 0.8);
 }
 
 * {
@@ -99,13 +99,23 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--card);
   border: 1px solid var(--border) !important;
   border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .premium-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] .premium-card {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.65), 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme='dark'] .premium-card:hover {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85), 0 1px 5px rgba(0, 0, 0, 0.5) !important;
+  border-color: var(--primary) !important;
 }
 
 /* Modern Pill Button */
