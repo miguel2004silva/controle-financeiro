@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Modern Premium Light Theme - Sleek Slate/Zinc and Violet Accent */
+  --background: #F8FAFC; /* Slate 50 - Very clean off-white */
+  --foreground: #0F172A; /* Slate 900 - Deep slate ink */
+  --card: #FFFFFF; /* Pure white for cards */
+  --card-foreground: #1E293B; /* Slate 800 */
+  --primary: #6366F1; /* Modern Indigo */
+  --primary-foreground: #FFFFFF;
+  --accent: #10B981; /* Emerald Green */
+  --accent-foreground: #FFFFFF;
+  --muted: #F1F5F9; /* Slate 100 */
+  --muted-foreground: #64748B; /* Slate 500 */
+  --border: #E2E8F0; /* Slate 200 - Clean thin border */
+  --radius: 1rem; /* Sleek rounded corners */
+  
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(226, 232, 240, 0.8);
+}
+
+[data-theme='dark'] {
+  /* Modern Premium Dark Theme - Zinc/Carbon and Gold/Indigo Accent */
+  --background: #09090B; /* Zinc 950 - Deep dark */
+  --foreground: #FAFAFA; /* Zinc 50 - Soft white */
+  --card: #18181B; /* Zinc 900 */
+  --card-foreground: #E4E4E7; /* Zinc 200 */
+  --primary: #818CF8; /* Soft Indigo */
+  --primary-foreground: #09090B;
+  --accent: #34D399; /* Mint Emerald */
+  --accent-foreground: #09090B;
+  --muted: #27272A; /* Zinc 800 */
+  --muted-foreground: #A1A1AA; /* Zinc 400 */
+  --border: #27272A; /* Zinc 800 - Subtle dark border */
+  --radius: 1rem;
+  
+  --glass-bg: rgba(24, 24, 27, 0.7);
+  --glass-border: rgba(39, 39, 42, 0.8);
+}
+
+* {
+  border-color: var(--border);
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--foreground);
+  background-color: var(--background);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings: Clean Modern Outfit/Inter */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+
+/* Custom Scrollbar - Modern Minimalist */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  opacity: 0.3;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Glassmorphism utility */
+.glassmorphism {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+/* Premium Modern Card - smooth hover, subtle shadow, rounded */
+.premium-card {
+  background-color: var(--card);
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+}
+
+/* Modern Pill Button */
+.retro-btn {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--border) !important;
+  border-radius: 9999px; /* Pill shape */
+  background-color: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.retro-btn:hover {
+  transform: translateY(-1px);
+  background-color: var(--muted);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+.retro-btn:active {
+  transform: translateY(0);
+  background-color: var(--muted);
+}
+
+.retro-btn-primary {
+  background-color: var(--primary);
+  color: #FFFFFF !important;
+  border-color: var(--primary) !important;
+}
+
+.retro-btn-primary:hover {
+  background-color: var(--primary);
+  opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.retro-btn-accent {
+  background-color: var(--accent);
+  color: #FFFFFF !important;
+  border-color: var(--accent) !important;
+}
+
+.retro-btn-accent:hover {
+  background-color: var(--accent);
+  opacity: 0.9;
+}
+
+.retro-btn-danger {
+  background-color: #F43F5E;
+  color: #FFFFFF !important;
+  border-color: #F43F5E !important;
+}
+
+.retro-btn-danger:hover {
+  background-color: #E11D48;
+}
+
+.retro-btn-success {
+  background-color: #10B981;
+  color: #FFFFFF !important;
+  border-color: #10B981 !important;
+}
+
+/* Modern input fields */
+.retro-input {
+  background-color: var(--card);
+  border: 1px solid var(--border) !important;
+  border-radius: 0.75rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  transition: all 150ms ease;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) inset;
+}
+
+.retro-input:focus {
+  outline: none;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.font-mono-retro {
+  font-family: 'Inter', system-ui, sans-serif; /* use clean font instead of typewriter */
+  font-weight: 700;
+}
+
+/* Modern elegant tables */
+.retro-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.retro-table th {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  padding: 0.85rem 1.25rem;
+  color: var(--muted-foreground);
+  text-align: left;
+}
+
+.retro-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1.25rem;
+  font-size: 0.825rem;
+  color: var(--card-foreground);
+}
+
+.retro-table tr:last-child td {
+  border-bottom: none;
+}
