@@ -193,8 +193,8 @@ export default function DashboardPage() {
   }, [activeItemsAtMonth]);
 
   const patrimonioTotal = useMemo(() => {
-    return (liquidezTotal + bensTotal + investimentosTotal) - dividasTotal;
-  }, [liquidezTotal, bensTotal, investimentosTotal, dividasTotal]);
+    return liquidezTotal + investimentosTotal;
+  }, [liquidezTotal, investimentosTotal]);
 
   // ----------------------------------------------------
   // DONUT CHART: Composition of Wealth (Ativos)
@@ -467,10 +467,10 @@ export default function DashboardPage() {
     <div className="space-y-8">
       
       {/* 1. GRID OF CARDS (Reativo) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Card Destaque: Patrimônio Total */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 lg:col-span-1 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card bg-gradient-to-br from-green-500/5 via-transparent to-transparent select-none">
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card bg-gradient-to-br from-green-500/5 via-transparent to-transparent select-none">
           <div className="flex justify-between items-center">
             <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Patrimônio Total</span>
             <div className="w-10 h-10 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center shrink-0">
@@ -481,39 +481,25 @@ export default function DashboardPage() {
             <p className={`text-2xl font-bold font-mono-retro leading-tight ${patrimonioTotal < 0 ? 'text-red-500' : 'text-slate-900 dark:text-white'}`}>
               {formatBRL(patrimonioTotal)}
             </p>
-            <span className="text-[10px] text-muted-foreground font-semibold mt-1 block">Liquidez + Bens + Inv - Dívidas</span>
-          </div>
-        </div>
-
-        {/* Card Liquidez */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card select-none">
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Liquidez</span>
-            <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
-              <Wallet size={18} />
+            <div className="flex items-center gap-2 mt-1.5 pt-1.5 border-t border-border/40">
+              <span className="text-[10px] text-muted-foreground font-semibold flex items-center gap-1.5">
+                Saldo em Conta: <span className="font-mono-retro font-bold text-foreground">{formatBRL(liquidezTotal)}</span>
+              </span>
+              <button 
+                onClick={() => {
+                  const mainSaldo = investments.find(i => i.tipo === 'liquidez');
+                  if (mainSaldo) {
+                    handleOpenEdit(mainSaldo);
+                  } else {
+                    handleOpenAdd('liquidez');
+                  }
+                }}
+                className="p-1 rounded text-muted-foreground hover:text-primary hover:bg-muted transition-all"
+                title="Ajustar Saldo Atual"
+              >
+                <Edit2 size={10} />
+              </button>
             </div>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white font-mono-retro leading-tight">
-              {formatBRL(liquidezTotal)}
-            </p>
-            <span className="text-[10px] text-muted-foreground font-semibold mt-1 block">Saldo e Caixinhas</span>
-          </div>
-        </div>
-
-        {/* Card Bens */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card select-none">
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Bens</span>
-            <div className="w-10 h-10 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
-              <Home size={18} />
-            </div>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white font-mono-retro leading-tight">
-              {formatBRL(bensTotal)}
-            </p>
-            <span className="text-[10px] text-muted-foreground font-semibold mt-1 block">Imóveis, Carros e Objetos</span>
           </div>
         </div>
 
@@ -532,318 +518,82 @@ export default function DashboardPage() {
             <span className="text-[10px] text-muted-foreground font-semibold mt-1 block">Ações, FIIs e Renda Fixa</span>
           </div>
         </div>
-
-        {/* Card Dívidas */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card select-none">
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Dívidas</span>
-            <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
-              <TrendingDown size={18} />
-            </div>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-rose-500 font-mono-retro leading-tight">
-              {formatBRL(dividasTotal)}
-            </p>
-            <span className="text-[10px] text-muted-foreground font-semibold mt-1 block">Financiamentos e Débitos</span>
-          </div>
-        </div>
       </div>
 
       {/* 2. CHARTS SECTION (REAL DATA) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Wealth Evolution Area Chart (2 cols) */}
-        <div className="lg:col-span-2 bg-card p-6 border border-border rounded-2xl shadow-sm premium-card">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
-            <div>
-              <h3 className="font-bold text-base text-foreground">Evolução do Patrimônio</h3>
-              <p className="text-xs text-muted-foreground">Evolução acumulada com base nas movimentações reais</p>
-            </div>
-            
-            <div className="flex bg-muted p-1 rounded-xl w-full sm:w-auto">
-              {(['7D', '1M', '6M', '1A'] as const).map(range => (
-                <button
-                  key={range}
-                  onClick={() => setChartRange(range)}
-                  className={`flex-1 sm:flex-initial py-1 px-3.5 text-xs font-semibold rounded-lg transition-all ${
-                    chartRange === range
-                      ? 'bg-white dark:bg-zinc-700 text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {range}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="h-[260px] w-full">
-            {mounted ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={evolutionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorPatrimonio" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#22C55E" stopOpacity={0.06}/>
-                      <stop offset="95%" stopColor="#22C55E" stopOpacity={0.00}/>
-                    </linearGradient>
-                  </defs>
-                  <XAxis 
-                    dataKey="name" 
-                    stroke="var(--muted-foreground)" 
-                    fontSize={10} 
-                    tickLine={false} 
-                    axisLine={false} 
-                  />
-                  <YAxis 
-                    stroke="var(--muted-foreground)" 
-                    fontSize={10} 
-                    tickLine={false} 
-                    axisLine={false}
-                    tickFormatter={(val) => `R$ ${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'var(--card)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius)',
-                      color: 'var(--foreground)'
-                    }}
-                    labelStyle={{ color: 'var(--muted-foreground)', fontWeight: 'bold', fontSize: '11px' }}
-                    itemStyle={{ color: 'var(--foreground)', fontWeight: 'bold', fontSize: '13px' }}
-                    formatter={(val: any) => [formatBRL(Number(val)), 'Patrimônio']}
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="Patrimônio" 
-                    stroke="#22C55E" 
-                    strokeWidth={3}
-                    fillOpacity={1} 
-                    fill="url(#colorPatrimonio)" 
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="w-full h-full bg-muted/20 animate-pulse rounded-2xl" />
-            )}
-          </div>
-        </div>
-
-        {/* patrimonio composition donut (1 col) */}
-        <div className="bg-card p-6 border border-border rounded-2xl shadow-sm premium-card flex flex-col justify-between">
+      <div className="w-full bg-card p-6 border border-border rounded-2xl shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <div>
-            <h3 className="font-bold text-base text-foreground">Composição de Ativos</h3>
-            <p className="text-xs text-muted-foreground">Distribuição percentual dos seus bens e liquidez</p>
+            <h3 className="font-bold text-base text-foreground">Evolução do Patrimônio</h3>
+            <p className="text-xs text-muted-foreground">Evolução acumulada com base nas movimentações reais</p>
           </div>
-
-          {/* Donut Chart with center label */}
-          <div className="h-[180px] my-4 flex items-center justify-center relative">
-            {mounted && pieData.length > 0 ? (
-              <>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={58}
-                      outerRadius={78}
-                      paddingAngle={3}
-                      dataKey="value"
-                      onMouseEnter={(_, idx) => setActiveSlice(pieData[idx])}
-                      onMouseLeave={() => setActiveSlice(null)}
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} style={{ cursor: 'pointer', outline: 'none' }} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-
-                {/* center text */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center px-6">
-                  {activeSlice ? (
-                    <>
-                      <span className="text-[9px] text-muted-foreground font-extrabold uppercase tracking-wider truncate w-24">
-                        {activeSlice.name}
-                      </span>
-                      <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-none my-1">
-                        {formatBRL(activeSlice.value)}
-                      </span>
-                      <span className="text-[10px] text-primary font-bold">
-                        {activeSlice.roundedPercentage}%
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-[9px] text-muted-foreground font-extrabold uppercase tracking-wider">
-                        ATIVOS TOTAIS
-                      </span>
-                      <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-none my-1">
-                        {formatBRL(totalAtivos)}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground font-semibold">
-                        {pieData.length} {pieData.length === 1 ? 'item' : 'itens'}
-                      </span>
-                    </>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="w-32 h-32 rounded-full border-4 border-muted/20 animate-pulse flex items-center justify-center">
-                <span className="text-xs text-muted-foreground font-medium">Sem dados</span>
-              </div>
-            )}
-          </div>
-
-          {/* Dynamic legends below chart */}
-          <div className="max-h-[100px] overflow-y-auto px-1 space-y-1.5 scrollbar-thin">
-            {pieData.map((item) => (
-              <div key={item.id} className="flex justify-between items-center text-xs">
-                <span className="text-muted-foreground flex items-center gap-2 font-medium">
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                  {item.name}
-                </span>
-                <span className="font-semibold text-foreground/90 font-mono-retro">
-                  {item.roundedPercentage}% <span className="text-[10px] text-muted-foreground/60 font-normal">({formatBRL(item.value)})</span>
-                </span>
-              </div>
+          
+          <div className="flex bg-muted p-1 rounded-xl w-full sm:w-auto select-none">
+            {(['7D', '1M', '6M', '1A'] as const).map(range => (
+              <button
+                key={range}
+                onClick={() => setChartRange(range)}
+                className={`flex-1 sm:flex-initial py-1 px-3.5 text-xs font-semibold rounded-lg transition-all ${
+                  chartRange === range
+                    ? 'bg-white dark:bg-zinc-700 text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {range}
+              </button>
             ))}
           </div>
-
         </div>
 
-      </div>
-
-      {/* 3. LISTS OF ITEMS BY SECTION */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* LIQUIDEZ CONTAINER */}
-        <div className="bg-card border border-border p-6 rounded-2xl shadow-sm premium-card flex flex-col justify-between min-h-[300px]">
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="font-bold text-base text-foreground flex items-center gap-2">
-                <Wallet size={16} className="text-blue-500" />
-                Liquidez
-              </h3>
-              <button 
-                onClick={() => handleOpenAdd('liquidez')}
-                className="text-[10px] font-bold uppercase bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all"
-              >
-                <Plus size={10} /> Adicionar
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {activeItemsAtMonth.filter(i => i.tipo === 'liquidez').length > 0 ? (
-                activeItemsAtMonth.filter(i => i.tipo === 'liquidez').map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-3 bg-muted dark:bg-zinc-800/40 rounded-xl border border-border dark:border-zinc-800 group hover:border-blue-500/30 transition-all">
-                    <div>
-                      <p className="text-xs font-bold text-foreground dark:text-zinc-200">{item.ticker}</p>
-                      <p className="text-[9px] text-muted-foreground">Disponível no mês</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-slate-800 dark:text-zinc-100 font-mono-retro">{formatBRL(item.valor_no_mes)}</span>
-                      <button onClick={() => handleOpenEdit(item)} className="p-1 rounded hover:bg-slate-200 dark:hover:bg-zinc-800 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Edit2 size={11} />
-                      </button>
-                      <button onClick={() => handleDeleteItem(item.id)} className="p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-950/40 text-muted-foreground hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Trash2 size={11} />
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-xs text-muted-foreground text-center py-8">Nenhum item ainda</p>
-              )}
-            </div>
-          </div>
+        <div className="h-[280px] w-full">
+          {mounted ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={evolutionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorPatrimonio" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#22C55E" stopOpacity={0.06}/>
+                    <stop offset="95%" stopColor="#22C55E" stopOpacity={0.00}/>
+                  </linearGradient>
+                </defs>
+                <XAxis 
+                  dataKey="name" 
+                  stroke="var(--muted-foreground)" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false} 
+                />
+                <YAxis 
+                  stroke="var(--muted-foreground)" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false}
+                  tickFormatter={(val) => `R$ ${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'var(--card)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius)',
+                    color: 'var(--foreground)'
+                  }}
+                  labelStyle={{ color: 'var(--muted-foreground)', fontWeight: 'bold', fontSize: '11px' }}
+                  itemStyle={{ color: 'var(--foreground)', fontWeight: 'bold', fontSize: '13px' }}
+                  formatter={(val: any) => [formatBRL(Number(val)), 'Patrimônio']}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="Patrimônio" 
+                  stroke="#22C55E" 
+                  strokeWidth={3}
+                  fillOpacity={1} 
+                  fill="url(#colorPatrimonio)" 
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="w-full h-full bg-muted/20 animate-pulse rounded-2xl" />
+          )}
         </div>
-
-        {/* BENS CONTAINER */}
-        <div className="bg-card border border-border p-6 rounded-2xl shadow-sm premium-card flex flex-col justify-between min-h-[300px]">
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="font-bold text-base text-foreground flex items-center gap-2">
-                <Home size={16} className="text-purple-500" />
-                Bens
-              </h3>
-              <button 
-                onClick={() => handleOpenAdd('bens')}
-                className="text-[10px] font-bold uppercase bg-purple-500/10 text-purple-500 hover:bg-purple-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all"
-              >
-                <Plus size={10} /> Adicionar
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {activeItemsAtMonth.filter(i => i.tipo === 'bens').length > 0 ? (
-                activeItemsAtMonth.filter(i => i.tipo === 'bens').map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-3 bg-muted dark:bg-zinc-800/40 rounded-xl border border-border dark:border-zinc-800 group hover:border-purple-500/30 transition-all">
-                    <div>
-                      <p className="text-xs font-bold text-foreground dark:text-zinc-200">{item.ticker}</p>
-                      <p className="text-[9px] text-muted-foreground">Patrimônio material</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-slate-800 dark:text-zinc-100 font-mono-retro">{formatBRL(item.valor_no_mes)}</span>
-                      <button onClick={() => handleOpenEdit(item)} className="p-1 rounded hover:bg-slate-200 dark:hover:bg-zinc-800 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Edit2 size={11} />
-                      </button>
-                      <button onClick={() => handleDeleteItem(item.id)} className="p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-950/40 text-muted-foreground hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Trash2 size={11} />
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-xs text-muted-foreground text-center py-8">Nenhum item ainda</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* DIVIDAS CONTAINER */}
-        <div className="bg-card border border-border p-6 rounded-2xl shadow-sm premium-card flex flex-col justify-between min-h-[300px]">
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="font-bold text-base text-foreground flex items-center gap-2">
-                <TrendingDown size={16} className="text-rose-500" />
-                Dívidas
-              </h3>
-              <button 
-                onClick={() => handleOpenAdd('divida')}
-                className="text-[10px] font-bold uppercase bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all"
-              >
-                <Plus size={10} /> Adicionar
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {activeItemsAtMonth.filter(i => i.tipo === 'divida').length > 0 ? (
-                activeItemsAtMonth.filter(i => i.tipo === 'divida').map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-3 bg-muted dark:bg-zinc-800/40 rounded-xl border border-border dark:border-zinc-800 group hover:border-rose-500/30 transition-all">
-                    <div>
-                      <p className="text-xs font-bold text-foreground dark:text-zinc-200">{item.ticker}</p>
-                      <p className="text-[9px] text-muted-foreground">Valor pendente</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-rose-500 font-mono-retro">{formatBRL(item.valor_no_mes)}</span>
-                      <button onClick={() => handleOpenEdit(item)} className="p-1 rounded hover:bg-slate-200 dark:hover:bg-zinc-800 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Edit2 size={11} />
-                      </button>
-                      <button onClick={() => handleDeleteItem(item.id)} className="p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-950/40 text-muted-foreground hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Trash2 size={11} />
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-xs text-muted-foreground text-center py-8">Nenhum item ainda</p>
-              )}
-            </div>
-          </div>
-        </div>
-
       </div>
 
       {/* 4. MODAL PARA ADICIONAR E EDITAR ITENS */}
