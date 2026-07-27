@@ -622,9 +622,9 @@ export default function DashboardPage() {
             <div className="space-y-3">
               {activeItemsAtMonth.filter(i => i.tipo === 'liquidez').length > 0 ? (
                 activeItemsAtMonth.filter(i => i.tipo === 'liquidez').map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-zinc-800/40 rounded-xl border border-slate-100 dark:border-zinc-800 group hover:border-blue-500/30 transition-all">
+                  <div key={item.id} className="flex justify-between items-center p-3 bg-muted dark:bg-zinc-800/40 rounded-xl border border-border dark:border-zinc-800 group hover:border-blue-500/30 transition-all">
                     <div>
-                      <p className="text-xs font-bold text-slate-800 dark:text-zinc-200">{item.ticker}</p>
+                      <p className="text-xs font-bold text-foreground dark:text-zinc-200">{item.ticker}</p>
                       <p className="text-[9px] text-muted-foreground">Disponível no mês</p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -664,9 +664,9 @@ export default function DashboardPage() {
             <div className="space-y-3">
               {activeItemsAtMonth.filter(i => i.tipo === 'bens').length > 0 ? (
                 activeItemsAtMonth.filter(i => i.tipo === 'bens').map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-zinc-800/40 rounded-xl border border-slate-100 dark:border-zinc-800 group hover:border-purple-500/30 transition-all">
+                  <div key={item.id} className="flex justify-between items-center p-3 bg-muted dark:bg-zinc-800/40 rounded-xl border border-border dark:border-zinc-800 group hover:border-purple-500/30 transition-all">
                     <div>
-                      <p className="text-xs font-bold text-slate-800 dark:text-zinc-200">{item.ticker}</p>
+                      <p className="text-xs font-bold text-foreground dark:text-zinc-200">{item.ticker}</p>
                       <p className="text-[9px] text-muted-foreground">Patrimônio material</p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -706,9 +706,9 @@ export default function DashboardPage() {
             <div className="space-y-3">
               {activeItemsAtMonth.filter(i => i.tipo === 'divida').length > 0 ? (
                 activeItemsAtMonth.filter(i => i.tipo === 'divida').map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-zinc-800/40 rounded-xl border border-slate-100 dark:border-zinc-800 group hover:border-rose-500/30 transition-all">
+                  <div key={item.id} className="flex justify-between items-center p-3 bg-muted dark:bg-zinc-800/40 rounded-xl border border-border dark:border-zinc-800 group hover:border-rose-500/30 transition-all">
                     <div>
-                      <p className="text-xs font-bold text-slate-800 dark:text-zinc-200">{item.ticker}</p>
+                      <p className="text-xs font-bold text-foreground dark:text-zinc-200">{item.ticker}</p>
                       <p className="text-[9px] text-muted-foreground">Valor pendente</p>
                     </div>
                     <div className="flex items-center gap-2">

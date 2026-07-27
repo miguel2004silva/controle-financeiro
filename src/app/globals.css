@@ -5,22 +5,22 @@
 @tailwind utilities;
 
 :root {
-  /* Modern Premium Light Theme - Sleek Slate/Zinc and Green Accent */
-  --background: #F8FAFC; /* Slate 50 - Very clean off-white */
-  --foreground: #090D16; /* Slate 950 - Extra dark slate for maximum text legibility */
-  --card: #FFFFFF; /* Pure white for cards */
-  --card-foreground: #1E293B; /* Slate 800 */
-  --primary: #16A34A; /* Modern Rich Green (Green 600) */
+  /* Modern Premium Light Theme - High Contrast White & Green */
+  --background: #FFFFFF; /* Pure White background as requested */
+  --foreground: #020617; /* Slate 950 - Deep ink black for maximum text legibility */
+  --card: #FFFFFF; /* Pure White for cards */
+  --card-foreground: #0F172A; /* Slate 900 - Dark slate text */
+  --primary: #15803D; /* Deep Rich Green (Green 700 - high contrast and accessible) */
   --primary-foreground: #FFFFFF;
-  --accent: #15803D; /* Deep Green (Green 700) */
+  --accent: #166534; /* Darker accent green (Green 800) */
   --accent-foreground: #FFFFFF;
-  --muted: #F1F5F9; /* Slate 100 */
-  --muted-foreground: #475569; /* Slate 600 - High contrast text helper */
-  --border: #E2E8F0; /* Slate 200 - Clean thin border */
+  --muted: #F8FAFC; /* Slate 50 - Very clean soft grey for tables/inputs */
+  --muted-foreground: #334155; /* Slate 700 - Highly legible dark grey for secondary text */
+  --border: #CBD5E1; /* Slate 300 - Well-defined crisp borders for borders and dividers */
   --radius: 1rem; /* Sleek rounded corners */
   
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(226, 232, 240, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(203, 213, 225, 0.8);
 }
 
 [data-theme='dark'] {
@@ -51,6 +51,7 @@ body {
   color: var(--foreground);
   background-color: var(--background);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 450; /* Slightly thicker font weight for better anti-aliasing/legibility on screen */
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -169,7 +169,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
         {/* Sidebar Footer Controls */}
         <div className="p-4 border-t border-slate-200 dark:border-zinc-800 space-y-3">
           {/* User profile */}
-          <div className="flex items-center gap-3 px-3 py-2 bg-slate-50 dark:bg-zinc-900/50 rounded-xl border border-slate-200/60 dark:border-zinc-800/60">
+          <div className="flex items-center gap-3 px-3 py-2 bg-muted dark:bg-zinc-900/50 rounded-xl border border-border/60 dark:border-zinc-800/60">
             <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-zinc-800 flex items-center justify-center text-slate-600 dark:text-zinc-300">
               <User size={14} />
             </div>
@@ -239,7 +239,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       </header>
 
       {/* 3. MAIN CONTAINER & ROUTE PAGES */}
-      <div className="flex-1 flex flex-col md:pl-64 min-h-screen bg-slate-50 dark:bg-zinc-950 transition-colors duration-200">
+      <div className="flex-1 flex flex-col md:pl-64 min-h-screen bg-background dark:bg-zinc-950 transition-colors duration-200">
         
         {/* Page Top Header - Desktop & Mobile */}
         <header className="w-full bg-white dark:bg-zinc-900 border-b border-border/80 px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors">
