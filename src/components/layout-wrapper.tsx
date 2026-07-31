@@ -136,12 +136,12 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-62 bg-card/70 backdrop-blur-xl text-foreground flex-col z-40 border-r border-border/15 px-4 pt-6 pb-6 transition-all duration-300">
         {/* Sidebar Logo */}
         <div className="flex items-center gap-3 px-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center font-extrabold shadow-md">
+          <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-extrabold shadow-md shadow-primary/20">
             <Wallet size={20} />
           </div>
           <div>
             <h2 className="font-extrabold text-sm tracking-tight text-foreground leading-tight">
-              Controle<span className="opacity-70">Fin</span>
+              Controle<span className="text-primary font-bold">Fin</span>
             </h2>
             <p className="text-[10.5px] font-medium text-muted-foreground/60">Painel Financeiro</p>
           </div>
@@ -151,7 +151,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
         <div className="px-1 mb-6">
           <button
             onClick={() => setTransactionModalOpen(true)}
-            className="w-full shiny-btn gap-2 py-2.5 shadow-md font-semibold text-xs rounded-xl"
+            className="w-full shiny-btn gap-2 py-2.5 font-bold text-xs rounded-xl"
           >
             <Plus size={16} />
             <span>Novo Lançamento</span>
@@ -167,14 +167,14 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
               <Link
                 key={item.name}
                 href={item.href}
-                className={`relative flex items-center gap-3 h-11 px-3.5 rounded-xl shrink-0 transition-colors duration-200 outline-none ${
+                className={`relative flex items-center gap-3 h-12 px-3.5 rounded-xl shrink-0 transition-colors duration-200 outline-none ${
                   isActive
-                    ? 'bg-foreground text-background font-bold shadow-sm'
+                    ? 'bg-primary text-primary-foreground font-bold shadow-md shadow-primary/20'
                     : 'text-foreground/75 hover:bg-muted/50 hover:text-foreground font-medium'
                 }`}
               >
-                <Icon size={18} className={`relative z-10 ${isActive ? 'text-background' : 'text-muted-foreground/70'}`} />
-                <span className="relative z-10 text-[13.5px] tracking-tight">{item.name}</span>
+                <Icon size={18} className={`relative z-10 ${isActive ? 'text-primary-foreground' : 'text-muted-foreground/60'}`} />
+                <span className="relative z-10 text-[14px] tracking-tight">{item.name}</span>
               </Link>
             );
           })}
@@ -182,16 +182,16 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
 
         {/* Sidebar Footer Controls */}
         <div className="pt-4 border-t border-border/15 space-y-3">
-          {/* User profile */}
-          <div className="flex items-center gap-3 px-3 py-2 bg-muted/40 rounded-xl border border-border/15">
-            <div className="w-8 h-8 rounded-full bg-foreground/10 flex items-center justify-center text-foreground font-bold text-xs">
-              {user?.name?.[0] || user?.email?.[0] || 'U'}
-            </div>
+          {/* User profile / Active Account */}
+          <div className="px-3 py-2.5 bg-muted/40 rounded-xl border border-border/15 flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-[12px] font-bold text-foreground truncate">
-                {user?.name || user?.email?.split('@')[0]}
+              <p className="text-[12.5px] font-extrabold text-foreground truncate">
+                {user?.name || user?.email?.split('@')[0] || 'Usuário'}
               </p>
-              <p className="text-[10px] font-medium text-muted-foreground/60 truncate">Conta Ativa</p>
+              <p className="text-[10.5px] font-medium text-muted-foreground/60 truncate">Conta Ativa</p>
+            </div>
+            <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+              {user?.name?.[0] || user?.email?.[0] || 'U'}
             </div>
           </div>
 
@@ -200,7 +200,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             {mounted && (
               <button
                 onClick={toggleTheme}
-                className="flex-1 flex items-center justify-center gap-2 h-10 px-3 rounded-xl border border-border/15 text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors text-xs font-semibold"
+                className="flex-1 flex items-center justify-center gap-2 h-10 px-3 rounded-xl border border-border/15 text-muted-foreground/70 hover:bg-muted/50 hover:text-foreground transition-colors text-[13px] font-bold"
                 title={theme === 'light' ? 'Tema Escuro' : 'Tema Claro'}
               >
                 {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
@@ -211,7 +211,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             {/* Logout Button */}
             <button
               onClick={signOut}
-              className="h-10 px-3 rounded-xl border border-border/15 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 transition-colors"
+              className="h-10 px-3 rounded-xl border border-border/15 text-muted-foreground/70 hover:bg-rose-500/10 hover:text-rose-500 transition-colors"
               title="Sair"
             >
               <LogOut size={16} />
@@ -223,11 +223,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* 2. MOBILE HEADER & BOTTOM NAV */}
       <header className="h-16 px-4 border-b border-border/15 flex items-center justify-between bg-card/80 backdrop-blur-md sticky top-0 z-40 md:hidden transition-colors duration-200">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-foreground text-background flex items-center justify-center font-bold">
+          <div className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold">
             <Wallet size={16} />
           </div>
           <span className="font-extrabold text-xs tracking-tight text-foreground">
-            Controle<span className="opacity-75">Fin</span>
+            Controle<span className="text-primary font-bold">Fin</span>
           </span>
         </div>
 
@@ -303,10 +303,10 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
               key={item.name}
               href={item.href}
               className={`flex flex-col items-center justify-center flex-grow py-2 gap-1 text-[10px] font-bold transition-colors ${
-                isActive ? 'text-foreground font-extrabold' : 'text-muted-foreground hover:text-foreground'
+                isActive ? 'text-primary font-extrabold' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <Icon className={isActive ? 'text-foreground scale-110' : ''} size={18} />
+              <Icon className={isActive ? 'text-primary scale-110' : ''} size={18} />
               <span>{item.name.split(' ')[0]}</span>
             </Link>
           );

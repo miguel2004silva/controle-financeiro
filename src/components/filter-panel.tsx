@@ -337,7 +337,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 placeholder="0,00"
                 value={filters.minVal}
                 onChange={(e) => updateFilter('minVal', e.target.value === '' ? '' : Number(e.target.value))}
-                className="w-full shadcn-input pl-9 pr-2 py-2 text-xs"
+                className="w-full shadcn-input pl-10 pr-2 py-2 text-xs"
               />
             </div>
             <div className="relative">
@@ -347,7 +347,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 placeholder="∞"
                 value={filters.maxVal}
                 onChange={(e) => updateFilter('maxVal', e.target.value === '' ? '' : Number(e.target.value))}
-                className="w-full shadcn-input pl-9 pr-2 py-2 text-xs"
+                className="w-full shadcn-input pl-10 pr-2 py-2 text-xs"
               />
             </div>
           </div>

@@ -594,18 +594,30 @@ export default function TransacoesPage() {
                 />
                 
                 {/* Color Selector */}
-                <div className="flex items-center gap-2">
-                  <Palette size={14} className="text-muted-foreground shrink-0" />
-                  <select 
-                    value={newCatColor} 
-                    onChange={(e) => setNewCatColor(e.target.value)}
-                    className="shadcn-input text-xs w-full p-1.5"
-                    style={{ borderLeft: `4px solid ${newCatColor}` }}
-                  >
+                <div className="space-y-1 sm:col-span-3">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1"><Palette size={12} /> Selecionar Cor</label>
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 bg-card border border-border/20 rounded-xl">
                     {PREDEFINED_COLORS.map(c => (
-                      <option key={c} value={c}>{c}</option>
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => setNewCatColor(c)}
+                        className="w-6 h-6 rounded-full border border-border/40 flex items-center justify-center transition-all hover:scale-105"
+                        style={{ backgroundColor: c }}
+                      >
+                        {newCatColor === c && (
+                          <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                        )}
+                      </button>
                     ))}
-                  </select>
+                    <input 
+                      type="color" 
+                      value={newCatColor} 
+                      onChange={(e) => setNewCatColor(e.target.value)}
+                      className="w-6 h-6 cursor-pointer border border-border/40 bg-transparent rounded-full ml-1"
+                      title="Cor personalizada"
+                    />
+                  </div>
                 </div>
               </div>
               <button 
