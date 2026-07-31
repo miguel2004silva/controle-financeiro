@@ -258,8 +258,8 @@ export default function RelatoriosPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground tracking-tight font-serif">Relatórios Analíticos</h2>
-          <p className="text-xs text-muted-foreground font-serif">Estatísticas, taxas de poupança e demonstrativo de fluxos</p>
+          <h2 className="text-xl font-extrabold text-foreground tracking-tight">Relatórios Analíticos</h2>
+          <p className="text-xs text-muted-foreground/70 mt-0.5">Estatísticas, taxas de poupança e demonstrativo de fluxos</p>
         </div>
       </div>
 
@@ -269,85 +269,93 @@ export default function RelatoriosPage() {
         onFilterChange={setActiveFilters}
       />
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* Bento Grid Summary Cards */}
+      <div className="bento-grid">
         {/* Total Revenues */}
-        <div className="bg-card p-5 flex flex-col justify-between h-28 relative overflow-hidden premium-card">
-          <div className="absolute right-4 top-4 w-9 h-9 rounded bg-success/10 text-success flex items-center justify-center border border-border/20">
-            <ArrowUpRight size={18} />
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Total Recebido</span>
+              <h3 className="text-2xl font-extrabold text-foreground tracking-tight mt-1">
+                {formatBRL(totalRevenues)}
+              </h3>
+            </div>
+            <span className="badge-emerald p-2 rounded-xl">
+              <ArrowUpRight size={18} />
+            </span>
           </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold font-serif">Total Recebido</span>
-            <p className="text-2xl font-bold text-foreground mt-1 font-mono-retro">
-              {formatBRL(totalRevenues)}
-            </p>
-          </div>
-          <span className="text-[10px] text-muted-foreground font-semibold font-serif">Volume filtrado de receitas</span>
+          <span className="text-xs text-muted-foreground/70 mt-3 pt-2 border-t border-border/15">Receitas filtradas</span>
         </div>
 
         {/* Total Expenses */}
-        <div className="bg-card p-5 flex flex-col justify-between h-28 relative overflow-hidden premium-card">
-          <div className="absolute right-4 top-4 w-9 h-9 rounded bg-danger/10 text-danger flex items-center justify-center border border-border/20">
-            <ArrowDownRight size={18} />
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Total Gasto</span>
+              <h3 className="text-2xl font-extrabold text-foreground tracking-tight mt-1">
+                {formatBRL(totalExpenses)}
+              </h3>
+            </div>
+            <span className="badge-rose p-2 rounded-xl">
+              <ArrowDownRight size={18} />
+            </span>
           </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold font-serif">Total Gasto</span>
-            <p className="text-2xl font-bold text-foreground mt-1 font-mono-retro">
-              {formatBRL(totalExpenses)}
-            </p>
-          </div>
-          <span className="text-[10px] text-muted-foreground font-semibold font-serif">Volume filtrado de despesas</span>
+          <span className="text-xs text-muted-foreground/70 mt-3 pt-2 border-t border-border/15">Despesas filtradas</span>
         </div>
 
         {/* Cash Flow */}
-        <div className="bg-card p-5 flex flex-col justify-between h-28 relative overflow-hidden premium-card">
-          <div className="absolute right-4 top-4 w-9 h-9 rounded bg-primary/10 text-primary flex items-center justify-center border border-border/20">
-            <DollarSign size={18} />
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Sobras Acumuladas</span>
+              <h3 className={`text-2xl font-extrabold tracking-tight mt-1 ${netSavings >= 0 ? 'text-foreground' : 'text-rose-500'}`}>
+                {formatBRL(netSavings)}
+              </h3>
+            </div>
+            <span className="badge-indigo p-2 rounded-xl">
+              <DollarSign size={18} />
+            </span>
           </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold font-serif">Sobras Acumuladas</span>
-            <p className={`text-2xl font-bold mt-1 font-mono-retro ${netSavings >= 0 ? 'text-foreground' : 'text-danger'}`}>
-              {formatBRL(netSavings)}
-            </p>
-          </div>
-          <span className="text-[10px] text-muted-foreground font-semibold font-serif">Saldo líquido do filtro</span>
+          <span className="text-xs text-muted-foreground/70 mt-3 pt-2 border-t border-border/15">Saldo líquido no período</span>
         </div>
 
         {/* Savings Rate */}
-        <div className="bg-card p-5 flex flex-col justify-between h-28 relative overflow-hidden premium-card">
-          <div className="absolute right-4 top-4 w-9 h-9 rounded bg-accent/10 text-accent flex items-center justify-center border border-border/20">
-            <Percent size={18} />
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Taxa de Poupança</span>
+              <h3 className="text-2xl font-extrabold text-foreground tracking-tight mt-1">
+                {savingsRate.toFixed(1)}%
+              </h3>
+            </div>
+            <span className="badge-amber p-2 rounded-xl">
+              <Percent size={18} />
+            </span>
           </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold font-serif">Taxa de Poupança</span>
-            <p className="text-2xl font-bold text-foreground mt-1 font-mono-retro">
-              {savingsRate.toFixed(1)}%
-            </p>
-          </div>
-          <span className={`text-[10px] font-bold font-serif ${savingsRate >= 20 ? 'text-success' : 'text-amber-500'}`}>
-            {savingsRate >= 20 ? 'Excelente taxa poupada' : 'Tente guardar mais de 20%'}
+          <span className={`text-[11px] font-bold mt-3 pt-2 border-t border-border/15 ${savingsRate >= 20 ? 'text-emerald-500' : 'text-amber-500'}`}>
+            {savingsRate >= 20 ? 'Excelente taxa poupada' : 'Meta: poupar +20%'}
           </span>
         </div>
       </div>
 
       {/* Monthly Bar Comparison Graph */}
-      <div className="bg-card p-6 premium-card">
+      <div className="bento-card border border-border bg-card/90 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <div>
-            <h3 className="font-bold text-base text-foreground font-serif">Entradas vs Saídas Mensais</h3>
-            <p className="text-xs text-muted-foreground font-serif">Comparativo de fluxo de caixa por competência de mês</p>
+            <h3 className="font-extrabold text-base text-foreground tracking-tight">Entradas vs Saídas Mensais</h3>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">Comparativo de fluxo de caixa por mês</p>
           </div>
           
-          {/* Timeframe selector */}
-          <div className="flex bg-muted p-1 rounded-lg border-2 border-border w-full sm:w-auto">
+          {/* Timeframe selector (UIverse pill) */}
+          <div className="flex p-1 rounded-xl bg-muted/60 border border-border/15 w-full sm:w-auto select-none">
             {(['6M', '1A'] as const).map(timeframe => (
               <button
                 key={timeframe}
                 onClick={() => setReportTimeframe(timeframe)}
-                className={`flex-1 sm:flex-initial py-1 px-3 text-xs font-bold transition-all ${
+                className={`uiverse-pill ${
                   reportTimeframe === timeframe
-                    ? 'bg-card text-foreground border-2 border-border shadow-[2px_2px_0px_0px_var(--border)] -translate-x-[1px] -translate-y-[1px] rounded'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'uiverse-pill-active'
+                    : 'uiverse-pill-inactive'
                 }`}
               >
                 {timeframe === '6M' ? '6 Meses' : '1 Ano'}
@@ -360,10 +368,10 @@ export default function RelatoriosPage() {
           {mounted ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="label" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
+                <XAxis dataKey="label" stroke="var(--muted-foreground)" fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis 
                   stroke="var(--muted-foreground)" 
-                  fontSize={10} 
+                  fontSize={11} 
                   tickLine={false} 
                   axisLine={false}
                   tickFormatter={(val) => `R$ ${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
@@ -371,21 +379,22 @@ export default function RelatoriosPage() {
                 <Tooltip
                   contentStyle={{
                     backgroundColor: 'var(--card)',
-                    border: '2px solid var(--border)',
+                    border: '1px solid var(--border)',
                     borderRadius: 'var(--radius)',
-                    color: 'var(--foreground)'
+                    color: 'var(--foreground)',
+                    fontFamily: 'Sora, sans-serif'
                   }}
                   itemStyle={{ fontSize: '12px', color: 'var(--foreground)', fontWeight: 'bold' }}
                   labelStyle={{ color: 'var(--muted-foreground)', fontWeight: 'bold' }}
                   formatter={(val: any) => [formatBRL(Number(val))]}
                 />
-                <Legend iconSize={10} wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                <Bar dataKey="Receitas" fill="#10B981" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="Despesas" fill="#F43F5E" radius={[2, 2, 0, 0]} />
+                <Legend iconSize={10} wrapperStyle={{ fontSize: '11px', paddingTop: '10px', fontFamily: 'Sora, sans-serif' }} />
+                <Bar dataKey="Receitas" fill="var(--accent)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Despesas" fill="#E11D48" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="w-full h-full bg-muted/10 animate-pulse rounded-lg" />
+            <div className="w-full h-full bg-muted/20 animate-pulse rounded-2xl" />
           )}
         </div>
       </div>
@@ -394,13 +403,13 @@ export default function RelatoriosPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         
         {/* Left: Category share donut chart (2 cols) */}
-        <div className="lg:col-span-2 bg-card p-6 premium-card space-y-6">
+        <div className="lg:col-span-2 bento-card border border-border bg-card/90 p-6 space-y-6">
           <div>
-            <h3 className="font-bold text-sm text-foreground flex items-center gap-2 font-serif">
-              <PieIcon size={16} className="text-primary" />
+            <h3 className="font-extrabold text-sm text-foreground flex items-center gap-2 tracking-tight">
+              <PieIcon size={16} className="text-foreground" />
               Distribuição Histórica
             </h3>
-            <p className="text-xs text-muted-foreground font-serif">Divisão total das suas despesas por categoria</p>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">Divisão das despesas por categoria</p>
           </div>
 
           <div className="h-[200px] flex items-center justify-center relative">
@@ -423,9 +432,10 @@ export default function RelatoriosPage() {
                   <Tooltip
                     contentStyle={{
                       backgroundColor: 'var(--card)',
-                      border: '2px solid var(--border)',
+                      border: '1px solid var(--border)',
                       borderRadius: 'var(--radius)',
-                      color: 'var(--foreground)'
+                      color: 'var(--foreground)',
+                      fontFamily: 'Sora, sans-serif'
                     }}
                     itemStyle={{ color: 'var(--foreground)', fontSize: '11px', fontWeight: 'bold' }}
                     labelStyle={{ color: 'var(--muted-foreground)', fontWeight: 'bold' }}
@@ -434,52 +444,54 @@ export default function RelatoriosPage() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="w-28 h-28 rounded-full border-4 border-muted/20 animate-pulse" />
+              <div className="w-28 h-28 rounded-full border-4 border-border/20 animate-pulse" />
             )}
             {pieChartData.length === 0 && (
-              <p className="text-xs text-muted-foreground font-bold font-serif">Sem despesas registradas</p>
+              <p className="text-xs text-muted-foreground font-bold">Sem despesas registradas</p>
             )}
           </div>
         </div>
 
         {/* Right: Category list breakdown analytics (3 cols) */}
-        <div className="lg:col-span-3 bg-card p-5 premium-card space-y-4 overflow-hidden">
-          <h3 className="font-bold text-sm text-foreground font-serif">Detalhamento dos Gastos</h3>
+        <div className="lg:col-span-3 bento-card border border-border bg-card/90 p-0 overflow-hidden">
+          <div className="p-5 border-b border-border/15">
+            <h3 className="font-extrabold text-sm text-foreground tracking-tight">Detalhamento dos Gastos</h3>
+          </div>
           
           <div className="overflow-x-auto">
-            <table className="retro-table w-full text-left">
+            <table className="shadcn-table w-full text-left">
               <thead>
                 <tr>
-                  <th className="py-2.5 px-3 font-serif">Categoria</th>
-                  <th className="py-2.5 px-3 text-center font-serif">Transações</th>
-                  <th className="py-2.5 px-3 text-right font-serif font-mono-retro">Volume</th>
-                  <th className="py-2.5 px-3 text-right font-serif font-mono-retro">Participação</th>
+                  <th className="py-3.5 px-4">Categoria</th>
+                  <th className="py-3.5 px-4 text-center">Transações</th>
+                  <th className="py-3.5 px-4 text-right">Volume</th>
+                  <th className="py-3.5 px-4 text-right">Participação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/20 text-foreground/90">
+              <tbody className="divide-y divide-border/15 text-xs">
                 {breakdownDataWithPercentage.length > 0 ? (
                   breakdownDataWithPercentage.map(cat => (
-                    <tr key={cat.id} className="hover:bg-muted/10 transition-colors">
-                      <td className="py-3 px-3">
+                    <tr key={cat.id} className="hover:bg-muted/40 transition-colors">
+                      <td className="py-3.5 px-4">
                         <div className="flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded shrink-0 border border-border" style={{ backgroundColor: cat.cor }} />
-                          <span className="font-bold">{cat.nome}</span>
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: cat.cor }} />
+                          <span className="font-bold text-foreground">{cat.nome}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-3 text-center text-muted-foreground font-mono-retro">
+                      <td className="py-3.5 px-4 text-center text-muted-foreground font-medium">
                         {cat.txCount}
                       </td>
-                      <td className="py-3 px-3 text-right font-mono-retro">
+                      <td className="py-3.5 px-4 text-right font-extrabold text-foreground">
                         {formatBRL(cat.spent)}
                       </td>
-                      <td className="py-3 px-3 text-right font-mono-retro text-primary font-bold">
+                      <td className="py-3.5 px-4 text-right font-bold text-foreground">
                         {cat.percentage.toFixed(1)}%
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-muted-foreground font-serif">
+                    <td colSpan={4} className="py-8 text-center text-muted-foreground font-medium">
                       Nenhuma despesa para exibir detalhes.
                     </td>
                   </tr>

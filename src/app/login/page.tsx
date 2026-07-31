@@ -111,21 +111,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
-      {/* Background radial highlight */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background ambient glow effect */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-foreground/5 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="w-full max-w-md bg-card border border-border/50 rounded-2xl p-6 sm:p-8 shadow-2xl glassmorphism relative z-10">
+      <div className="w-full max-w-md bg-card/90 border border-border/20 rounded-2xl p-6 sm:p-8 shadow-2xl glass-panel relative z-10">
         
         {/* Brand / Logo */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-primary flex items-center justify-center text-white glow-primary mb-3">
+          <div className="w-12 h-12 rounded-2xl bg-foreground text-background flex items-center justify-center font-bold mb-3 shadow-lg">
             <Wallet size={24} />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground">
-            Controle<span className="text-primary font-medium">Financeiro</span>
+          <h1 className="text-xl font-extrabold tracking-tight text-foreground">
+            Controle<span className="text-foreground/70 font-normal">Financeiro</span>
           </h1>
-          <p className="text-xs text-muted-foreground mt-1.5">
+          <p className="text-xs text-muted-foreground/70 mt-1.5">
             {isSupabaseConfigured 
               ? 'Conecte-se com sua conta para gerenciar seu patrimônio' 
               : 'Otimizado para controle diário de finanças e ativos'}
@@ -133,7 +133,7 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <div className="p-3.5 mb-5 rounded-xl bg-danger/10 border border-danger/20 text-danger text-xs font-semibold flex items-start gap-2.5 animate-fade-in">
+          <div className="p-3.5 mb-5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-bold flex items-start gap-2.5 animate-fade-in">
             <ShieldAlert size={16} className="shrink-0 mt-0.5" />
             <p>{error}</p>
           </div>
@@ -143,7 +143,7 @@ export default function LoginPage() {
         <form onSubmit={handleAuth} className="space-y-4">
           {!isLogin && (
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block">
                 Nome
               </label>
               <input
@@ -151,13 +151,13 @@ export default function LoginPage() {
                 placeholder="Seu nome"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-muted border border-border/50 rounded-xl px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                className="w-full shadcn-input text-xs"
               />
             </div>
           )}
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+            <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block">
               E-mail
             </label>
             <input
@@ -165,14 +165,14 @@ export default function LoginPage() {
               placeholder="exemplo@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-muted border border-border/50 rounded-xl px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full shadcn-input text-xs"
               required
             />
           </div>
 
           <div className="space-y-1.5">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block">
                 Senha
               </label>
             </div>
@@ -181,7 +181,7 @@ export default function LoginPage() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-muted border border-border/50 rounded-xl px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full shadcn-input text-xs"
               required
             />
           </div>
@@ -190,10 +190,10 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={authLoading}
-            className="w-full py-3 mt-2 rounded-xl font-bold text-sm tracking-wide text-white gradient-accent gradient-accent-hover transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed glow-primary"
+            className="shiny-btn w-full py-3 mt-2 text-xs font-bold flex items-center justify-center gap-2"
           >
             {authLoading ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin" />
             ) : isLogin ? (
               <>
                 <LogIn size={16} />
@@ -211,9 +211,9 @@ export default function LoginPage() {
         {/* Divider */}
         <div className="relative my-6 flex items-center justify-center">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border/40" />
+            <div className="w-full border-t border-border/15" />
           </div>
-          <span className="relative z-10 px-3 bg-background text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+          <span className="relative z-10 px-3 bg-card text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
             Ou continuar com
           </span>
         </div>
@@ -222,7 +222,7 @@ export default function LoginPage() {
         <button
           onClick={handleGoogleLogin}
           disabled={authLoading}
-          className="w-full py-2.5 rounded-xl border border-border/60 hover:bg-muted text-foreground text-sm font-semibold flex items-center justify-center gap-2.5 transition-colors"
+          className="w-full py-2.5 rounded-xl border border-border/20 hover:bg-muted text-foreground text-xs font-bold flex items-center justify-center gap-2.5 transition-colors"
         >
           {/* Simple Google SVG Icon */}
           <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -249,7 +249,7 @@ export default function LoginPage() {
         {/* Sandbox Access Bypass button */}
         <button
           onClick={handleSandboxBypass}
-          className="w-full mt-3 py-2.5 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/20 text-primary text-xs font-bold flex items-center justify-center gap-1.5 transition-colors group"
+          className="w-full mt-3 py-2.5 rounded-xl bg-foreground/10 border border-foreground/15 hover:bg-foreground/15 text-foreground text-xs font-bold flex items-center justify-center gap-1.5 transition-colors group"
         >
           Acessar Modo Demonstrativo (Sandbox)
           <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
@@ -260,7 +260,7 @@ export default function LoginPage() {
           <div className="text-center mt-6">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-xs text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium"
             >
               {isLogin 
                 ? 'Ainda não tem conta? Crie uma conta' 

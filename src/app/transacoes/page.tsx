@@ -271,20 +271,20 @@ export default function TransacoesPage() {
       {/* Page Header and Manager Buttons */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-foreground">Registro de Transações</h2>
-          <p className="text-xs text-muted-foreground">Monitore e filtre todos os lançamentos do mês selecionado</p>
+          <h2 className="text-xl font-extrabold text-foreground tracking-tight">Registro de Transações</h2>
+          <p className="text-xs text-muted-foreground/70 mt-0.5">Monitore e filtre todos os lançamentos do mês selecionado</p>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
           <button
             onClick={() => setIsCatModalOpen(true)}
-            className="flex-1 sm:flex-initial text-xs font-semibold px-4 py-2 border border-border rounded-xl bg-white dark:bg-zinc-800 text-foreground hover:bg-slate-100 flex items-center gap-1.5 transition-all shadow-sm"
+            className="flex-1 sm:flex-initial text-xs font-bold px-4 py-2 border border-border/20 rounded-xl bg-card text-foreground hover:bg-muted flex items-center justify-center gap-1.5 transition-all shadow-sm"
           >
             <Settings size={14} />
             Categorias
           </button>
           <button
             onClick={() => setTransactionModalOpen(true)}
-            className="flex-1 sm:flex-initial retro-btn retro-btn-primary"
+            className="flex-1 sm:flex-initial shiny-btn gap-1.5 py-2 px-4 text-xs font-bold"
           >
             <Plus size={14} />
             Lançar
@@ -296,10 +296,10 @@ export default function TransacoesPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left Column: Donut Chart of Expenses */}
-        <div className="bg-card p-6 border border-border rounded-2xl shadow-sm premium-card flex flex-col justify-between h-fit lg:sticky lg:top-20">
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between h-fit lg:sticky lg:top-20">
           <div>
-            <h3 className="font-bold text-base text-foreground">Despesas do Mês</h3>
-            <p className="text-xs text-muted-foreground">Soma de gastos agrupados por categorias neste período</p>
+            <h3 className="font-extrabold text-base text-foreground tracking-tight">Despesas do Mês</h3>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">Soma de gastos agrupados por categorias neste período</p>
           </div>
 
           <div className="h-[180px] my-6 flex items-center justify-center relative">
@@ -326,7 +326,8 @@ export default function TransacoesPage() {
                         backgroundColor: 'var(--card)',
                         border: '1px solid var(--border)',
                         borderRadius: 'var(--radius)',
-                        color: 'var(--foreground)'
+                        color: 'var(--foreground)',
+                        fontFamily: 'Sora, sans-serif'
                       }}
                       itemStyle={{ color: 'var(--foreground)', fontSize: '12px' }}
                       formatter={(val: any, name: any) => [formatBRL(Number(val)), name]}
@@ -335,12 +336,12 @@ export default function TransacoesPage() {
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center">
                   <p className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-wider">Total Gasto</p>
-                  <p className="text-lg font-bold text-slate-800 dark:text-white leading-tight my-0.5">{formatBRL(totalSpent)}</p>
-                  <p className="text-[9px] text-muted-foreground font-semibold">no período</p>
+                  <p className="text-lg font-extrabold text-foreground leading-tight my-0.5">{formatBRL(totalSpent)}</p>
+                  <p className="text-[9px] text-muted-foreground font-medium">no período</p>
                 </div>
               </>
             ) : (
-              <div className="w-32 h-32 rounded-full border-4 border-muted/25 flex items-center justify-center">
+              <div className="w-32 h-32 rounded-full border-4 border-border/20 flex items-center justify-center">
                 <span className="text-xs text-muted-foreground font-medium">Nenhum gasto</span>
               </div>
             )}
@@ -354,7 +355,7 @@ export default function TransacoesPage() {
                   <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.cor }} />
                   {item.nome}
                 </span>
-                <span className="font-semibold text-foreground/90 font-mono-retro">
+                <span className="font-bold text-foreground">
                   {formatBRL(item.spent)} <span className="text-[10px] text-muted-foreground/60 font-normal">({item.percentage.toFixed(0)}%)</span>
                 </span>
               </div>
@@ -372,19 +373,19 @@ export default function TransacoesPage() {
           />
 
           {/* Table container */}
-          <div className="bg-card border border-border rounded-2xl shadow-sm premium-card overflow-hidden">
+          <div className="bento-card border border-border bg-card/90 overflow-hidden p-0">
             <div className="overflow-x-auto">
-              <table className="retro-table w-full text-left">
+              <table className="shadcn-table w-full text-left">
                 <thead>
                   <tr>
-                    <th className="py-3.5 px-4 font-serif">Categoria</th>
-                    <th className="py-3.5 px-4 font-serif">Descrição</th>
-                    <th className="py-3.5 px-4 font-serif font-mono-retro">Data</th>
-                    <th className="py-3.5 px-4 font-serif font-mono-retro text-right">Valor</th>
-                    <th className="py-3.5 px-4 font-serif text-center">Ações</th>
+                    <th className="py-3.5 px-4">Categoria</th>
+                    <th className="py-3.5 px-4">Descrição</th>
+                    <th className="py-3.5 px-4">Data</th>
+                    <th className="py-3.5 px-4 text-right">Valor</th>
+                    <th className="py-3.5 px-4 text-center">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/20 text-xs">
+                <tbody className="divide-y divide-border/15 text-xs">
                   {filteredTransactions.length > 0 ? (
                     filteredTransactions.map((tx) => {
                       const cat = categories.find(c => c.id === tx.categoria_id);
@@ -394,8 +395,8 @@ export default function TransacoesPage() {
                       return (
                         <tr 
                           key={tx.id}
-                          className={`hover:bg-slate-50/50 dark:hover:bg-zinc-800/10 transition-colors ${
-                            isEditing ? 'bg-green-500/5' : ''
+                          className={`transition-colors ${
+                            isEditing ? 'bg-muted/40' : ''
                           }`}
                         >
                           {/* Category cell */}
@@ -404,7 +405,7 @@ export default function TransacoesPage() {
                               <select
                                 value={editCatId || ''}
                                 onChange={(e) => setEditCatId(e.target.value || null)}
-                                className="retro-input p-1.5 text-xs focus:outline-none w-32"
+                                className="shadcn-input p-1.5 text-xs focus:outline-none w-32"
                               >
                                 <option value="">Nenhuma</option>
                                 {categories.filter(c => c.nome !== 'Investimentos').map(c => (
@@ -414,8 +415,8 @@ export default function TransacoesPage() {
                             ) : (
                               <div className="flex items-center gap-2.5">
                                  <div 
-                                   className="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0 border border-border/20 shadow-sm"
-                                   style={{ backgroundColor: cat?.cor || (isRevenue ? '#10B981' : '#F43F5E') }}
+                                   className="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0 shadow-sm"
+                                   style={{ backgroundColor: cat?.cor || (isRevenue ? '#16A34A' : '#E11D48') }}
                                  >
                                    {cat ? (
                                      <CategoryIcon name={cat.icone || 'circle'} size={14} />
@@ -425,7 +426,7 @@ export default function TransacoesPage() {
                                      <ArrowDownRight size={14} />
                                    )}
                                  </div>
-                                 <span className="font-semibold text-slate-800 dark:text-zinc-200 truncate">
+                                 <span className="font-bold text-foreground truncate">
                                    {cat?.nome || (isRevenue ? 'Receita' : 'Despesa')}
                                  </span>
                               </div>
@@ -439,13 +440,13 @@ export default function TransacoesPage() {
                                 type="text"
                                 value={editDesc}
                                 onChange={(e) => setEditDesc(e.target.value)}
-                                className="retro-input px-2 py-1 text-xs w-full max-w-[200px]"
+                                className="shadcn-input px-2 py-1 text-xs w-full max-w-[200px]"
                               />
                             ) : (
                               <div className="flex items-center gap-2">
-                                <span className="text-slate-800 dark:text-zinc-200 font-semibold">{tx.descrição}</span>
+                                <span className="text-foreground font-semibold">{tx.descrição}</span>
                                 {tx.recorrente && (
-                                  <span className="text-[8px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-zinc-800 border border-border/40 px-1.5 py-0.25 rounded text-muted-foreground shrink-0">
+                                  <span className="badge-indigo text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0">
                                     Fixo
                                   </span>
                                 )}
@@ -454,13 +455,13 @@ export default function TransacoesPage() {
                           </td>
 
                           {/* Date cell */}
-                          <td className="py-3.5 px-4 text-muted-foreground whitespace-nowrap">
+                          <td className="py-3.5 px-4 text-muted-foreground whitespace-nowrap font-medium">
                             {isEditing ? (
                               <input
                                 type="date"
                                 value={editDate}
                                 onChange={(e) => setEditDate(e.target.value)}
-                                className="retro-input p-1 text-xs"
+                                className="shadcn-input p-1 text-xs"
                               />
                             ) : (
                               new Date(tx.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
@@ -468,7 +469,7 @@ export default function TransacoesPage() {
                           </td>
 
                           {/* Value cell */}
-                          <td className="py-3.5 px-4 text-right font-mono-retro whitespace-nowrap">
+                          <td className="py-3.5 px-4 text-right whitespace-nowrap">
                             {isEditing ? (
                               <div className="flex items-center justify-end">
                                 <span className="text-muted-foreground mr-1 text-xs">R$</span>
@@ -477,11 +478,11 @@ export default function TransacoesPage() {
                                   step="0.01"
                                   value={editVal}
                                   onChange={(e) => setEditVal(Number(e.target.value))}
-                                  className="retro-input px-1.5 py-1 text-xs w-20 text-right font-mono-retro"
+                                  className="shadcn-input px-1.5 py-1 text-xs w-24 text-right font-bold"
                                 />
                               </div>
                             ) : (
-                              <span className={`font-bold ${isRevenue ? 'text-emerald-500' : 'text-rose-500'}`}>
+                              <span className={`font-extrabold inline-block px-2.5 py-0.5 rounded-full text-xs ${isRevenue ? 'badge-emerald' : 'badge-rose'}`}>
                                 {isRevenue ? '+' : '-'} {formatBRL(Number(tx.valor))}
                               </span>
                             )}
@@ -494,17 +495,17 @@ export default function TransacoesPage() {
                                 <>
                                   <button
                                     onClick={() => saveEdit(tx.id)}
-                                    className="p-1 rounded-lg border border-border bg-emerald-500 text-white hover:opacity-90 transition-all shadow-sm"
+                                    className="p-1.5 rounded-lg border border-border/20 bg-emerald-500 text-white hover:opacity-90 transition-all shadow-sm"
                                     title="Salvar"
                                   >
-                                    <Check size={12} />
+                                    <Check size={13} />
                                   </button>
                                   <button
                                     onClick={cancelEdit}
-                                    className="p-1 rounded-lg border border-border bg-rose-500 text-white hover:opacity-90 transition-all shadow-sm"
+                                    className="p-1.5 rounded-lg border border-border/20 bg-rose-500 text-white hover:opacity-90 transition-all shadow-sm"
                                     title="Cancelar"
                                   >
-                                    <X size={12} />
+                                    <X size={13} />
                                   </button>
                                 </>
                               ) : (
@@ -512,25 +513,25 @@ export default function TransacoesPage() {
                                   {!tx.investment_movement_id ? (
                                     <button
                                       onClick={() => startEdit(tx.id, tx.descrição, Number(tx.valor), tx.categoria_id, tx.data)}
-                                      className="p-1 border border-border rounded-lg text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all"
+                                      className="p-1.5 border border-border/20 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
                                       title="Editar"
                                     >
-                                      <Edit2 size={12} />
+                                      <Edit2 size={13} />
                                     </button>
                                   ) : (
                                     <span 
-                                      className="p-1 border border-border/10 rounded-lg text-muted-foreground/30 cursor-not-allowed bg-muted/10"
+                                      className="p-1.5 border border-border/10 rounded-xl text-muted-foreground/30 cursor-not-allowed bg-muted/20"
                                       title="Transação vinculada a investimento. Edite ou remova o ativo na aba de Investimentos."
                                     >
-                                      <Edit2 size={12} />
+                                      <Edit2 size={13} />
                                     </span>
                                   )}
                                   <button
                                     onClick={() => deleteTransaction(tx.id)}
-                                    className="p-1 border border-border rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 transition-all"
+                                    className="p-1.5 border border-border/20 rounded-xl text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-all"
                                     title="Excluir"
                                   >
-                                    <Trash2 size={12} />
+                                    <Trash2 size={13} />
                                   </button>
                                 </>
                               )}
@@ -541,7 +542,7 @@ export default function TransacoesPage() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-muted-foreground">
+                      <td colSpan={5} className="py-12 text-center text-muted-foreground font-medium">
                         Nenhuma transação lançada neste mês.
                       </td>
                     </tr>
@@ -557,15 +558,15 @@ export default function TransacoesPage() {
       {/* CATEGORIES MANAGEMENT MODAL */}
       {isCatModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div onClick={() => setIsCatModalOpen(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm dark:bg-black/60" />
+          <div onClick={() => setIsCatModalOpen(false)} className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
 
-          <div className="bg-white dark:bg-zinc-900 border border-border w-full max-w-lg rounded-2xl p-6 shadow-xl relative z-10 animate-scale-in max-h-[85vh] overflow-y-auto">
-            <button onClick={() => setIsCatModalOpen(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground p-1 rounded-lg">
-              <X size={16} />
+          <div className="bg-card border border-border/20 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative z-10 animate-scale-in max-h-[85vh] overflow-y-auto">
+            <button onClick={() => setIsCatModalOpen(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground p-1.5 rounded-xl hover:bg-muted transition-colors">
+              <X size={18} />
             </button>
 
-            <h3 className="font-bold text-lg text-foreground mb-1 flex items-center gap-2">
-              <Settings size={18} className="text-primary" />
+            <h3 className="font-extrabold text-lg text-foreground mb-1 flex items-center gap-2">
+              <Settings size={18} className="text-foreground" />
               Gerenciar Categorias
             </h3>
             <p className="text-xs text-muted-foreground mb-6">
@@ -573,15 +574,15 @@ export default function TransacoesPage() {
             </p>
 
             {/* Nova Categoria Form */}
-            <form onSubmit={handleCreateCategory} className="bg-slate-50 dark:bg-zinc-800/40 border border-slate-100 dark:border-zinc-800 rounded-xl p-4 mb-6 space-y-3">
-              <h4 className="text-xs font-bold text-slate-800 dark:text-zinc-300 flex items-center gap-1"><FolderPlus size={13} /> Nova Categoria</h4>
+            <form onSubmit={handleCreateCategory} className="bg-muted/40 border border-border/20 rounded-xl p-4 mb-6 space-y-3">
+              <h4 className="text-xs font-bold text-foreground flex items-center gap-1"><FolderPlus size={13} /> Nova Categoria</h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <input 
                   type="text" 
                   value={newCatName}
                   onChange={(e) => setNewCatName(e.target.value)}
                   placeholder="Nome"
-                  className="retro-input text-xs w-full focus:outline-none"
+                  className="shadcn-input text-xs w-full"
                   required
                 />
                 <input 
@@ -589,7 +590,7 @@ export default function TransacoesPage() {
                   value={newCatBudget}
                   onChange={(e) => setNewCatBudget(e.target.value)}
                   placeholder="Orçamento (Opcional)"
-                  className="retro-input text-xs w-full focus:outline-none"
+                  className="shadcn-input text-xs w-full"
                 />
                 
                 {/* Color Selector */}
@@ -598,7 +599,7 @@ export default function TransacoesPage() {
                   <select 
                     value={newCatColor} 
                     onChange={(e) => setNewCatColor(e.target.value)}
-                    className="retro-input text-xs w-full focus:outline-none p-1.5"
+                    className="shadcn-input text-xs w-full p-1.5"
                     style={{ borderLeft: `4px solid ${newCatColor}` }}
                   >
                     {PREDEFINED_COLORS.map(c => (
@@ -609,7 +610,7 @@ export default function TransacoesPage() {
               </div>
               <button 
                 type="submit"
-                className="w-full py-2 bg-primary text-white text-xs font-semibold rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-1"
+                className="shiny-btn w-full py-2 text-xs font-bold flex items-center justify-center gap-1"
               >
                 <Plus size={12} /> Criar Categoria
               </button>
@@ -617,7 +618,7 @@ export default function TransacoesPage() {
 
             {/* List and Edit Existing Categories */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Categorias Cadastradas</h4>
+              <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Categorias Cadastradas</h4>
               <div className="space-y-2">
                 {categories.filter(c => c.nome !== 'Investimentos' && c.nome !== 'Receitas').map(cat => {
                   const isCatEditing = editingCatId === cat.id;
@@ -625,7 +626,7 @@ export default function TransacoesPage() {
                   return (
                     <div 
                       key={cat.id} 
-                      className="p-3 border border-border rounded-xl flex items-center justify-between gap-3 bg-white dark:bg-zinc-800"
+                      className="p-3 border border-border/20 rounded-xl flex items-center justify-between gap-3 bg-card"
                     >
                       {isCatEditing ? (
                         <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -633,20 +634,20 @@ export default function TransacoesPage() {
                             type="text" 
                             value={editCatName} 
                             onChange={(e) => setEditCatName(e.target.value)}
-                            className="retro-input text-xs py-1"
+                            className="shadcn-input text-xs py-1"
                             required
                           />
                           <input 
                             type="number" 
                             value={editCatBudget} 
                             onChange={(e) => setEditCatBudget(e.target.value)}
-                            className="retro-input text-xs py-1"
+                            className="shadcn-input text-xs py-1"
                             placeholder="Orçamento"
                           />
                           <select 
                             value={editCatColor} 
                             onChange={(e) => setEditCatColor(e.target.value)}
-                            className="retro-input text-xs py-1"
+                            className="shadcn-input text-xs py-1"
                           >
                             {PREDEFINED_COLORS.map(c => (
                               <option key={c} value={c}>{c}</option>
@@ -656,9 +657,9 @@ export default function TransacoesPage() {
                       ) : (
                         <div className="flex items-center gap-2">
                           <span className="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: cat.cor }} />
-                          <span className="text-xs font-bold text-slate-800 dark:text-zinc-200">{cat.nome}</span>
+                          <span className="text-xs font-bold text-foreground">{cat.nome}</span>
                           {cat.orçamento_mensal > 0 && (
-                            <span className="text-[10px] text-muted-foreground">({formatBRL(cat.orçamento_mensal)} /mês)</span>
+                            <span className="text-[10px] text-muted-foreground font-medium">({formatBRL(cat.orçamento_mensal)} /mês)</span>
                           )}
                         </div>
                       )}
@@ -683,15 +684,15 @@ export default function TransacoesPage() {
                           <>
                             <button 
                               onClick={() => startEditCategory(cat)}
-                              className="p-1 border border-border rounded text-muted-foreground hover:text-foreground hover:bg-slate-50"
+                              className="p-1.5 border border-border/20 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
                             >
-                              <Edit2 size={11} />
+                              <Edit2 size={12} />
                             </button>
                             <button 
                               onClick={() => handleDeleteCategory(cat.id)}
-                              className="p-1 border border-border rounded text-muted-foreground hover:text-rose-500 hover:bg-rose-50"
+                              className="p-1.5 border border-border/20 rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"
                             >
-                              <Trash2 size={11} />
+                              <Trash2 size={12} />
                             </button>
                           </>
                         )}

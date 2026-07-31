@@ -107,7 +107,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         {/* Column 1: Search & Type */}
         <div className="space-y-3.5">
           <div>
-            <label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground block mb-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
               Busca por texto
             </label>
             <div className="relative">
@@ -117,19 +117,19 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 placeholder={isInvestmentsPage ? "Pesquisar ticker..." : "Pesquisar descrição..."}
                 value={filters.search}
                 onChange={(e) => updateFilter('search', e.target.value)}
-                className="w-full bg-muted/60 border border-border/60 rounded-xl pl-9 pr-3 py-2 text-xs text-foreground focus:outline-none focus:border-primary/50"
+                className="w-full shadcn-input pl-9 pr-3 py-2 text-xs"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground block mb-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
               Tipo
             </label>
             <select
               value={filters.type}
               onChange={(e) => updateFilter('type', e.target.value)}
-              className="w-full bg-muted/60 border border-border/60 rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-primary/50"
+              className="w-full shadcn-input px-3 py-2 text-xs"
             >
               {isInvestmentsPage ? (
                 <>
@@ -154,13 +154,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         {/* Column 2: Period */}
         <div className="space-y-3.5">
           <div>
-            <label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground block mb-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
               Período
             </label>
             <select
               value={filters.periodType}
               onChange={(e) => updateFilter('periodType', e.target.value as any)}
-              className="w-full bg-muted/60 border border-border/60 rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-primary/50"
+              className="w-full shadcn-input px-3 py-2 text-xs"
             >
               <option value="todos">Todo o histórico</option>
               <option value="dia">Dia específico</option>
@@ -173,39 +173,39 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           {/* Conditional Date Fields */}
           {filters.periodType === 'dia' && (
             <div className="animate-fade-in">
-              <label className="text-[10px] font-semibold text-muted-foreground block mb-1 flex items-center gap-1">
+              <label className="text-[10px] font-bold text-muted-foreground block mb-1 flex items-center gap-1">
                 <Calendar size={10} /> Data
               </label>
               <input
                 type="date"
                 value={filters.selectedDate}
                 onChange={(e) => updateFilter('selectedDate', e.target.value)}
-                className="w-full bg-muted/60 border border-border/60 rounded-xl px-3 py-1.5 text-xs text-foreground font-mono focus:outline-none"
+                className="w-full shadcn-input px-3 py-1.5 text-xs"
               />
             </div>
           )}
 
           {filters.periodType === 'mes' && (
             <div className="animate-fade-in">
-              <label className="text-[10px] font-semibold text-muted-foreground block mb-1 flex items-center gap-1">
+              <label className="text-[10px] font-bold text-muted-foreground block mb-1 flex items-center gap-1">
                 <Calendar size={10} /> Mês
               </label>
               <input
                 type="month"
                 value={filters.selectedMonth}
                 onChange={(e) => updateFilter('selectedMonth', e.target.value)}
-                className="w-full bg-muted/60 border border-border/60 rounded-xl px-3 py-1.5 text-xs text-foreground font-mono focus:outline-none"
+                className="w-full shadcn-input px-3 py-1.5 text-xs"
               />
             </div>
           )}
 
           {filters.periodType === 'ano' && (
             <div className="animate-fade-in">
-              <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Ano</label>
+              <label className="text-[10px] font-bold text-muted-foreground block mb-1">Ano</label>
               <select
                 value={filters.selectedYear}
                 onChange={(e) => updateFilter('selectedYear', e.target.value)}
-                className="w-full bg-muted/60 border border-border/60 rounded-xl px-3 py-1.5 text-xs text-foreground font-mono focus:outline-none"
+                className="w-full shadcn-input px-3 py-1.5 text-xs"
               >
                 {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((yr) => (
                   <option key={yr} value={yr.toString()}>{yr}</option>
@@ -217,21 +217,21 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           {filters.periodType === 'personalizado' && (
             <div className="grid grid-cols-2 gap-2 animate-fade-in">
               <div>
-                <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Início</label>
+                <label className="text-[9px] font-bold text-muted-foreground block mb-1">Início</label>
                 <input
                   type="date"
                   value={filters.startDate}
                   onChange={(e) => updateFilter('startDate', e.target.value)}
-                  className="w-full bg-muted/60 border border-border/60 rounded-xl px-2 py-1 text-xs text-foreground font-mono focus:outline-none"
+                  className="w-full shadcn-input px-2 py-1 text-xs"
                 />
               </div>
               <div>
-                <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Fim</label>
+                <label className="text-[9px] font-bold text-muted-foreground block mb-1">Fim</label>
                 <input
                   type="date"
                   value={filters.endDate}
                   onChange={(e) => updateFilter('endDate', e.target.value)}
-                  className="w-full bg-muted/60 border border-border/60 rounded-xl px-2 py-1 text-xs text-foreground font-mono focus:outline-none"
+                  className="w-full shadcn-input px-2 py-1 text-xs"
                 />
               </div>
             </div>
@@ -241,14 +241,14 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         {/* Column 3: Category (Multiple) */}
         {!isInvestmentsPage ? (
           <div>
-            <label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground block mb-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
               Categorias ({filters.selectedCategories.length} selecionadas)
             </label>
             <div className="relative" ref={categoryDropdownRef}>
               <button
                 type="button"
                 onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-                className="w-full bg-muted/60 border border-border/60 rounded-xl px-3 py-2 text-xs text-foreground flex items-center justify-between focus:outline-none hover:border-border transition-colors text-left"
+                className="w-full shadcn-input px-3 py-2 text-xs flex items-center justify-between text-left"
               >
                 <span className="truncate">
                   {filters.selectedCategories.length === 0
@@ -265,7 +265,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 5 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute z-30 left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-2xl overflow-y-auto max-h-56 p-2 space-y-1 glassmorphism"
+                    className="absolute z-30 left-0 right-0 mt-1 bg-card border border-border/20 rounded-xl shadow-2xl overflow-y-auto max-h-56 p-2 space-y-1 glass-panel"
                   >
                     {categories.length === 0 ? (
                       <p className="text-[10px] text-muted-foreground p-2 text-center">Nenhuma categoria cadastrada</p>
@@ -278,14 +278,14 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                             type="button"
                             onClick={() => toggleCategory(cat.id)}
                             className={`w-full flex items-center justify-between p-2 rounded-lg text-left text-xs transition-colors hover:bg-muted ${
-                              isSelected ? 'bg-primary/10 text-primary font-bold' : 'text-foreground/80'
+                              isSelected ? 'bg-foreground/10 text-foreground font-bold' : 'text-foreground/80'
                             }`}
                           >
                             <div className="flex items-center gap-2">
                               <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: cat.cor }} />
                               <span className="truncate">{cat.nome}</span>
                             </div>
-                            {isSelected && <Check size={12} className="text-primary" />}
+                            {isSelected && <Check size={12} className="text-foreground" />}
                           </button>
                         );
                       })
@@ -318,7 +318,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           </div>
         ) : (
           <div className="flex flex-col justify-center h-full">
-            <span className="text-[10px] italic text-muted-foreground text-center py-4 bg-muted/20 border border-dashed border-border/40 rounded-xl">
+            <span className="text-[10px] italic text-muted-foreground text-center py-4 bg-muted/20 border border-dashed border-border/20 rounded-xl">
               Filtro de categoria indisponível para ativos
             </span>
           </div>
@@ -326,7 +326,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Column 4: Value Min & Max */}
         <div>
-          <label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground block mb-1.5">
+          <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
             Faixa de Valor (R$)
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -337,7 +337,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 placeholder="0,00"
                 value={filters.minVal}
                 onChange={(e) => updateFilter('minVal', e.target.value === '' ? '' : Number(e.target.value))}
-                className="w-full bg-muted/60 border border-border/60 rounded-xl pl-9 pr-2 py-2 text-xs text-foreground font-mono focus:outline-none focus:border-primary/50"
+                className="w-full shadcn-input pl-9 pr-2 py-2 text-xs"
               />
             </div>
             <div className="relative">
@@ -347,7 +347,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 placeholder="∞"
                 value={filters.maxVal}
                 onChange={(e) => updateFilter('maxVal', e.target.value === '' ? '' : Number(e.target.value))}
-                className="w-full bg-muted/60 border border-border/60 rounded-xl pl-9 pr-2 py-2 text-xs text-foreground font-mono focus:outline-none focus:border-primary/50"
+                className="w-full shadcn-input pl-9 pr-2 py-2 text-xs"
               />
             </div>
           </div>
@@ -357,7 +357,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <button
               type="button"
               onClick={handleReset}
-              className="flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground hover:text-danger hover:bg-danger/5 px-3 py-1.5 rounded-lg border border-border/60 hover:border-danger/20 transition-all"
+              className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 px-3 py-1.5 rounded-lg border border-border/20 transition-all"
             >
               <RefreshCw size={10} />
               Limpar Filtros
@@ -371,15 +371,15 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   return (
     <div className="w-full space-y-3">
       {/* Desktop & Mobile Top Bar Trigger */}
-      <div className="flex items-center justify-between bg-card border border-border/40 rounded-2xl p-3 shadow-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+      <div className="flex items-center justify-between bg-card border border-border/20 rounded-2xl p-3 shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-foreground text-background flex items-center justify-center font-bold">
             <Filter size={14} />
           </div>
           <div>
             <span className="text-xs font-bold text-foreground">Filtros Avançados</span>
             {activeFiltersCount > 0 && (
-              <span className="ml-2 bg-primary text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">
+              <span className="ml-2 bg-foreground text-background text-[9px] font-extrabold px-2 py-0.5 rounded-full">
                 {activeFiltersCount} ativo{activeFiltersCount > 1 ? 's' : ''}
               </span>
             )}
@@ -391,7 +391,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <button
               type="button"
               onClick={handleReset}
-              className="px-2.5 py-1.5 bg-danger/5 border border-danger/10 hover:border-danger/30 text-danger text-[10px] font-black rounded-lg transition-colors flex items-center gap-1"
+              className="px-2.5 py-1.5 bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[10px] font-bold rounded-lg transition-colors flex items-center gap-1"
             >
               Limpar
             </button>
@@ -401,7 +401,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="hidden md:flex items-center gap-1 px-3 py-1.5 bg-muted text-muted-foreground hover:text-foreground text-xs font-semibold rounded-lg border border-border/40"
+            className="hidden md:flex items-center gap-1 px-3 py-1.5 bg-muted text-muted-foreground hover:text-foreground text-xs font-bold rounded-xl border border-border/20"
           >
             {isOpen ? 'Recolher Filtros' : 'Expandir Filtros'}
             <ChevronDown size={14} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
@@ -411,7 +411,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           <button
             type="button"
             onClick={() => setIsMobileDrawerOpen(true)}
-            className="md:hidden flex items-center gap-1 px-3 py-1.5 bg-muted text-muted-foreground hover:text-foreground text-xs font-semibold rounded-lg border border-border/40"
+            className="md:hidden flex items-center gap-1 px-3 py-1.5 bg-muted text-muted-foreground hover:text-foreground text-xs font-bold rounded-xl border border-border/20"
           >
             Filtros
           </button>
@@ -427,7 +427,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="bg-card border border-border/40 rounded-2xl shadow-sm overflow-hidden"
+              className="bg-card border border-border/20 rounded-2xl shadow-sm overflow-hidden"
             >
               {renderFilterContent()}
             </motion.div>
@@ -439,56 +439,51 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       <AnimatePresence>
         {isMobileDrawerOpen && (
           <div className="fixed inset-0 z-50 md:hidden flex items-end justify-center">
-            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileDrawerOpen(false)}
-              className="fixed inset-0 bg-background/80 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
             />
 
-            {/* Bottom Sheet Drawer */}
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="relative z-10 w-full max-h-[85vh] bg-card border-t border-border rounded-t-2xl shadow-2xl flex flex-col glassmorphism"
+              className="relative z-10 w-full max-h-[85vh] bg-card border-t border-border/20 rounded-t-2xl shadow-2xl flex flex-col glass-panel"
             >
-              {/* Drawer Header */}
-              <div className="flex items-center justify-between p-4 border-b border-border/50">
-                <span className="text-xs font-black uppercase tracking-wider text-foreground flex items-center gap-1.5">
-                  <Filter size={14} className="text-primary" />
+              <div className="flex items-center justify-between p-4 border-b border-border/15">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                  <Filter size={14} className="text-foreground" />
                   Filtrar Lançamentos
                 </span>
                 <button
                   type="button"
                   onClick={() => setIsMobileDrawerOpen(false)}
-                  className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-foreground"
+                  className="p-1.5 rounded-xl bg-muted text-muted-foreground hover:text-foreground"
                 >
                   <X size={16} />
                 </button>
               </div>
 
-              {/* Drawer Content */}
               <div className="overflow-y-auto flex-1 pb-6">
                 {renderFilterContent()}
               </div>
 
-              {/* Drawer Footer Action */}
-              <div className="p-4 border-t border-border/50 bg-muted/20 flex gap-2">
+              <div className="p-4 border-t border-border/15 bg-muted/20 flex gap-2">
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-1/3 py-3 border border-border/60 text-xs font-bold text-muted-foreground hover:text-foreground rounded-xl"
+                  className="w-1/3 py-3 border border-border/20 text-xs font-bold text-muted-foreground hover:text-foreground rounded-xl"
                 >
                   Limpar
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsMobileDrawerOpen(false)}
-                  className="w-2/3 py-3 bg-primary text-white text-xs font-bold rounded-xl shadow-md shadow-primary/10 flex items-center justify-center gap-1"
+                  className="w-2/3 shiny-btn py-3 text-xs font-bold"
                 >
                   Aplicar Filtros
                 </button>
@@ -499,4 +494,4 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       </AnimatePresence>
     </div>
   );
-};
+}

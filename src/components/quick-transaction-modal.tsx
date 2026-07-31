@@ -199,20 +199,20 @@ export const QuickTransactionModal: React.FC = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="relative z-10 w-full max-w-lg bg-card border border-border rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden glassmorphism flex flex-col max-h-[90vh] sm:max-h-none"
+            className="relative z-10 w-full max-w-lg bg-card border border-border/20 rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden glass-panel flex flex-col max-h-[90vh] sm:max-h-none"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border/50">
-              <h2 className="text-lg font-semibold tracking-tight text-foreground flex items-center gap-2">
-                <span className="p-1 rounded-md bg-primary/10 text-primary">
-                  <Plus size={18} />
+            <div className="flex items-center justify-between p-4 border-b border-border/15">
+              <h2 className="text-lg font-extrabold tracking-tight text-foreground flex items-center gap-2">
+                <span className="p-1.5 rounded-xl bg-foreground text-background">
+                  <Plus size={16} />
                 </span>
                 Novo Lançamento
               </h2>
               <button
                 type="button"
                 onClick={() => setTransactionModalOpen(false)}
-                className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-xl bg-muted text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X size={18} />
               </button>
@@ -222,13 +222,13 @@ export const QuickTransactionModal: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="p-5 space-y-5 overflow-y-auto">
               
               {/* Type Switcher */}
-              <div className="grid grid-cols-2 p-1 bg-muted rounded-xl border border-border/30">
+              <div className="grid grid-cols-2 p-1 bg-muted/60 rounded-xl border border-border/15">
                 <button
                   type="button"
                   onClick={() => setValue('tipo', 'despesa')}
-                  className={`py-2 px-3 text-sm font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+                  className={`py-2 px-3 text-xs font-bold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                     selectedTipo === 'despesa'
-                      ? 'bg-danger text-white glow-danger font-bold'
+                      ? 'badge-rose font-extrabold shadow-sm'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -237,9 +237,9 @@ export const QuickTransactionModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setValue('tipo', 'receita')}
-                  className={`py-2 px-3 text-sm font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+                  className={`py-2 px-3 text-xs font-bold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                     selectedTipo === 'receita'
-                      ? 'bg-success text-white glow-success font-bold'
+                      ? 'badge-emerald font-extrabold shadow-sm'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -249,26 +249,26 @@ export const QuickTransactionModal: React.FC = () => {
 
               {/* Value Input (Large and centered) */}
               <div className="space-y-1 text-center py-2">
-                <label className="text-xs uppercase tracking-widest text-muted-foreground">Valor (R$)</label>
+                <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Valor (R$)</label>
                 <div className="relative flex items-center justify-center">
-                  <span className="text-2xl font-bold text-muted-foreground mr-1">R$</span>
+                  <span className="text-2xl font-extrabold text-muted-foreground mr-1">R$</span>
                   <input
                     type="number"
                     step="0.01"
                     placeholder="0,00"
                     autoFocus
                     {...register('valor')}
-                    className="bg-transparent text-4xl sm:text-5xl font-black text-center text-foreground placeholder:text-muted-foreground/30 focus:outline-none max-w-[250px] font-mono select-all"
+                    className="bg-transparent text-4xl sm:text-5xl font-extrabold text-center text-foreground placeholder:text-muted-foreground/30 focus:outline-none max-w-[260px] select-all"
                   />
                 </div>
                 {errors.valor && (
-                  <p className="text-xs text-danger font-medium mt-1">{(errors.valor as any).message}</p>
+                  <p className="text-xs text-rose-500 font-bold mt-1">{(errors.valor as any).message}</p>
                 )}
               </div>
 
               {/* Category Dropdown and Action */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                   Categoria
                 </label>
                 <div className="flex gap-2">
@@ -277,7 +277,7 @@ export const QuickTransactionModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className="w-full bg-muted border border-border/50 rounded-xl px-3.5 py-2.5 text-sm text-foreground flex items-center justify-between focus:outline-none hover:border-border transition-colors text-left"
+                      className="w-full bg-card border border-border/20 rounded-xl px-3.5 py-2.5 text-xs text-foreground flex items-center justify-between focus:outline-none hover:border-border transition-colors text-left"
                     >
                       {selectedCategory ? (
                         <div className="flex items-center gap-2">
@@ -290,7 +290,7 @@ export const QuickTransactionModal: React.FC = () => {
                           <span className="font-bold">{selectedCategory.nome}</span>
                         </div>
                       ) : (
-                        <span className="text-muted-foreground/60">Selecione uma categoria...</span>
+                        <span className="text-muted-foreground/60 font-medium">Selecione uma categoria...</span>
                       )}
                       <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
@@ -302,10 +302,10 @@ export const QuickTransactionModal: React.FC = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 5 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute z-20 left-0 right-0 mt-1 bg-card border border-border/80 rounded-xl shadow-2xl max-h-52 overflow-y-auto p-1.5 space-y-1 glassmorphism"
+                          className="absolute z-20 left-0 right-0 mt-1 bg-card border border-border/20 rounded-xl shadow-2xl max-h-52 overflow-y-auto p-1.5 space-y-1 glass-panel"
                         >
                           {categories.length === 0 ? (
-                            <p className="text-xs text-muted-foreground p-3 text-center">Nenhuma categoria encontrada</p>
+                            <p className="text-xs text-muted-foreground p-3 text-center font-medium">Nenhuma categoria encontrada</p>
                           ) : (
                             categories.map((cat) => (
                               <button
@@ -313,7 +313,7 @@ export const QuickTransactionModal: React.FC = () => {
                                 type="button"
                                 onClick={() => handleSelectCategory(cat)}
                                 className={`w-full flex items-center gap-2.5 p-2 rounded-lg text-left text-xs transition-colors hover:bg-muted ${
-                                  selectedCatId === cat.id ? 'bg-primary/10 text-primary font-bold' : 'text-foreground/90'
+                                  selectedCatId === cat.id ? 'bg-foreground/10 text-foreground font-bold' : 'text-foreground/90'
                                 }`}
                               >
                                 <span 
@@ -322,7 +322,7 @@ export const QuickTransactionModal: React.FC = () => {
                                 >
                                   <CategoryIcon name={cat.icone || 'circle'} size={12} />
                                 </span>
-                                <span className="truncate">{cat.nome}</span>
+                                <span className="truncate font-medium">{cat.nome}</span>
                               </button>
                             ))
                           )}
@@ -336,7 +336,7 @@ export const QuickTransactionModal: React.FC = () => {
                     type="button"
                     onClick={() => setIsCreatingCat(!isCreatingCat)}
                     className={`p-2.5 rounded-xl border flex items-center justify-center hover:bg-muted transition-colors ${
-                      isCreatingCat ? 'bg-primary/10 border-primary text-primary' : 'bg-muted border-border/50 text-muted-foreground hover:text-foreground'
+                      isCreatingCat ? 'bg-foreground/10 border-foreground text-foreground' : 'bg-card border-border/20 text-muted-foreground hover:text-foreground'
                     }`}
                     title="Nova Categoria"
                   >
@@ -344,7 +344,7 @@ export const QuickTransactionModal: React.FC = () => {
                   </button>
                 </div>
                 {errors.categoria_nome && (
-                  <p className="text-xs text-danger font-medium">{(errors.categoria_nome as any).message}</p>
+                  <p className="text-xs text-rose-500 font-bold">{(errors.categoria_nome as any).message}</p>
                 )}
               </div>
 
@@ -356,10 +356,10 @@ export const QuickTransactionModal: React.FC = () => {
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="p-4 bg-muted/40 border border-border/60 rounded-2xl space-y-4 overflow-hidden"
+                    className="p-4 bg-muted/40 border border-border/20 rounded-2xl space-y-4 overflow-hidden"
                   >
-                    <div className="flex items-center justify-between border-b border-border/30 pb-2">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-foreground flex items-center gap-1">
+                    <div className="flex items-center justify-between border-b border-border/15 pb-2">
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-foreground flex items-center gap-1">
                         Criar Categoria Rápido
                       </span>
                       <button 
@@ -379,7 +379,7 @@ export const QuickTransactionModal: React.FC = () => {
                         placeholder="Ex: Assinaturas, Mercado..."
                         value={newCatName}
                         onChange={(e) => setNewCatName(e.target.value)}
-                        className="w-full bg-muted border border-border/50 rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-primary/50"
+                        className="w-full shadcn-input text-xs"
                       />
                     </div>
 
@@ -423,8 +423,8 @@ export const QuickTransactionModal: React.FC = () => {
                             onClick={() => setNewCatIcon(opt.name)}
                             className={`w-7 h-7 rounded-lg flex items-center justify-center border transition-all hover:scale-105 ${
                               newCatIcon === opt.name 
-                                ? 'bg-primary border-primary text-white font-bold' 
-                                : 'border-border/30 text-muted-foreground hover:text-foreground bg-card/45'
+                                ? 'bg-foreground border-foreground text-background font-bold' 
+                                : 'border-border/30 text-muted-foreground hover:text-foreground bg-card'
                             }`}
                             title={opt.label}
                           >
@@ -446,7 +446,7 @@ export const QuickTransactionModal: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleCreateCategoryInline}
-                        className="py-1.5 px-3 bg-primary text-white text-[10px] font-bold rounded-lg shadow-sm flex items-center gap-1"
+                        className="py-1.5 px-3 bg-foreground text-background text-[10px] font-bold rounded-lg shadow-sm flex items-center gap-1"
                       >
                         <Check size={10} />
                         Confirmar
@@ -458,7 +458,7 @@ export const QuickTransactionModal: React.FC = () => {
 
               {/* Description Input */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                   <AlignLeft size={14} />
                   Descrição
                 </label>
@@ -466,30 +466,30 @@ export const QuickTransactionModal: React.FC = () => {
                   type="text"
                   placeholder="Ex: Supermercado, Almoço, Uber..."
                   {...register('descrição')}
-                  className="w-full bg-muted border border-border/50 rounded-xl px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full shadcn-input text-xs"
                 />
                 {errors.descrição && (
-                  <p className="text-xs text-danger font-medium">{(errors.descrição as any).message}</p>
+                  <p className="text-xs text-rose-500 font-bold">{(errors.descrição as any).message}</p>
                 )}
               </div>
 
               {/* Date Input */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                  <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                     <Calendar size={14} />
                     Data
                   </label>
                   <input
                     type="date"
                     {...register('data')}
-                    className="w-full bg-muted border border-border/50 rounded-xl px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:border-primary/50 transition-colors font-mono"
+                    className="w-full shadcn-input text-xs"
                   />
                 </div>
 
                 {/* Recurrent Checkbox */}
                 <div className="flex items-center justify-between sm:justify-end sm:gap-3 py-2 sm:py-0">
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                     Despesa Recorrente?
                   </span>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -498,7 +498,7 @@ export const QuickTransactionModal: React.FC = () => {
                       {...register('recorrente')}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-muted-foreground peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary font-bold"></div>
+                    <div className="w-11 h-6 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-muted-foreground peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-foreground font-bold"></div>
                   </label>
                 </div>
               </div>
@@ -507,10 +507,10 @@ export const QuickTransactionModal: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-4 py-3 rounded-xl font-bold text-sm tracking-wide text-white gradient-accent gradient-accent-hover transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed glow-primary"
+                className="w-full mt-4 shiny-btn py-3 font-extrabold text-xs tracking-wider gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
                 ) : (
                   <>
                     <Check size={16} />

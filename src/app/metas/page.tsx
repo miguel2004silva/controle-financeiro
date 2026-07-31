@@ -237,28 +237,28 @@ export default function MetaseOrcamentosPage() {
       
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-black text-foreground tracking-tight">Metas e Orçamentos</h2>
-        <p className="text-xs text-muted-foreground">Planeje suas despesas mensais e visualize seus sonhos de longo prazo</p>
+        <h2 className="text-xl font-extrabold text-foreground tracking-tight">Metas e Orçamentos</h2>
+        <p className="text-xs text-muted-foreground/70 mt-0.5">Planeje suas despesas mensais e visualize seus sonhos de longo prazo</p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-border/30 gap-6">
+      {/* Tabs (UIverse pill style) */}
+      <div className="flex border-b border-border/15 pb-2 gap-2">
         <button
           onClick={() => setActiveTab('orcamentos_metas')}
-          className={`pb-3 text-xs font-black uppercase tracking-wider transition-all relative ${
+          className={`uiverse-pill ${
             activeTab === 'orcamentos_metas'
-              ? 'text-primary border-b-2 border-primary'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'uiverse-pill-active'
+              : 'uiverse-pill-inactive'
           }`}
         >
           Orçamentos e Metas
         </button>
         <button
           onClick={() => setActiveTab('categorias')}
-          className={`pb-3 text-xs font-black uppercase tracking-wider transition-all relative ${
+          className={`uiverse-pill ${
             activeTab === 'categorias'
-              ? 'text-primary border-b-2 border-primary'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'uiverse-pill-active'
+              : 'uiverse-pill-inactive'
           }`}
         >
           Gerenciar Categorias
@@ -269,10 +269,10 @@ export default function MetaseOrcamentosPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         
         {/* Left Column: Monthly Budgets (3 cols) */}
-        <div className="lg:col-span-3 bg-card border border-border/40 rounded-2xl p-5 space-y-5">
+        <div className="lg:col-span-3 bento-card border border-border bg-card/90 space-y-5">
           <div>
-            <h3 className="font-bold text-base text-foreground">Orçamento por Categorias</h3>
-            <p className="text-xs text-muted-foreground">Monitore o teto de gastos planejados para este mês</p>
+            <h3 className="font-extrabold text-base text-foreground tracking-tight">Orçamento por Categorias</h3>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">Monitore o teto de gastos planejados para este mês</p>
           </div>
 
           <div className="space-y-4">
@@ -280,20 +280,20 @@ export default function MetaseOrcamentosPage() {
               const isEditing = editingCatId === cat.id;
               
               return (
-                <div key={cat.id} className="p-4 bg-muted border border-border/20 rounded-xl space-y-3 hover:border-border/40 transition-colors">
+                <div key={cat.id} className="p-4 bg-muted/40 border border-border/15 rounded-xl space-y-3 transition-colors">
                   <div className="flex justify-between items-center">
                     
                     {/* Category Label */}
                     <div className="flex items-center gap-2.5">
                       <div 
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0 shadow-sm"
                         style={{ backgroundColor: cat.cor }}
                       >
                         <CategoryIcon name={cat.icone} size={15} />
                       </div>
                       <div>
                         <h4 className="text-xs font-bold text-foreground">{cat.nome}</h4>
-                        <span className="text-[9px] text-muted-foreground font-semibold">
+                        <span className="text-[10px] text-muted-foreground/80 font-medium">
                           Usado: {formatBRL(cat.spent)}
                         </span>
                       </div>
@@ -308,18 +308,18 @@ export default function MetaseOrcamentosPage() {
                             type="number"
                             value={editBudgetVal}
                             onChange={(e) => setEditBudgetVal(e.target.value)}
-                            className="bg-muted border border-border/60 rounded px-2 py-1 text-xs text-foreground font-mono w-24 text-right focus:outline-none"
+                            className="shadcn-input px-2 py-1 text-xs w-24 text-right"
                             autoFocus
                           />
                           <button
                             onClick={() => saveCategoryBudget(cat.id)}
-                            className="p-1 text-success hover:bg-success/10 rounded"
+                            className="p-1 text-emerald-500 hover:bg-emerald-500/10 rounded"
                           >
                             <Check size={14} />
                           </button>
                           <button
                             onClick={() => setEditingCatId(null)}
-                            className="p-1 text-danger hover:bg-danger/10 rounded"
+                            className="p-1 text-rose-500 hover:bg-rose-500/10 rounded"
                           >
                             <X size={14} />
                           </button>
@@ -328,7 +328,7 @@ export default function MetaseOrcamentosPage() {
                         <div className="flex items-center gap-2">
                           <div className="text-right">
                             <span className="text-[10px] text-muted-foreground block">Orçamento</span>
-                            <span className="text-xs font-mono font-extrabold text-foreground/90">
+                            <span className="text-xs font-extrabold text-foreground">
                               {formatBRL(cat.orçamento_mensal)}
                             </span>
                           </div>
@@ -337,10 +337,10 @@ export default function MetaseOrcamentosPage() {
                               setEditingCatId(cat.id);
                               setEditBudgetVal(String(cat.orçamento_mensal));
                             }}
-                            className="p-1 rounded text-muted-foreground hover:text-foreground"
+                            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
                             title="Editar Orçamento"
                           >
-                            <Edit2 size={12} />
+                            <Edit2 size={13} />
                           </button>
                         </div>
                       )}
@@ -349,10 +349,10 @@ export default function MetaseOrcamentosPage() {
                   </div>
 
                   {/* Progress Gauge */}
-                  <div className="space-y-1">
-                    <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="space-y-1.5">
+                    <div className="w-full h-2 bg-muted/60 rounded-full overflow-hidden">
                       <div 
-                        className={`h-full rounded-full ${cat.statusColor} transition-all duration-500`}
+                        className={`h-full rounded-full ${cat.pct > 90 ? 'bg-rose-500' : cat.pct > 70 ? 'bg-amber-500' : 'bg-emerald-500'} transition-all duration-500`}
                         style={{ width: `${Math.min(100, cat.pct)}%` }}
                       />
                     </div>
@@ -360,7 +360,7 @@ export default function MetaseOrcamentosPage() {
                     <div className="flex justify-between text-[10px] font-bold text-muted-foreground">
                       <span>{cat.pct.toFixed(0)}% consumido</span>
                       {cat.pct >= 100 && (
-                        <span className="text-danger flex items-center gap-0.5">
+                        <span className="text-rose-500 flex items-center gap-0.5 font-bold">
                           <AlertTriangle size={10} /> Limite Excedido
                         </span>
                       )}
@@ -377,15 +377,15 @@ export default function MetaseOrcamentosPage() {
         {/* Right Column: Long Term Goals (2 cols) */}
         <div className="lg:col-span-2 space-y-6">
           
-          <div className="bg-card border border-border/40 rounded-2xl p-5 space-y-5">
+          <div className="bento-card border border-border bg-card/90 space-y-5">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-bold text-base text-foreground">Metas de Longo Prazo</h3>
-                <p className="text-xs text-muted-foreground">Acompanhe seus planos e reservas</p>
+                <h3 className="font-extrabold text-base text-foreground tracking-tight">Metas de Longo Prazo</h3>
+                <p className="text-xs text-muted-foreground/70 mt-0.5">Acompanhe seus planos e reservas</p>
               </div>
               <button
                 onClick={() => setShowAddGoal(!showAddGoal)}
-                className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                className="p-1.5 rounded-xl bg-foreground text-background hover:opacity-90 transition-opacity"
                 title="Criar nova meta"
               >
                 <Plus size={16} />
@@ -394,18 +394,18 @@ export default function MetaseOrcamentosPage() {
 
             {/* FORM: Create new Goal */}
             {showAddGoal && (
-              <form onSubmit={handleAddGoal} className="p-4 bg-muted/40 border border-border/30 rounded-xl space-y-3 animate-fade-in">
-                <h4 className="text-xs font-bold text-foreground/90">Nova Meta Financeira</h4>
+              <form onSubmit={handleAddGoal} className="p-4 bg-muted/40 border border-border/15 rounded-xl space-y-3 animate-fade-in">
+                <h4 className="text-xs font-bold text-foreground">Nova Meta Financeira</h4>
                 
                 <div className="space-y-2">
                   <div>
                     <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">Nome do Sonho</label>
                     <input
                       type="text"
-                      placeholder="Ex: Reserva Emergência, Viagem Disney..."
+                      placeholder="Ex: Reserva Emergência, Viagem..."
                       value={goalName}
                       onChange={(e) => setGoalName(e.target.value)}
-                      className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-foreground"
+                      className="w-full shadcn-input text-xs"
                     />
                   </div>
 
@@ -417,7 +417,7 @@ export default function MetaseOrcamentosPage() {
                         placeholder="R$ 15.000"
                         value={goalTarget}
                         onChange={(e) => setGoalTarget(e.target.value)}
-                        className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-foreground"
+                        className="w-full shadcn-input text-xs"
                       />
                     </div>
                     <div>
@@ -427,7 +427,7 @@ export default function MetaseOrcamentosPage() {
                         placeholder="R$ 2.000"
                         value={goalCurrent}
                         onChange={(e) => setGoalCurrent(e.target.value)}
-                        className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-foreground"
+                        className="w-full shadcn-input text-xs"
                       />
                     </div>
                   </div>
@@ -438,7 +438,7 @@ export default function MetaseOrcamentosPage() {
                       type="date"
                       value={goalDeadline}
                       onChange={(e) => setGoalDeadline(e.target.value)}
-                      className="w-full bg-muted border border-border/60 rounded-lg p-2 text-xs text-foreground font-mono"
+                      className="w-full shadcn-input text-xs"
                     />
                   </div>
                 </div>
@@ -447,13 +447,13 @@ export default function MetaseOrcamentosPage() {
                   <button
                     type="button"
                     onClick={() => setShowAddGoal(false)}
-                    className="py-1.5 px-3 text-xs bg-muted rounded-lg text-muted-foreground hover:text-white"
+                    className="py-1.5 px-3 text-xs bg-muted rounded-xl text-muted-foreground font-bold hover:text-foreground"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="py-1.5 px-3 text-xs bg-primary text-white rounded-lg font-bold"
+                    className="shiny-btn py-1.5 px-4 text-xs font-bold"
                   >
                     Criar Meta
                   </button>
@@ -477,44 +477,44 @@ export default function MetaseOrcamentosPage() {
                   return (
                     <div 
                       key={goal.id} 
-                      className="p-4 bg-muted border border-border/20 rounded-xl space-y-3 hover:border-border/40 transition-colors"
+                      className="p-4 bg-muted/40 border border-border/15 rounded-xl space-y-3 transition-colors"
                     >
                       <div className="flex justify-between items-start">
                         
                         {/* Name */}
                         <div>
                           <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                            <span className="p-1 rounded bg-primary/10 text-primary">
+                            <span className="p-1 rounded-lg bg-foreground/10 text-foreground">
                               <Target size={12} />
                             </span>
                             {goal.nome}
                           </h4>
                           {monthsRemaining !== null && remaining > 0 && (
-                            <span className="text-[9px] text-muted-foreground font-semibold block mt-1">
+                            <span className="text-[10px] text-muted-foreground font-medium block mt-1">
                               ~{monthsRemaining} {monthsRemaining === 1 ? 'mês' : 'meses'} restantes (poupando {formatBRL(avgMonthlySavings)}/mês)
                             </span>
                           )}
                         </div>
 
                         {/* Values */}
-                        <div className="text-right font-mono text-xs">
-                          <span className="font-extrabold text-foreground/90">{formatBRL(current)}</span>
+                        <div className="text-right text-xs">
+                          <span className="font-extrabold text-foreground">{formatBRL(current)}</span>
                           <span className="text-[10px] text-muted-foreground block">Alvo: {formatBRL(target)}</span>
                         </div>
 
                       </div>
 
                       {/* Goal progress gauge */}
-                      <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div className="w-full h-2 bg-muted/60 rounded-full overflow-hidden">
                         <div 
-                          className="h-full bg-gradient-to-r from-accent to-primary rounded-full"
+                          className="h-full bg-foreground rounded-full"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
 
                       {/* Bottom action toolbar (Add funds / Delete) */}
                       <div className="flex items-center justify-between pt-1">
-                        <span className="text-[9px] text-muted-foreground font-bold">{pct.toFixed(0)}% concluído</span>
+                        <span className="text-[10px] text-muted-foreground font-bold">{pct.toFixed(0)}% concluído</span>
                         
                         <div className="flex items-center gap-2">
                           {isAddingFunds ? (
@@ -524,18 +524,18 @@ export default function MetaseOrcamentosPage() {
                                 placeholder="+ R$"
                                 value={fundAmount}
                                 onChange={(e) => setFundAmount(e.target.value)}
-                                className="w-16 bg-muted border border-border/60 rounded px-1.5 py-0.5 text-[10px] font-mono focus:outline-none"
+                                className="w-16 shadcn-input px-1.5 py-0.5 text-[10px]"
                                 autoFocus
                               />
                               <button
                                 onClick={() => saveFundIncrement(goal.id, current)}
-                                className="p-0.5 text-success hover:bg-success/10 rounded"
+                                className="p-1 text-emerald-500 hover:bg-emerald-500/10 rounded"
                               >
                                 ✓
                               </button>
                               <button
                                 onClick={() => setAddingFundsGoalId(null)}
-                                className="p-0.5 text-danger hover:bg-danger/10 rounded"
+                                className="p-1 text-rose-500 hover:bg-rose-500/10 rounded"
                               >
                                 ✕
                               </button>
@@ -543,9 +543,9 @@ export default function MetaseOrcamentosPage() {
                           ) : (
                             <button
                               onClick={() => setAddingFundsGoalId(goal.id)}
-                              className="text-[9px] font-extrabold text-primary bg-primary/10 hover:bg-primary/20 px-2 py-0.75 rounded flex items-center gap-0.5 transition-colors"
+                              className="text-[10px] font-bold text-foreground bg-foreground/10 hover:bg-foreground/20 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-colors"
                             >
-                              <PiggyBank size={10} /> Poupar
+                              <PiggyBank size={11} /> Poupar
                             </button>
                           )}
 
@@ -555,10 +555,10 @@ export default function MetaseOrcamentosPage() {
                                 deleteGoal(goal.id);
                               }
                             }}
-                            className="p-1 rounded text-muted-foreground hover:text-danger hover:bg-danger/10 transition-colors"
+                            className="p-1.5 rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
                             title="Remover Meta"
                           >
-                            <Trash2 size={11} />
+                            <Trash2 size={12} />
                           </button>
                         </div>
                       </div>
@@ -567,7 +567,7 @@ export default function MetaseOrcamentosPage() {
                   );
                 })
               ) : (
-                <p className="text-xs text-muted-foreground text-center py-4">
+                <p className="text-xs text-muted-foreground text-center py-6 font-medium">
                   Cadastre sua primeira meta financeira clicando no "+" acima.
                 </p>
               )}
@@ -582,10 +582,10 @@ export default function MetaseOrcamentosPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Left: Create/Edit Category Form (2 cols) */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-card border border-border/40 rounded-2xl p-6 space-y-5 relative overflow-hidden">
-              <div className="flex justify-between items-center border-b border-border/30 pb-3">
-                <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
-                  {editingCatIdForManage ? <Edit2 size={16} className="text-primary" /> : <Plus size={16} className="text-primary" />}
+            <div className="bento-card border border-border bg-card/90 p-6 space-y-5">
+              <div className="flex justify-between items-center border-b border-border/15 pb-3">
+                <h3 className="font-extrabold text-sm text-foreground flex items-center gap-2 tracking-tight">
+                  {editingCatIdForManage ? <Edit2 size={16} className="text-foreground" /> : <Plus size={16} className="text-foreground" />}
                   {editingCatIdForManage ? 'Editar Categoria' : 'Nova Categoria'}
                 </h3>
                 {editingCatIdForManage && (
@@ -594,9 +594,9 @@ export default function MetaseOrcamentosPage() {
                       setEditingCatIdForManage(null);
                       setNewCatName('');
                       setNewCatBudget('');
-                      setNewCatColor('#4F46E5');
+                      setNewCatColor('#16A34A');
                     }}
-                    className="p-1 rounded text-muted-foreground hover:text-foreground"
+                    className="p-1 rounded-xl text-muted-foreground hover:text-foreground"
                     title="Cancelar Edição"
                   >
                     <X size={15} />
@@ -607,7 +607,7 @@ export default function MetaseOrcamentosPage() {
               <form onSubmit={editingCatIdForManage ? (e) => { e.preventDefault(); handleUpdateCategory(editingCatIdForManage); } : handleCreateCategory} className="space-y-4">
                 {/* Category Name */}
                 <div>
-                  <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">
+                  <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider block mb-1.5">
                     Nome da Categoria
                   </label>
                   <input
@@ -615,35 +615,34 @@ export default function MetaseOrcamentosPage() {
                     placeholder="Ex: Alimentação, Transporte, Lazer..."
                     value={editingCatIdForManage ? editCatName : newCatName}
                     onChange={(e) => editingCatIdForManage ? setEditCatName(e.target.value) : setNewCatName(e.target.value)}
-                    className="w-full bg-muted border border-border/60 rounded-xl p-3 text-xs text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/50"
+                    className="w-full shadcn-input text-xs"
                     required
                   />
                 </div>
 
                 {/* Monthly Budget */}
                 <div>
-                  <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">
+                  <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider block mb-1.5">
                     Orçamento Mensal (R$ - Opcional)
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-3.5 text-xs font-bold text-muted-foreground">R$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">R$</span>
                     <input
                       type="number"
                       placeholder="0,00"
                       value={editingCatIdForManage ? editCatBudget : newCatBudget}
                       onChange={(e) => editingCatIdForManage ? setEditCatBudget(e.target.value) : setNewCatBudget(e.target.value)}
-                      className="w-full bg-muted border border-border/60 rounded-xl py-3 pl-9 pr-3 text-xs text-foreground font-mono focus:outline-none focus:border-primary/50"
+                      className="w-full shadcn-input py-2 pl-9 pr-3 text-xs"
                     />
                   </div>
                 </div>
 
                 {/* Color Selector */}
                 <div>
-                  <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">
+                  <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider block mb-1.5">
                     Selecione uma Cor
                   </label>
                   
-                  {/* Grid of premium circles */}
                   <div className="grid grid-cols-6 gap-2 mb-3">
                     {PREDEFINED_COLORS.map(color => {
                       const isSelected = editingCatIdForManage ? editCatColor === color : newCatColor === color;
@@ -663,21 +662,20 @@ export default function MetaseOrcamentosPage() {
                     })}
                   </div>
 
-                  {/* Custom color input wrapper */}
                   <div className="flex items-center gap-2">
-                    <label className="text-[9px] text-muted-foreground font-bold uppercase">Ou cor personalizada:</label>
+                    <label className="text-[10px] text-muted-foreground font-bold uppercase">Ou cor personalizada:</label>
                     <input
                       type="color"
                       value={editingCatIdForManage ? editCatColor : newCatColor}
                       onChange={(e) => editingCatIdForManage ? setEditCatColor(e.target.value) : setNewCatColor(e.target.value)}
-                      className="w-8 h-6 rounded cursor-pointer border border-border/60 bg-transparent"
+                      className="w-8 h-6 rounded cursor-pointer border border-border/40 bg-transparent"
                     />
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-xl font-bold text-xs text-white bg-primary hover:opacity-90 transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-1.5"
+                  className="shiny-btn w-full py-3 text-xs font-bold"
                 >
                   {editingCatIdForManage ? 'Atualizar Categoria' : 'Criar Categoria'}
                 </button>
@@ -687,33 +685,33 @@ export default function MetaseOrcamentosPage() {
 
           {/* Right: Category List (3 cols) */}
           <div className="lg:col-span-3 space-y-6">
-            <div className="bg-card border border-border/40 rounded-2xl shadow-sm overflow-hidden">
-              <div className="p-5 border-b border-border/30 bg-muted/10">
-                <h3 className="font-bold text-sm text-foreground">Suas Categorias</h3>
-                <p className="text-[10px] text-muted-foreground mt-0.5">Todas as categorias criadas por você</p>
+            <div className="bento-card border border-border bg-card/90 p-0 overflow-hidden">
+              <div className="p-5 border-b border-border/15">
+                <h3 className="font-extrabold text-sm text-foreground tracking-tight">Suas Categorias</h3>
+                <p className="text-xs text-muted-foreground/70 mt-0.5">Todas as categorias criadas por você</p>
               </div>
 
               <div className="p-5 space-y-3">
                 {categories.length === 0 ? (
-                  <p className="text-xs text-muted-foreground text-center py-6 font-semibold">Nenhuma categoria criada ainda.</p>
+                  <p className="text-xs text-muted-foreground text-center py-6 font-medium">Nenhuma categoria criada ainda.</p>
                 ) : (
                   categories.map(cat => {
                     const isSystem = cat.nome === 'Investimentos' || cat.nome === 'Transferências';
                     return (
                       <div 
                         key={cat.id}
-                        className="p-3 bg-muted border border-border/20 rounded-xl flex items-center justify-between transition-colors hover:border-border/40"
+                        className="p-3 bg-muted/40 border border-border/15 rounded-xl flex items-center justify-between transition-colors"
                       >
                         <div className="flex items-center gap-3">
                           <div 
-                            className="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+                            className="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0 shadow-sm"
                             style={{ backgroundColor: cat.cor }}
                           >
                             <CategoryIcon name={cat.icone || 'circle'} size={15} />
                           </div>
                           <div>
                             <p className="text-xs font-bold text-foreground">{cat.nome}</p>
-                            <p className="text-[9px] text-muted-foreground font-semibold">
+                            <p className="text-[10px] text-muted-foreground/70 font-medium">
                               Orçamento: {cat.orçamento_mensal > 0 ? formatBRL(cat.orçamento_mensal) : 'Não definido'}
                             </p>
                           </div>
@@ -728,7 +726,7 @@ export default function MetaseOrcamentosPage() {
                                 setEditCatBudget(cat.orçamento_mensal ? String(cat.orçamento_mensal) : '');
                                 setEditCatColor(cat.cor);
                               }}
-                              className="p-1.5 rounded-lg bg-muted hover:bg-muted-foreground/10 text-muted-foreground hover:text-foreground transition-colors"
+                              className="p-1.5 rounded-xl border border-border/20 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                               title="Editar"
                             >
                               <Edit2 size={13} />
@@ -739,7 +737,7 @@ export default function MetaseOrcamentosPage() {
                                   deleteCategory(cat.id);
                                 }
                               }}
-                              className="p-1.5 rounded-lg bg-danger/5 hover:bg-danger/10 text-danger/80 hover:text-danger transition-colors"
+                              className="p-1.5 rounded-xl border border-border/20 text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
                               title="Excluir"
                             >
                               <Trash2 size={13} />

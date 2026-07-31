@@ -256,55 +256,61 @@ export default function InvestimentosPage() {
       
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2 font-serif">
-          <TrendingUp size={24} className="text-primary" />
+        <h2 className="text-xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
+          <TrendingUp size={22} className="text-foreground" />
           Investimentos e Reservas
         </h2>
-        <p className="text-xs text-muted-foreground font-serif">Adicione e acompanhe onde seu dinheiro está guardado de forma simples, como em uma planilha</p>
+        <p className="text-xs text-muted-foreground/70 mt-0.5">Acompanhe e aloque seu patrimônio por classe de ativo</p>
       </div>
 
-      {/* Cards: Metrics summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Bento Grid: Metrics summary */}
+      <div className="bento-grid">
         {/* Saldo Disponivel */}
-        <div className="bg-card p-6 flex flex-col justify-between h-32 relative overflow-hidden premium-card">
-          <div className="absolute right-5 top-5 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-border/20">
-            <Wallet size={20} />
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Conta Corrente</span>
+              <h3 className="text-3xl font-extrabold text-foreground tracking-tight mt-1">
+                {formatBRL(accountBalance)}
+              </h3>
+            </div>
+            <span className="badge-emerald p-2 rounded-xl">
+              <Wallet size={18} />
+            </span>
           </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider font-serif">Conta Corrente</span>
-            <p className="text-3xl font-bold text-foreground mt-1.5 font-mono-retro">
-              {formatBRL(accountBalance)}
-            </p>
-          </div>
-          <span className="text-[10px] text-muted-foreground">Dinheiro livre na conta corrente</span>
+          <span className="text-xs text-muted-foreground/70 mt-4 pt-3 border-t border-border/15">Saldo livre na conta</span>
         </div>
 
         {/* Total Guardado */}
-        <div className="bg-card p-6 flex flex-col justify-between h-32 relative overflow-hidden premium-card">
-          <div className="absolute right-5 top-5 w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-border/20">
-            <PiggyBank size={20} />
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Total Guardado</span>
+              <h3 className="text-3xl font-extrabold text-foreground tracking-tight mt-1">
+                {formatBRL(totalSaved)}
+              </h3>
+            </div>
+            <span className="badge-indigo p-2 rounded-xl">
+              <PiggyBank size={18} />
+            </span>
           </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider font-serif">Total Guardado</span>
-            <p className="text-3xl font-bold text-foreground mt-1.5 font-mono-retro">
-              {formatBRL(totalSaved)}
-            </p>
-          </div>
-          <span className="text-[10px] text-muted-foreground">Soma total de suas aplicações e reservas</span>
+          <span className="text-xs text-muted-foreground/70 mt-4 pt-3 border-t border-border/15">Aplicações e reservas ativas</span>
         </div>
 
         {/* Consolidated Patrimônio */}
-        <div className="bg-card p-6 flex flex-col justify-between h-32 relative overflow-hidden premium-card">
-          <div className="absolute right-5 top-5 w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-border/20">
-            <DollarSign size={20} />
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Patrimônio Consolidado</span>
+              <h3 className="text-3xl font-extrabold text-foreground tracking-tight mt-1">
+                {formatBRL(consolidatedBalance)}
+              </h3>
+            </div>
+            <span className="badge-amber p-2 rounded-xl">
+              <DollarSign size={18} />
+            </span>
           </div>
-          <div>
-            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider font-serif">Patrimônio Consolidado</span>
-            <p className="text-3xl font-bold text-foreground mt-1.5 font-mono-retro">
-              {formatBRL(consolidatedBalance)}
-            </p>
-          </div>
-          <span className="text-[10px] text-muted-foreground">Saldo da conta + Dinheiro guardado</span>
+          <span className="text-xs text-muted-foreground/70 mt-4 pt-3 border-t border-border/15">Conta corrente + Investimentos</span>
         </div>
       </div>
 
@@ -317,55 +323,55 @@ export default function InvestimentosPage() {
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         
-        {/* Left Side: Simple List of stashed money (3 cols) */}
+        {/* Left Side: Table of investments (3 cols) */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="bg-card premium-card overflow-hidden">
+          <div className="bento-card border border-border bg-card/90 p-0 overflow-hidden">
             
-            <div className="p-5 border-b border-border bg-muted/30">
-              <h3 className="font-bold text-sm text-foreground font-serif">Planilha de Investimentos</h3>
-              <p className="text-[10px] text-muted-foreground mt-0.5 font-serif">Locais onde você possui dinheiro reservado</p>
+            <div className="p-5 border-b border-border/15">
+              <h3 className="font-extrabold text-sm text-foreground tracking-tight">Planilha de Investimentos</h3>
+              <p className="text-xs text-muted-foreground/70 mt-0.5">Locais onde você possui dinheiro reservado</p>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="retro-table w-full text-left">
+              <table className="shadcn-table w-full text-left">
                 <thead>
                   <tr>
-                    <th className="py-3 px-4 font-serif">Onde está guardado</th>
-                    <th className="py-3 px-4 text-center font-serif">Tipo</th>
-                    <th className="py-3 px-4 text-right font-serif font-mono-retro">Valor Guardado</th>
-                    <th className="py-3 px-4 text-center font-serif">Ações</th>
+                    <th className="py-3.5 px-4">Onde está guardado</th>
+                    <th className="py-3.5 px-4 text-center">Tipo</th>
+                    <th className="py-3.5 px-4 text-right">Valor Guardado</th>
+                    <th className="py-3.5 px-4 text-center">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/20">
+                <tbody className="divide-y divide-border/15 text-xs">
                   {filteredInvestments.length > 0 ? (
                     filteredInvestments.map((inv) => (
-                      <tr key={inv.id} className="hover:bg-muted/10 transition-colors">
+                      <tr key={inv.id} className="transition-colors hover:bg-muted/40">
                         {/* Name */}
-                        <td className="py-3 px-4 font-bold text-foreground max-w-[150px] truncate">
+                        <td className="py-3.5 px-4 font-bold text-foreground max-w-[150px] truncate">
                           {inv.ticker}
                         </td>
 
                         {/* Type Badge */}
-                        <td className="py-3 px-4 text-center">
-                          <span className={`inline-block px-2.5 py-0.5 text-[9px] font-bold uppercase rounded border-2 border-border bg-muted text-foreground`}>
+                        <td className="py-3.5 px-4 text-center">
+                          <span className="badge-indigo inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full">
                             {translateType(inv.tipo)}
                           </span>
                         </td>
 
                         {/* Amount */}
-                        <td className="py-3 px-4 text-right font-mono-retro text-foreground text-sm">
+                        <td className="py-3.5 px-4 text-right font-extrabold text-foreground text-xs">
                           {formatBRL(Number(inv.quantidade) * Number(inv.preço_atual))}
                         </td>
 
                         {/* Actions */}
-                        <td className="py-3 px-4 text-center">
+                        <td className="py-3.5 px-4 text-center">
                           <div className="flex justify-center items-center gap-1.5">
                             <button
                               onClick={() => handleEditClick(inv)}
-                              className="p-1 border border-border/40 rounded text-muted-foreground hover:text-primary hover:bg-muted"
+                              className="p-1.5 border border-border/20 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
                               title="Editar Investimento"
                             >
-                              <Edit2 size={12} />
+                              <Edit2 size={13} />
                             </button>
                             <button
                               onClick={() => {
@@ -373,10 +379,10 @@ export default function InvestimentosPage() {
                                   deleteInvestment(inv.id);
                                 }
                               }}
-                              className="p-1 border border-border/40 rounded text-muted-foreground hover:text-danger hover:bg-muted"
+                              className="p-1.5 border border-border/20 rounded-xl text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-all"
                               title="Remover Investimento"
                             >
-                              <Trash2 size={12} />
+                              <Trash2 size={13} />
                             </button>
                           </div>
                         </td>
@@ -387,7 +393,7 @@ export default function InvestimentosPage() {
                       <td colSpan={4} className="py-12 text-center text-muted-foreground">
                         <div className="flex flex-col items-center justify-center gap-2">
                           <PiggyBank size={32} className="text-muted-foreground/30" />
-                          <span className="font-serif">Nenhum investimento encontrado com os filtros selecionados.</span>
+                          <span className="font-medium">Nenhum investimento encontrado com os filtros selecionados.</span>
                         </div>
                       </td>
                     </tr>
@@ -399,22 +405,22 @@ export default function InvestimentosPage() {
           </div>
         </div>
 
-        {/* Right Side: Stash / Edit Form (2 cols) */}
+        {/* Right Side: Form (2 cols) */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-card p-5 premium-card space-y-5 relative overflow-hidden">
+          <div className="bento-card border border-border bg-card/90 p-5 space-y-5">
             
-            <div className="flex justify-between items-center border-b border-border pb-3">
-              <h3 className="font-bold text-sm text-foreground flex items-center gap-2 font-serif">
-                <PlusCircle size={16} className="text-primary" />
+            <div className="flex justify-between items-center border-b border-border/15 pb-3">
+              <h3 className="font-extrabold text-sm text-foreground flex items-center gap-2 tracking-tight">
+                <PlusCircle size={16} className="text-foreground" />
                 {selectedInvId ? 'Editar Investimento' : 'Novo Lançamento'}
               </h3>
               {selectedInvId && (
                 <button
                   onClick={handleCancelEdit}
-                  className="p-1 border border-border/30 rounded text-muted-foreground hover:text-foreground"
+                  className="p-1 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted"
                   title="Cancelar Edição"
                 >
-                  <X size={13} />
+                  <X size={14} />
                 </button>
               )}
             </div>
@@ -423,7 +429,7 @@ export default function InvestimentosPage() {
               
               {/* Name / Where */}
               <div>
-                <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1 font-serif">
+                <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider block mb-1.5">
                   Onde está investido? (Nome)
                 </label>
                 <input
@@ -432,26 +438,26 @@ export default function InvestimentosPage() {
                   maxLength={20}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full retro-input"
+                  className="w-full shadcn-input text-xs"
                   required
                 />
-                <span className="text-[9px] text-muted-foreground/60 block mt-1">Máximo de 20 caracteres</span>
+                <span className="text-[10px] text-muted-foreground/60 block mt-1">Máximo de 20 caracteres</span>
               </div>
 
               {/* Amount */}
               <div>
-                <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1 font-serif">
+                <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider block mb-1.5">
                   Valor Guardado (R$)
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-3 text-xs font-bold text-muted-foreground font-mono-retro">R$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">R$</span>
                   <input
                     type="number"
                     step="0.01"
                     placeholder="0,00"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full retro-input pl-9 font-mono-retro"
+                    className="w-full shadcn-input pl-9 font-bold text-xs"
                     required
                   />
                 </div>
@@ -459,13 +465,13 @@ export default function InvestimentosPage() {
 
               {/* Type Category */}
               <div>
-                <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1 font-serif">
+                <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider block mb-1.5">
                   Tipo de Ativo
                 </label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value as any)}
-                  className="w-full retro-input"
+                  className="w-full shadcn-input text-xs"
                   required
                 >
                   <option value="renda_fixa">Renda Fixa (CDB, Selic, Poupança)</option>
@@ -476,10 +482,10 @@ export default function InvestimentosPage() {
               </div>
 
               {/* Informative description */}
-              <div className="p-3 bg-muted border border-border/20 rounded flex gap-2 text-[10px] text-muted-foreground leading-relaxed">
-                <Info size={14} className="text-primary shrink-0 mt-0.5" />
-                <p className="font-serif">
-                  Aqui você pode registrar o saldo atualizado de cada um dos seus investimentos. Os valores adicionados compõem o seu Patrimônio Consolidado.
+              <div className="p-3 bg-muted/40 border border-border/15 rounded-xl flex gap-2 text-xs text-muted-foreground leading-relaxed">
+                <Info size={15} className="text-foreground shrink-0 mt-0.5" />
+                <p className="text-[11px]">
+                  Cadastre o valor total alocado neste ativo. Ele integrará automaticamente a visão geral de patrimônio.
                 </p>
               </div>
 
@@ -488,7 +494,7 @@ export default function InvestimentosPage() {
                   <button
                     type="button"
                     onClick={handleCancelEdit}
-                    className="retro-btn w-1/3"
+                    className="w-1/3 py-2.5 border border-border/20 text-xs font-bold text-muted-foreground hover:bg-muted rounded-xl"
                   >
                     Cancelar
                   </button>
@@ -496,10 +502,10 @@ export default function InvestimentosPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`retro-btn retro-btn-primary ${selectedInvId ? 'w-2/3' : 'w-full'}`}
+                  className={`shiny-btn py-2.5 text-xs font-bold ${selectedInvId ? 'w-2/3' : 'w-full'}`}
                 >
                   {isSubmitting ? (
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin" />
                   ) : (
                     selectedInvId ? 'Atualizar Dados' : 'Adicionar Dinheiro'
                   )}

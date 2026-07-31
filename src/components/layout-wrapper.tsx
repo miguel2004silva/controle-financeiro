@@ -132,20 +132,34 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
       
-      {/* 1. FIXED DESKTOP SIDEBAR - THEME AWARE (WHITE & GREEN) */}
-      <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-64 bg-white dark:bg-zinc-950 text-slate-800 dark:text-zinc-100 flex-col z-40 border-r border-slate-200 dark:border-zinc-800">
+      {/* 1. FIXED DESKTOP SIDEBAR - KOMADI ADMIN STYLE */}
+      <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-62 bg-card/70 backdrop-blur-xl text-foreground flex-col z-40 border-r border-border/15 px-4 pt-6 pb-6 transition-all duration-300">
         {/* Sidebar Logo */}
-        <div className="h-16 px-6 border-b border-slate-200 dark:border-zinc-800 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-[0_4px_12px_rgba(22,163,74,0.3)]">
-            <Wallet size={18} />
+        <div className="flex items-center gap-3 px-3 mb-8">
+          <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center font-extrabold shadow-md">
+            <Wallet size={20} />
           </div>
-          <span className="font-semibold text-sm tracking-tight text-slate-800 dark:text-white">
-            Controle<span className="text-primary italic font-normal">Financeiro</span>
-          </span>
+          <div>
+            <h2 className="font-extrabold text-sm tracking-tight text-foreground leading-tight">
+              Controle<span className="opacity-70">Fin</span>
+            </h2>
+            <p className="text-[10.5px] font-medium text-muted-foreground/60">Painel Financeiro</p>
+          </div>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 px-4 py-6 space-y-1">
+        {/* Quick Add Shiny Button */}
+        <div className="px-1 mb-6">
+          <button
+            onClick={() => setTransactionModalOpen(true)}
+            className="w-full shiny-btn gap-2 py-2.5 shadow-md font-semibold text-xs rounded-xl"
+          >
+            <Plus size={16} />
+            <span>Novo Lançamento</span>
+          </button>
+        </div>
+
+        {/* Navigation Links (Komadi style) */}
+        <nav className="flex-1 space-y-1">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -153,31 +167,31 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${
+                className={`relative flex items-center gap-3 h-11 px-3.5 rounded-xl shrink-0 transition-colors duration-200 outline-none ${
                   isActive
-                    ? 'bg-primary text-white shadow-[0_4px_12px_rgba(22,163,74,0.25)]'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-900'
+                    ? 'bg-foreground text-background font-bold shadow-sm'
+                    : 'text-foreground/75 hover:bg-muted/50 hover:text-foreground font-medium'
                 }`}
               >
-                <Icon size={16} className={isActive ? 'text-white' : 'text-slate-500 dark:text-zinc-400'} />
-                {item.name}
+                <Icon size={18} className={`relative z-10 ${isActive ? 'text-background' : 'text-muted-foreground/70'}`} />
+                <span className="relative z-10 text-[13.5px] tracking-tight">{item.name}</span>
               </Link>
             );
           })}
         </nav>
 
         {/* Sidebar Footer Controls */}
-        <div className="p-4 border-t border-slate-200 dark:border-zinc-800 space-y-3">
+        <div className="pt-4 border-t border-border/15 space-y-3">
           {/* User profile */}
-          <div className="flex items-center gap-3 px-3 py-2 bg-muted dark:bg-zinc-900/50 rounded-xl border border-border/60 dark:border-zinc-800/60">
-            <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-zinc-800 flex items-center justify-center text-slate-600 dark:text-zinc-300">
-              <User size={14} />
+          <div className="flex items-center gap-3 px-3 py-2 bg-muted/40 rounded-xl border border-border/15">
+            <div className="w-8 h-8 rounded-full bg-foreground/10 flex items-center justify-center text-foreground font-bold text-xs">
+              {user?.name?.[0] || user?.email?.[0] || 'U'}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] text-slate-400 dark:text-zinc-500 uppercase tracking-wider font-bold">Usuário</p>
-              <p className="text-xs font-semibold text-slate-800 dark:text-zinc-200 truncate">
-                {user?.name || user?.email}
+              <p className="text-[12px] font-bold text-foreground truncate">
+                {user?.name || user?.email?.split('@')[0]}
               </p>
+              <p className="text-[10px] font-medium text-muted-foreground/60 truncate">Conta Ativa</p>
             </div>
           </div>
 
@@ -186,87 +200,86 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             {mounted && (
               <button
                 onClick={toggleTheme}
-                className="flex-1 py-2 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-colors"
-                title={theme === 'light' ? 'Modo Escuro' : 'Modo Claro'}
+                className="flex-1 flex items-center justify-center gap-2 h-10 px-3 rounded-xl border border-border/15 text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors text-xs font-semibold"
+                title={theme === 'light' ? 'Tema Escuro' : 'Tema Claro'}
               >
-                {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+                {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+                <span>{theme === 'light' ? 'Escuro' : 'Claro'}</span>
               </button>
             )}
 
             {/* Logout Button */}
             <button
               onClick={signOut}
-              className="flex-1 py-2 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-rose-500 flex items-center justify-center transition-colors"
+              className="h-10 px-3 rounded-xl border border-border/15 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 transition-colors"
               title="Sair"
             >
-              <LogOut size={14} />
+              <LogOut size={16} />
             </button>
           </div>
         </div>
       </aside>
 
       {/* 2. MOBILE HEADER & BOTTOM NAV */}
-      {/* Mobile Top Header */}
-      <header className="h-16 px-4 border-b border-border flex items-center justify-between bg-card sticky top-0 z-40 md:hidden transition-colors duration-200">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+      <header className="h-16 px-4 border-b border-border/15 flex items-center justify-between bg-card/80 backdrop-blur-md sticky top-0 z-40 md:hidden transition-colors duration-200">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-foreground text-background flex items-center justify-center font-bold">
             <Wallet size={16} />
           </div>
-          <span className="font-semibold text-xs tracking-tight">
-            Controle<span className="text-primary italic font-normal">Financeiro</span>
+          <span className="font-extrabold text-xs tracking-tight text-foreground">
+            Controle<span className="opacity-75">Fin</span>
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Mobile Theme Toggle */}
           {mounted && (
             <button
               onClick={toggleTheme}
-              className="p-2 border border-border rounded-lg bg-muted text-muted-foreground hover:text-foreground"
+              className="p-2 border border-border/15 rounded-xl bg-muted/50 text-foreground"
             >
-              {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
             </button>
           )}
 
           <button 
             onClick={signOut}
-            className="p-2 border border-border rounded-lg bg-muted text-muted-foreground hover:text-danger"
+            className="p-2 border border-border/15 rounded-xl bg-muted/50 text-muted-foreground hover:text-rose-500"
             title="Sair"
           >
-            <LogOut size={14} />
+            <LogOut size={15} />
           </button>
         </div>
       </header>
 
       {/* 3. MAIN CONTAINER & ROUTE PAGES */}
-      <div className="flex-1 flex flex-col md:pl-64 min-h-screen bg-background dark:bg-zinc-950 transition-colors duration-200">
+      <div className="flex-1 flex flex-col md:pl-62 min-h-screen bg-background transition-colors duration-200">
         
         {/* Page Top Header - Desktop & Mobile */}
-        <header className="w-full bg-white dark:bg-zinc-900 border-b border-border/80 px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors">
+        <header className="w-full border-b border-border/15 px-6 pt-6 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors">
           <div>
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-              Olá, {user?.name || user?.email?.split('@')[0]}
-            </p>
-            <h1 className="text-xl font-bold text-foreground">
+            <h1 className="text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
               {getPageTitle(pathname)}
             </h1>
+            <p className="text-[12.5px] font-medium text-muted-foreground/60 mt-0.5">
+              Olá, {user?.name || user?.email?.split('@')[0]} • Visão geral do seu patrimônio
+            </p>
           </div>
 
-          {/* Month Period Selector */}
-          <div className="flex items-center bg-slate-100 dark:bg-zinc-800 p-1.5 rounded-xl border border-slate-200/60 dark:border-zinc-700/60 w-full sm:w-auto justify-between shadow-sm">
+          {/* Month Period Selector (Komadi Admin Pill Switcher style) */}
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-card border border-border/15 shadow-sm">
             <button 
               onClick={handlePrevMonth}
-              className="p-1 rounded-lg hover:bg-white dark:hover:bg-zinc-700 text-muted-foreground hover:text-foreground transition-all"
+              className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
               aria-label="Mês Anterior"
             >
               <ChevronLeft size={16} />
             </button>
-            <span className="text-xs font-semibold text-foreground px-4 min-w-[140px] text-center select-none font-mono-retro">
+            <span className="text-xs font-bold text-foreground px-3 min-w-[130px] text-center select-none">
               {formatMonthYear(selectedMonth)}
             </span>
             <button 
               onClick={handleNextMonth}
-              className="p-1 rounded-lg hover:bg-white dark:hover:bg-zinc-700 text-muted-foreground hover:text-foreground transition-all"
+              className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
               aria-label="Próximo Mês"
             >
               <ChevronRight size={16} />
@@ -275,13 +288,13 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
         </header>
 
         {/* Main Content Area */}
-        <main className="flex-grow w-full max-w-7xl mx-auto px-6 py-8 pb-24 md:pb-8 animate-fade-in transition-all duration-200">
+        <main className="flex-grow w-full max-w-7xl mx-auto px-6 py-6 pb-24 md:pb-8 transition-all duration-200">
           {children}
         </main>
       </div>
 
       {/* Mobile Bottom Bar Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card border-t border-border z-40 flex items-center justify-around px-2 transition-colors duration-200">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card/90 backdrop-blur-md border-t border-border/15 z-40 flex items-center justify-around px-2 transition-colors duration-200">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -289,11 +302,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             <Link
               key={item.name}
               href={item.href}
-              className={`flex flex-col items-center justify-center flex-grow py-2 gap-1 text-[9px] font-bold transition-colors ${
-                isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+              className={`flex flex-col items-center justify-center flex-grow py-2 gap-1 text-[10px] font-bold transition-colors ${
+                isActive ? 'text-foreground font-extrabold' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <Icon className={isActive ? 'text-primary scale-110' : ''} size={18} />
+              <Icon className={isActive ? 'text-foreground scale-110' : ''} size={18} />
               <span>{item.name.split(' ')[0]}</span>
             </Link>
           );
@@ -303,10 +316,10 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* Floating Action Button (FAB) for Mobile Quick Add */}
       <button
         onClick={() => setTransactionModalOpen(true)}
-        className="md:hidden fixed right-4 bottom-20 z-30 w-12 h-12 rounded-full border border-border text-white bg-primary shadow-[0_4px_12px_rgba(22,163,74,0.4)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
+        className="md:hidden fixed right-4 bottom-20 z-30 w-12 h-12 rounded-full border border-border/20 text-background bg-foreground shadow-lg flex items-center justify-center active:scale-95 transition-all"
         aria-label="Adicionar transação"
       >
-        <Plus size={24} />
+        <Plus size={22} />
       </button>
 
       {/* The Quick Add Modal */}

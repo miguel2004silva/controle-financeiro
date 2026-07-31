@@ -466,77 +466,83 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       
-      {/* 1. GRID OF CARDS (Reativo) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* 1. BENTO GRID OF HERO METRIC CARDS */}
+      <div className="bento-grid">
         
-        {/* Card Destaque: Patrimônio Total */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card bg-gradient-to-br from-green-500/5 via-transparent to-transparent select-none">
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Patrimônio Total</span>
-            <div className="w-10 h-10 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center shrink-0">
-              <DollarSign size={18} />
+        {/* Hero Card: Patrimônio Total */}
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Patrimônio Total</span>
+              <h3 className={`text-3xl font-extrabold tracking-tight mt-1 ${patrimonioTotal < 0 ? 'text-rose-500' : 'text-foreground'}`}>
+                {formatBRL(patrimonioTotal)}
+              </h3>
             </div>
+            <span className="badge-emerald px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+              <TrendingUp size={14} /> Ativo
+            </span>
           </div>
-          <div>
-            <p className={`text-2xl font-bold font-mono-retro leading-tight ${patrimonioTotal < 0 ? 'text-red-500' : 'text-slate-900 dark:text-white'}`}>
-              {formatBRL(patrimonioTotal)}
-            </p>
-            <div className="flex items-center gap-2 mt-1.5 pt-1.5 border-t border-border/40">
-              <span className="text-[10px] text-muted-foreground font-semibold flex items-center gap-1.5">
-                Saldo em Conta: <span className="font-mono-retro font-bold text-foreground">{formatBRL(liquidezTotal)}</span>
-              </span>
-              <button 
-                onClick={() => {
-                  const mainSaldo = investments.find(i => i.tipo === 'liquidez');
-                  if (mainSaldo) {
-                    handleOpenEdit(mainSaldo);
-                  } else {
-                    handleOpenAdd('liquidez');
-                  }
-                }}
-                className="p-1 rounded text-muted-foreground hover:text-primary hover:bg-muted transition-all"
-                title="Ajustar Saldo Atual"
-              >
-                <Edit2 size={10} />
-              </button>
-            </div>
+
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/15">
+            <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
+              Saldo em Conta: <strong className="text-foreground">{formatBRL(liquidezTotal)}</strong>
+            </span>
+            <button 
+              onClick={() => {
+                const mainSaldo = investments.find(i => i.tipo === 'liquidez');
+                if (mainSaldo) {
+                  handleOpenEdit(mainSaldo);
+                } else {
+                  handleOpenAdd('liquidez');
+                }
+              }}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+              title="Ajustar Saldo"
+            >
+              <Edit2 size={13} />
+            </button>
           </div>
         </div>
 
-        {/* Card Investimentos */}
-        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between h-36 shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card select-none">
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">Investimentos</span>
-            <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
-              <PiggyBank size={18} />
+        {/* Bento Card: Investimentos */}
+        <div className="bento-card border border-border bg-card/90 flex flex-col justify-between select-none">
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">Investimentos & Ativos</span>
+              <h3 className="text-3xl font-extrabold text-foreground tracking-tight mt-1">
+                {formatBRL(investimentosTotal)}
+              </h3>
             </div>
+            <span className="badge-indigo px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+              <PiggyBank size={14} /> Portfólio
+            </span>
           </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white font-mono-retro leading-tight">
-              {formatBRL(investimentosTotal)}
-            </p>
-            <span className="text-[10px] text-muted-foreground font-semibold mt-1 block">Ações, FIIs e Renda Fixa</span>
+
+          <div className="mt-4 pt-3 border-t border-border/15 flex items-center justify-between">
+            <span className="text-xs text-muted-foreground font-medium">Ações, FIIs e Renda Fixa</span>
+            <span className="text-xs font-bold text-foreground">{pieData.length} Ativos</span>
           </div>
         </div>
+
       </div>
 
       {/* 2. CHARTS SECTION (REAL DATA) */}
-      <div className="w-full bg-card p-6 border border-border rounded-2xl shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.3)] premium-card">
+      <div className="bento-card border border-border bg-card/90 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <div>
-            <h3 className="font-bold text-base text-foreground">Evolução do Patrimônio</h3>
-            <p className="text-xs text-muted-foreground">Evolução acumulada com base nas movimentações reais</p>
+            <h3 className="font-extrabold text-lg text-foreground tracking-tight">Evolução do Patrimônio</h3>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">Evolução acumulada com base nas movimentações reais</p>
           </div>
           
-          <div className="flex bg-muted p-1 rounded-xl w-full sm:w-auto select-none">
+          <div className="flex p-1 rounded-xl bg-muted/60 border border-border/15 w-full sm:w-auto select-none">
             {(['7D', '1M', '6M', '1A'] as const).map(range => (
               <button
                 key={range}
                 onClick={() => setChartRange(range)}
-                className={`flex-1 sm:flex-initial py-1 px-3.5 text-xs font-semibold rounded-lg transition-all ${
+                className={`uiverse-pill ${
                   chartRange === range
-                    ? 'bg-white dark:bg-zinc-700 text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'uiverse-pill-active'
+                    : 'uiverse-pill-inactive'
                 }`}
               >
                 {range}
@@ -545,26 +551,26 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="h-[280px] w-full">
+        <div className="h-[300px] w-full">
           {mounted ? (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={evolutionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorPatrimonio" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#22C55E" stopOpacity={0.06}/>
-                    <stop offset="95%" stopColor="#22C55E" stopOpacity={0.00}/>
+                    <stop offset="5%" stopColor="var(--foreground)" stopOpacity={0.15}/>
+                    <stop offset="95%" stopColor="var(--foreground)" stopOpacity={0.00}/>
                   </linearGradient>
                 </defs>
                 <XAxis 
                   dataKey="name" 
                   stroke="var(--muted-foreground)" 
-                  fontSize={10} 
+                  fontSize={11} 
                   tickLine={false} 
                   axisLine={false} 
                 />
                 <YAxis 
                   stroke="var(--muted-foreground)" 
-                  fontSize={10} 
+                  fontSize={11} 
                   tickLine={false} 
                   axisLine={false}
                   tickFormatter={(val) => `R$ ${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
@@ -574,7 +580,8 @@ export default function DashboardPage() {
                     backgroundColor: 'var(--card)',
                     border: '1px solid var(--border)',
                     borderRadius: 'var(--radius)',
-                    color: 'var(--foreground)'
+                    color: 'var(--foreground)',
+                    fontFamily: 'Sora, sans-serif'
                   }}
                   labelStyle={{ color: 'var(--muted-foreground)', fontWeight: 'bold', fontSize: '11px' }}
                   itemStyle={{ color: 'var(--foreground)', fontWeight: 'bold', fontSize: '13px' }}
@@ -583,7 +590,7 @@ export default function DashboardPage() {
                 <Area 
                   type="monotone" 
                   dataKey="Patrimônio" 
-                  stroke="#22C55E" 
+                  stroke="var(--foreground)" 
                   strokeWidth={3}
                   fillOpacity={1} 
                   fill="url(#colorPatrimonio)" 
@@ -599,45 +606,41 @@ export default function DashboardPage() {
       {/* 4. MODAL PARA ADICIONAR E EDITAR ITENS */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop Overlay */}
-          <div onClick={() => setIsModalOpen(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm dark:bg-black/60" />
+          <div onClick={() => setIsModalOpen(false)} className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
 
-          {/* Modal Card */}
-          <div className="bg-white dark:bg-zinc-900 border border-border w-full max-w-md rounded-2xl p-6 shadow-xl relative z-10 animate-scale-in transition-colors">
-            
-            {/* Close button */}
-            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground p-1 rounded-lg">
-              <X size={16} />
+          <div className="bg-card border border-border/20 w-full max-w-md rounded-2xl p-6 shadow-2xl relative z-10 animate-scale-in">
+            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground p-1.5 rounded-xl hover:bg-muted transition-colors">
+              <X size={18} />
             </button>
 
-            <h3 className="font-bold text-lg text-foreground mb-1">
+            <h3 className="font-extrabold text-lg text-foreground mb-1">
               {modalMode === 'add' ? `Adicionar ${modalTipo === 'liquidez' ? 'Liquidez' : modalTipo === 'bens' ? 'Bem' : 'Dívida'}` : `Editar ${modalTipo === 'liquidez' ? 'Liquidez' : modalTipo === 'bens' ? 'Bem' : 'Dívida'}`}
             </h3>
             <p className="text-xs text-muted-foreground mb-6">
-              Os dados de valor são cadastrados reativamente para o mês selecionado.
+              Os dados de valor são cadastrados para o mês selecionado.
             </p>
 
             <form onSubmit={handleModalSubmit} className="space-y-4">
               <div>
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Nome do Item</label>
+                <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">Nome do Item</label>
                 <input 
                   type="text" 
                   value={modalName}
                   onChange={(e) => setModalName(e.target.value)}
-                  className="w-full retro-input focus:outline-none"
-                  placeholder={modalTipo === 'liquidez' ? 'Ex: Caixinha Nubank' : modalTipo === 'bens' ? 'Ex: BYD Mini' : 'Ex: Financiamento FIES'}
+                  className="w-full shadcn-input"
+                  placeholder={modalTipo === 'liquidez' ? 'Ex: Caixinha Nubank' : modalTipo === 'bens' ? 'Ex: Veículo' : 'Ex: Financiamento'}
                   required
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Valor (R$)</label>
+                <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">Valor (R$)</label>
                 <input 
                   type="number" 
                   step="0.01"
                   value={modalValue}
                   onChange={(e) => setModalValue(e.target.value)}
-                  className="w-full retro-input focus:outline-none font-mono-retro text-sm"
+                  className="w-full shadcn-input font-bold text-sm"
                   placeholder="0,00"
                   required
                 />
@@ -647,13 +650,13 @@ export default function DashboardPage() {
                 <button 
                   type="button" 
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-xl transition-all"
+                  className="px-4 py-2 text-xs font-bold text-muted-foreground hover:bg-muted rounded-xl transition-all"
                 >
                   Cancelar
                 </button>
                 <button 
                   type="submit" 
-                  className="px-5 py-2 text-xs font-semibold text-white bg-primary rounded-xl hover:opacity-90 shadow-sm transition-all"
+                  className="shiny-btn px-5 py-2 text-xs font-bold"
                 >
                   Confirmar
                 </button>
