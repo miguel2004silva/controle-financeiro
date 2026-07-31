@@ -133,15 +133,15 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
       
       {/* 1. FIXED DESKTOP SIDEBAR - KOMADI ADMIN STYLE */}
-      <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-62 bg-card/70 backdrop-blur-xl text-foreground flex-col z-40 border-r border-border/15 px-4 pt-6 pb-6 transition-all duration-300">
+      <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-64 bg-card/80 backdrop-blur-xl text-foreground flex-col z-40 border-r border-border/15 px-4 pt-6 pb-6 transition-all duration-300">
         {/* Sidebar Logo */}
         <div className="flex items-center gap-3 px-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-extrabold shadow-md shadow-primary/20">
+          <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center font-extrabold shadow-md">
             <Wallet size={20} />
           </div>
           <div>
             <h2 className="font-extrabold text-sm tracking-tight text-foreground leading-tight">
-              Controle<span className="text-primary font-bold">Fin</span>
+              Controle<span className="opacity-70">Fin</span>
             </h2>
             <p className="text-[10.5px] font-medium text-muted-foreground/60">Painel Financeiro</p>
           </div>
@@ -169,11 +169,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
                 href={item.href}
                 className={`relative flex items-center gap-3 h-12 px-3.5 rounded-xl shrink-0 transition-colors duration-200 outline-none ${
                   isActive
-                    ? 'bg-primary text-primary-foreground font-bold shadow-md shadow-primary/20'
+                    ? 'bg-foreground text-background font-bold shadow-sm'
                     : 'text-foreground/75 hover:bg-muted/50 hover:text-foreground font-medium'
                 }`}
               >
-                <Icon size={18} className={`relative z-10 ${isActive ? 'text-primary-foreground' : 'text-muted-foreground/60'}`} />
+                <Icon size={18} className={`relative z-10 ${isActive ? 'text-background' : 'text-muted-foreground/60'}`} />
                 <span className="relative z-10 text-[14px] tracking-tight">{item.name}</span>
               </Link>
             );
@@ -190,7 +190,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
               </p>
               <p className="text-[10.5px] font-medium text-muted-foreground/60 truncate">Conta Ativa</p>
             </div>
-            <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-foreground/10 text-foreground flex items-center justify-center font-bold text-xs shrink-0">
               {user?.name?.[0] || user?.email?.[0] || 'U'}
             </div>
           </div>
@@ -223,11 +223,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* 2. MOBILE HEADER & BOTTOM NAV */}
       <header className="h-16 px-4 border-b border-border/15 flex items-center justify-between bg-card/80 backdrop-blur-md sticky top-0 z-40 md:hidden transition-colors duration-200">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold">
+          <div className="w-8 h-8 rounded-xl bg-foreground text-background flex items-center justify-center font-bold">
             <Wallet size={16} />
           </div>
           <span className="font-extrabold text-xs tracking-tight text-foreground">
-            Controle<span className="text-primary font-bold">Fin</span>
+            Controle<span className="opacity-75">Fin</span>
           </span>
         </div>
 
@@ -252,7 +252,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       </header>
 
       {/* 3. MAIN CONTAINER & ROUTE PAGES */}
-      <div className="flex-1 flex flex-col md:pl-62 min-h-screen bg-background transition-colors duration-200">
+      <div className="flex-1 flex flex-col md:pl-64 min-h-screen bg-background transition-colors duration-200">
         
         {/* Page Top Header - Desktop & Mobile */}
         <header className="w-full border-b border-border/15 px-6 pt-6 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors">
@@ -303,10 +303,10 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
               key={item.name}
               href={item.href}
               className={`flex flex-col items-center justify-center flex-grow py-2 gap-1 text-[10px] font-bold transition-colors ${
-                isActive ? 'text-primary font-extrabold' : 'text-muted-foreground hover:text-foreground'
+                isActive ? 'text-foreground font-extrabold' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <Icon className={isActive ? 'text-primary scale-110' : ''} size={18} />
+              <Icon className={isActive ? 'text-foreground scale-110' : ''} size={18} />
               <span>{item.name.split(' ')[0]}</span>
             </Link>
           );

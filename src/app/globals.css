@@ -5,15 +5,15 @@
 @tailwind utilities;
 
 :root {
-  /* Komadi Admin Light Palette (#f5efe0 + Caramel #C86D3B) */
+  /* Komadi Admin Light Palette (#f5efe0) */
   --background: #F5EFE0;
   --foreground: #1C1C1A;
   --card: #FAF6ED;
   --card-foreground: #1C1C1A;
-  --primary: #C86D3B; /* Komadi Caramel */
-  --primary-foreground: #FFFFFF;
-  --accent: #C86D3B;
-  --accent-foreground: #FFFFFF;
+  --primary: #1C1C1A;
+  --primary-foreground: #F5EFE0;
+  --accent: #1C1C1A;
+  --accent-foreground: #F5EFE0;
   --muted: #EAE3D2;
   --muted-foreground: #78746D;
   --border: rgba(28, 28, 26, 0.12);
@@ -34,15 +34,15 @@
 }
 
 [data-theme='dark'] {
-  /* Komadi Admin Dark Palette (#1c1c1a + Caramel #D97736) */
+  /* Komadi Admin Dark Palette (#1c1c1a) */
   --background: #1C1C1A;
   --foreground: #F5EFE0;
   --card: #242422;
   --card-foreground: #F5EFE0;
-  --primary: #D97736; /* Bright Caramel for dark mode */
-  --primary-foreground: #FFFFFF;
-  --accent: #D97736;
-  --accent-foreground: #FFFFFF;
+  --primary: #F5EFE0;
+  --primary-foreground: #1C1C1A;
+  --accent: #F5EFE0;
+  --accent-foreground: #1C1C1A;
   --muted: #2C2C29;
   --muted-foreground: #A39E93;
   --border: rgba(245, 239, 224, 0.12);
@@ -61,7 +61,7 @@
   --indigo-fg: #818CF8;
 }
 
-* {
+*, ::before, ::after, html, body, input, button, select, textarea, label, table, th, td, span, div, p, a, h1, h2, h3, h4, h5, h6 {
   border-color: var(--border);
   box-sizing: border-box;
   font-family: 'Sora', sans-serif !important;
