@@ -567,9 +567,22 @@ export default function MetaseOrcamentosPage() {
                   );
                 })
               ) : (
-                <p className="text-xs text-muted-foreground text-center py-6 font-medium">
-                  Cadastre sua primeira meta financeira clicando no "+" acima.
-                </p>
+                <div className="text-center py-10 px-4 bg-[#F7F9F7] rounded-3xl border border-dashed border-border/40 space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-[#EAF5ED] text-[#2D7D46] flex items-center justify-center mx-auto">
+                    <Target size={24} />
+                  </div>
+                  <h4 className="font-extrabold text-sm text-foreground">Comece a definir as suas metas</h4>
+                  <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+                    A partir daí você começa a vincular e contabilizar tudo o que planeja alcançar.
+                  </p>
+                  <button
+                    onClick={() => setShowAddGoal(true)}
+                    className="shiny-btn py-2 px-4 rounded-xl font-bold text-xs inline-flex items-center gap-1.5 mt-2"
+                  >
+                    <Plus size={15} />
+                    <span>Definir Primeira Meta</span>
+                  </button>
+                </div>
               )}
             </div>
 

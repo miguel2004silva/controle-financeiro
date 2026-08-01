@@ -46,6 +46,15 @@ interface FinanceContextType {
   // Refresh data explicitly
   refreshData: () => Promise<void>;
   
+  // Emergency reserve & Salary states
+  emergencyReserve: number;
+  emergencyGoal: number;
+  updateEmergencyReserve: (current: number, goal?: number) => void;
+  monthlyIncome: number;
+  setMonthlyIncome: (income: number) => void;
+  visibleCards: string[];
+  toggleCardVisibility: (cardId: string) => void;
+  
   // Modal states
   isTransactionModalOpen: boolean;
   setTransactionModalOpen: (open: boolean) => void;
@@ -61,75 +70,12 @@ const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 };
 
-// Seed data definitions
-const SEED_CATEGORIES: Category[] = [
-  { id: 'cat-alimentacao', nome: 'Alimentação', cor: '#10B981', icone: 'utensils', orçamento_mensal: 1000 },
-  { id: 'cat-transporte', nome: 'Transporte', cor: '#3B82F6', icone: 'car', orçamento_mensal: 500 },
-  { id: 'cat-moradia', nome: 'Moradia', cor: '#8B5CF6', icone: 'home', orçamento_mensal: 2000 },
-  { id: 'cat-lazer', nome: 'Lazer', cor: '#EC4899', icone: 'tv', orçamento_mensal: 400 },
-  { id: 'cat-saude', nome: 'Saúde', cor: '#F43F5E', icone: 'activity', orçamento_mensal: 300 },
-  { id: 'cat-investimentos', nome: 'Investimentos', cor: '#10B981', icone: 'trending-up', orçamento_mensal: 0 },
-  { id: 'cat-receita', nome: 'Receitas', cor: '#10B981', icone: 'dollar-sign', orçamento_mensal: 0 },
-  { id: 'cat-educacao', nome: 'Educação', cor: '#F59E0B', icone: 'book', orçamento_mensal: 300 }
-];
-const SEED_TRANSACTIONS: Transaction[] = [
-  {
-    id: 'tx-salario',
-    tipo: 'receita',
-    valor: 12000,
-    categoria_id: 'cat-receita',
-    descrição: 'Salário Mensal',
-    data: '2026-07-05T12:00:00Z',
-    recorrente: true
-  },
-  {
-    id: 'tx-mercado',
-    tipo: 'despesa',
-    valor: 1200,
-    categoria_id: 'cat-alimentacao',
-    descrição: 'Supermercado Mensal',
-    data: '2026-07-10T12:00:00Z',
-    recorrente: false
-  },
-  {
-    id: 'tx-transporte',
-    tipo: 'despesa',
-    valor: 450,
-    categoria_id: 'cat-transporte',
-    descrição: 'Combustível',
-    data: '2026-07-12T12:00:00Z',
-    recorrente: false
-  },
-  {
-    id: 'tx-condominio',
-    tipo: 'despesa',
-    valor: 800,
-    categoria_id: 'cat-moradia',
-    descrição: 'Condomínio e IPTU',
-    data: '2026-07-15T12:00:00Z',
-    recorrente: true
-  }
-];
-const SEED_INVESTMENTS: Investment[] = [
-  { id: 'inv-casa', tipo: 'bens', ticker: 'Casa', quantidade: 1, preço_medio: 600000, preço_atual: 600000, data_atualização: '2026-07-01T12:00:00Z' },
-  { id: 'inv-byd', tipo: 'bens', ticker: 'BYD Mini', quantidade: 1, preço_medio: 100000, preço_atual: 100000, data_atualização: '2026-07-01T12:00:00Z' },
-  { id: 'inv-caixinha', tipo: 'liquidez', ticker: 'Caixinha Nubank', quantidade: 1, preço_medio: 15000, preço_atual: 15000, data_atualização: '2026-07-01T12:00:00Z' },
-  { id: 'inv-vale', tipo: 'ação', ticker: 'VALE3', quantidade: 100, preço_medio: 62, preço_atual: 65, data_atualização: '2026-07-05T12:00:00Z' },
-  { id: 'inv-hglg', tipo: 'fii', ticker: 'HGLG11', quantidade: 50, preço_medio: 155, preço_atual: 160, data_atualização: '2026-07-10T12:00:00Z' },
-  { id: 'inv-divida', tipo: 'divida', ticker: 'Financiamento', quantidade: 1, preço_medio: 80000, preço_atual: 80000, data_atualização: '2026-07-01T12:00:00Z' }
-];
-const SEED_MOVEMENTS: InvestmentMovement[] = [
-  { id: 'mov-casa', investment_id: 'inv-casa', tipo: 'aporte', valor: 600000, quantidade: 1, data: '2026-07-01' },
-  { id: 'mov-byd', investment_id: 'inv-byd', tipo: 'aporte', valor: 100000, quantidade: 1, data: '2026-07-01' },
-  { id: 'mov-caixinha', investment_id: 'inv-caixinha', tipo: 'aporte', valor: 15000, quantidade: 1, data: '2026-07-01' },
-  { id: 'mov-vale', investment_id: 'inv-vale', tipo: 'aporte', valor: 6200, quantidade: 100, data: '2026-07-05' },
-  { id: 'mov-hglg', investment_id: 'inv-hglg', tipo: 'aporte', valor: 7750, quantidade: 50, data: '2026-07-10' },
-  { id: 'mov-divida', investment_id: 'inv-divida', tipo: 'aporte', valor: 80000, quantidade: 1, data: '2026-07-01' }
-];
-const SEED_GOALS: Goal[] = [
-  { id: 'goal-reserva', nome: 'Reserva de Emergência', valor_alvo: 50000, valor_atual: 15000, prazo: '2027-12-31' },
-  { id: 'goal-viagem', nome: 'Viagem de Fim de Ano', valor_alvo: 10000, valor_atual: 2500, prazo: '2026-12-25' }
-];
+// Seed data definitions (Empty for clean state)
+const SEED_CATEGORIES: Category[] = [];
+const SEED_TRANSACTIONS: Transaction[] = [];
+const SEED_INVESTMENTS: Investment[] = [];
+const SEED_MOVEMENTS: InvestmentMovement[] = [];
+const SEED_GOALS: Goal[] = [];
 
 const getInitialMonth = () => {
   const now = new Date();
@@ -149,68 +95,69 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isLoading, setIsLoading] = useState(true);
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
 
-  // Load from local storage for fallback
+  // State initialized at 0 / empty
+  const [emergencyReserve, setEmergencyReserveState] = useState<number>(0);
+  const [emergencyGoal, setEmergencyGoalState] = useState<number>(0);
+  const [monthlyIncome, setMonthlyIncomeState] = useState<number>(0);
+  const [visibleCards, setVisibleCards] = useState<string[]>([
+    'patrimonio', 'investido', 'reserva', 'despesas_fixas', 'despesas_variaveis', 'saldo_liquido'
+  ]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedRes = localStorage.getItem('fin_emergency_reserve');
+      if (savedRes) setEmergencyReserveState(Number(savedRes));
+      const savedGoal = localStorage.getItem('fin_emergency_goal');
+      if (savedGoal) setEmergencyGoalState(Number(savedGoal));
+      const savedInc = localStorage.getItem('fin_monthly_income');
+      if (savedInc) setMonthlyIncomeState(Number(savedInc));
+      const savedCards = localStorage.getItem('fin_visible_cards');
+      if (savedCards) {
+        try { setVisibleCards(JSON.parse(savedCards)); } catch(e){}
+      }
+    }
+  }, []);
+
+  const updateEmergencyReserve = (current: number, goal?: number) => {
+    setEmergencyReserveState(current);
+    localStorage.setItem('fin_emergency_reserve', String(current));
+    if (goal !== undefined) {
+      setEmergencyGoalState(goal);
+      localStorage.setItem('fin_emergency_goal', String(goal));
+    }
+  };
+
+  const setMonthlyIncome = (income: number) => {
+    setMonthlyIncomeState(income);
+    localStorage.setItem('fin_monthly_income', String(income));
+  };
+
+  const toggleCardVisibility = (cardId: string) => {
+    setVisibleCards(prev => {
+      const next = prev.includes(cardId) ? prev.filter(c => c !== cardId) : [...prev, cardId];
+      localStorage.setItem('fin_visible_cards', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  // Load from local storage for fallback (Default to empty arrays)
   const loadMockData = useCallback(() => {
     if (typeof window === 'undefined') return;
-    
-    // Check if data is already in local storage, otherwise seed it
+
+    // Force zero data reset
     const storedCategories = localStorage.getItem('fin_categories');
     const storedTransactions = localStorage.getItem('fin_transactions');
     const storedInvestments = localStorage.getItem('fin_investments');
     const storedMovements = localStorage.getItem('fin_movements');
     const storedGoals = localStorage.getItem('fin_goals');
 
-    if (storedCategories) {
-      const parsed = JSON.parse(storedCategories);
-      if (parsed.length === 0) {
-        localStorage.setItem('fin_categories', JSON.stringify(SEED_CATEGORIES));
-        setCategories(SEED_CATEGORIES);
-      } else {
-        // Merge missing seed categories
-        const merged = [...parsed];
-        SEED_CATEGORIES.forEach(seed => {
-          if (!merged.some(c => c.nome.toLowerCase() === seed.nome.toLowerCase())) {
-            merged.push(seed);
-          }
-        });
-        localStorage.setItem('fin_categories', JSON.stringify(merged));
-        setCategories(merged);
-      }
-    } else {
-      localStorage.setItem('fin_categories', JSON.stringify(SEED_CATEGORIES));
-      setCategories(SEED_CATEGORIES);
-    }
+    setCategories(storedCategories ? JSON.parse(storedCategories) : []);
+    setTransactions(storedTransactions ? JSON.parse(storedTransactions) : []);
+    setInvestments(storedInvestments ? JSON.parse(storedInvestments) : []);
+    setInvestmentMovements(storedMovements ? JSON.parse(storedMovements) : []);
+    setGoals(storedGoals ? JSON.parse(storedGoals) : []);
 
-    if (storedTransactions) {
-      setTransactions(JSON.parse(storedTransactions));
-    } else {
-      localStorage.setItem('fin_transactions', JSON.stringify(SEED_TRANSACTIONS));
-      setTransactions(SEED_TRANSACTIONS);
-    }
-
-    if (storedInvestments) {
-      setInvestments(JSON.parse(storedInvestments));
-    } else {
-      localStorage.setItem('fin_investments', JSON.stringify(SEED_INVESTMENTS));
-      setInvestments(SEED_INVESTMENTS);
-    }
-
-    if (storedMovements) {
-      setInvestmentMovements(JSON.parse(storedMovements));
-    } else {
-      localStorage.setItem('fin_movements', JSON.stringify(SEED_MOVEMENTS));
-      setInvestmentMovements(SEED_MOVEMENTS);
-    }
-
-    if (storedGoals) {
-      setGoals(JSON.parse(storedGoals));
-    } else {
-      localStorage.setItem('fin_goals', JSON.stringify(SEED_GOALS));
-      setGoals(SEED_GOALS);
-    }
-
-    // Set a mock user
-    const mockUser = { id: 'mock-user-123', email: 'sandbox@premium.com', name: 'Sandbox User' };
+    const mockUser = { id: 'mock-user-123', email: 'sandbox@premium.com', name: 'Usuário' };
     setUser(mockUser);
     setIsLoading(false);
   }, []);
@@ -868,7 +815,14 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addGoal,
       editGoal,
       deleteGoal,
-      refreshData
+      refreshData,
+      emergencyReserve,
+      emergencyGoal,
+      updateEmergencyReserve,
+      monthlyIncome,
+      setMonthlyIncome,
+      visibleCards,
+      toggleCardVisibility
     }}>
       {children}
     </FinanceContext.Provider>

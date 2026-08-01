@@ -5,60 +5,60 @@
 @tailwind utilities;
 
 :root {
-  /* Komadi Admin Light Palette (#f5efe0) */
-  --background: #F5EFE0;
-  --foreground: #1C1C1A;
-  --card: #FAF6ED;
-  --card-foreground: #1C1C1A;
-  --primary: #1C1C1A;
-  --primary-foreground: #F5EFE0;
-  --accent: #1C1C1A;
-  --accent-foreground: #F5EFE0;
-  --muted: #EAE3D2;
-  --muted-foreground: #78746D;
-  --border: rgba(28, 28, 26, 0.12);
+  /* Multicap Clean Light Palette (#F7F9F7 background, #FFFFFF cards) */
+  --background: #F7F9F7;
+  --foreground: #18181B;
+  --card: #FFFFFF;
+  --card-foreground: #18181B;
+  --primary: #2D7D46;
+  --primary-foreground: #FFFFFF;
+  --accent: #236B39;
+  --accent-foreground: #FFFFFF;
+  --muted: #EEF2EE;
+  --muted-foreground: #64748B;
+  --border: rgba(0, 0, 0, 0.08);
   --radius: 1.25rem;
   
-  --glass-bg: rgba(250, 246, 237, 0.85);
-  --glass-border: rgba(28, 28, 26, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.06);
 
-  /* Radix / UIverse Semantic Highlights */
-  --emerald-bg: #E6F4EA;
-  --emerald-fg: #137333;
-  --rose-bg: #FCE8E6;
-  --rose-fg: #C5221F;
-  --amber-bg: #FEF7E0;
-  --amber-fg: #B06000;
-  --indigo-bg: #E8F0FE;
-  --indigo-fg: #1A73E8;
+  /* Semantic Highlights */
+  --emerald-bg: #EAF5ED;
+  --emerald-fg: #236B39;
+  --rose-bg: #FDF2F2;
+  --rose-fg: #DC2626;
+  --amber-bg: #FEF8EA;
+  --amber-fg: #D97706;
+  --indigo-bg: #EFF6FF;
+  --indigo-fg: #2563EB;
 }
 
 [data-theme='dark'] {
-  /* Komadi Admin Dark Palette (#1c1c1a) */
-  --background: #1C1C1A;
-  --foreground: #F5EFE0;
-  --card: #242422;
-  --card-foreground: #F5EFE0;
-  --primary: #F5EFE0;
-  --primary-foreground: #1C1C1A;
-  --accent: #F5EFE0;
-  --accent-foreground: #1C1C1A;
-  --muted: #2C2C29;
-  --muted-foreground: #A39E93;
-  --border: rgba(245, 239, 224, 0.12);
+  /* Enforce Light Theme */
+  --background: #F7F9F7;
+  --foreground: #18181B;
+  --card: #FFFFFF;
+  --card-foreground: #18181B;
+  --primary: #2D7D46;
+  --primary-foreground: #FFFFFF;
+  --accent: #236B39;
+  --accent-foreground: #FFFFFF;
+  --muted: #EEF2EE;
+  --muted-foreground: #64748B;
+  --border: rgba(0, 0, 0, 0.08);
   --radius: 1.25rem;
   
-  --glass-bg: rgba(36, 36, 34, 0.85);
-  --glass-border: rgba(245, 239, 224, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.06);
 
-  --emerald-bg: rgba(34, 197, 94, 0.15);
-  --emerald-fg: #4ADE80;
-  --rose-bg: rgba(244, 63, 94, 0.15);
-  --rose-fg: #FB7185;
-  --amber-bg: rgba(245, 158, 11, 0.15);
-  --amber-fg: #FBBF24;
-  --indigo-bg: rgba(99, 102, 241, 0.15);
-  --indigo-fg: #818CF8;
+  --emerald-bg: #EAF5ED;
+  --emerald-fg: #236B39;
+  --rose-bg: #FDF2F2;
+  --rose-fg: #DC2626;
+  --amber-bg: #FEF8EA;
+  --amber-fg: #D97706;
+  --indigo-bg: #EFF6FF;
+  --indigo-fg: #2563EB;
 }
 
 *, ::before, ::after, html, body, input, button, select, textarea, label, table, th, td, span, div, p, a, h1, h2, h3, h4, h5, h6 {

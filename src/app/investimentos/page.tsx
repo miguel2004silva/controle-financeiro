@@ -14,6 +14,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { FilterPanel, FilterState, initialFilterState } from '@/components/filter-panel';
+import { CustomSelect } from '@/components/custom-select';
 
 export default function InvestimentosPage() {
   const { 
@@ -468,17 +469,17 @@ export default function InvestimentosPage() {
                 <label className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider block mb-1.5">
                   Tipo de Ativo
                 </label>
-                <select
+                <CustomSelect
                   value={type}
-                  onChange={(e) => setType(e.target.value as any)}
-                  className="w-full shadcn-input text-xs"
-                  required
-                >
-                  <option value="renda_fixa">Renda Fixa (CDB, Selic, Poupança)</option>
-                  <option value="ação">Ações</option>
-                  <option value="fii">FIIs (Fundos Imobiliários)</option>
-                  <option value="cripto">Cripto (Bitcoin, Ethereum)</option>
-                </select>
+                  onChange={(val) => setType(val as any)}
+                  searchPlaceholder="PESQUISAR TIPO"
+                  options={[
+                    { value: 'renda_fixa', label: 'Renda Fixa & CDBs' },
+                    { value: 'ação', label: 'Ações' },
+                    { value: 'fii', label: 'Fundos Imobiliários (FIIs)' },
+                    { value: 'cripto', label: 'Criptoativos' },
+                  ]}
+                />
               </div>
 
               {/* Informative description */}

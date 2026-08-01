@@ -16,7 +16,10 @@ import {
   Moon,
   ChevronLeft,
   ChevronRight,
-  User
+  User,
+  ShieldCheck,
+  PiggyBank,
+  Calculator
 } from 'lucide-react';
 import { useFinance } from '@/context/finance-context';
 import { QuickTransactionModal } from './quick-transaction-modal';
@@ -28,10 +31,11 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { name: 'Patrimônio', href: '/', icon: LayoutDashboard },
-  { name: 'Lançamentos', href: '/transacoes', icon: ArrowUpDown },
+  { name: 'Visão geral', href: '/', icon: LayoutDashboard },
+  { name: 'Orçamento', href: '/transacoes', icon: ArrowUpDown },
+  { name: 'Reserva de emergência', href: '/reserva', icon: ShieldCheck },
+  { name: 'Metas', href: '/metas', icon: Target },
   { name: 'Investimentos', href: '/investimentos', icon: TrendingUp },
-  { name: 'Metas & Orçamentos', href: '/metas', icon: Target },
   { name: 'Relatórios', href: '/relatorios', icon: BarChart3 },
 ];
 
@@ -65,7 +69,7 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const getPageTitle = (path: string) => {
     switch (path) {
-      case '/': return 'Patrimônio';
+      case '/': return 'Visão Geral';
       case '/transacoes': return 'Lançamentos';
       case '/investimentos': return 'Investimentos';
       case '/metas': return 'Orçamentos & Metas';
@@ -158,23 +162,23 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
           </button>
         </div>
 
-        {/* Navigation Links (Komadi style) */}
-        <nav className="flex-1 space-y-1">
+        {/* Navigation Links (Multicap style matching reference image) */}
+        <nav className="flex-1 space-y-1.5">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || (item.href.includes('#') && pathname === '/');
             const Icon = item.icon;
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`relative flex items-center gap-3 h-12 px-3.5 rounded-xl shrink-0 transition-colors duration-200 outline-none ${
+                className={`relative flex items-center gap-3.5 h-11 px-4 rounded-2xl shrink-0 transition-all duration-200 outline-none ${
                   isActive
-                    ? 'bg-foreground text-background font-bold shadow-sm'
-                    : 'text-foreground/75 hover:bg-muted/50 hover:text-foreground font-medium'
+                    ? 'bg-[#EAF5ED] text-[#236B39] dark:bg-emerald-950/70 dark:text-emerald-300 font-bold border border-emerald-500/20 shadow-xs'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100 font-medium'
                 }`}
               >
-                <Icon size={18} className={`relative z-10 ${isActive ? 'text-background' : 'text-muted-foreground/60'}`} />
-                <span className="relative z-10 text-[14px] tracking-tight">{item.name}</span>
+                <Icon size={19} className={`relative z-10 ${isActive ? 'text-[#236B39] dark:text-emerald-400' : 'text-zinc-500 dark:text-zinc-400'}`} />
+                <span className="relative z-10 text-[13.5px] tracking-tight">{item.name}</span>
               </Link>
             );
           })}
@@ -196,22 +200,15 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
           </div>
 
           <div className="flex items-center justify-between gap-2">
-            {/* Theme Toggle Button */}
-            {mounted && (
-              <button
-                onClick={toggleTheme}
-                className="flex-1 flex items-center justify-center gap-2 h-10 px-3 rounded-xl border border-border/15 text-muted-foreground/70 hover:bg-muted/50 hover:text-foreground transition-colors text-[13px] font-bold"
-                title={theme === 'light' ? 'Tema Escuro' : 'Tema Claro'}
-              >
-                {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
-                <span>{theme === 'light' ? 'Escuro' : 'Claro'}</span>
-              </button>
-            )}
+            <div className="flex-1 px-3 py-2 rounded-xl bg-[#EAF5ED] text-[#236B39] text-xs font-bold flex items-center justify-center gap-1.5 border border-emerald-500/20">
+              <Sun size={14} />
+              <span>Modo Claro</span>
+            </div>
 
             {/* Logout Button */}
             <button
               onClick={signOut}
-              className="h-10 px-3 rounded-xl border border-border/15 text-muted-foreground/70 hover:bg-rose-500/10 hover:text-rose-500 transition-colors"
+              className="h-9 px-3 rounded-xl border border-border/15 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 transition-colors"
               title="Sair"
             >
               <LogOut size={16} />
