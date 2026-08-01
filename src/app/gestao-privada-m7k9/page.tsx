@@ -20,6 +20,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import Link from 'next/link';
+import { useFinance } from '@/context/finance-context';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 interface ManagedUser {
@@ -32,6 +33,8 @@ interface ManagedUser {
 }
 
 export default function SecretGestaoPage() {
+  const { user } = useFinance();
+
   // Security Lock PIN state
   const [pin, setPin] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -54,28 +57,35 @@ export default function SecretGestaoPage() {
 
   // Load users on unlock
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && isUnlocked) {
       const stored = localStorage.getItem('fin_users_list');
+      let list: ManagedUser[] = [];
       if (stored) {
         try {
-          setUsersList(JSON.parse(stored));
+          const parsed: ManagedUser[] = JSON.parse(stored);
+          list = parsed.filter(u => u.email !== 'admin@financeiro.com');
         } catch (e) {}
-      } else {
-        const initialMock: ManagedUser[] = [
-          {
-            id: 'u-1',
-            email: 'admin@financeiro.com',
-            name: 'Administrador Principal',
+      }
+
+      // Add current active user if not already in list
+      if (user && user.email) {
+        const userEmail = user.email;
+        if (!list.some(u => u.email.toLowerCase() === userEmail.toLowerCase())) {
+          list.unshift({
+            id: user.id || `u-${Date.now()}`,
+            email: userEmail,
+            name: user.name || userEmail.split('@')[0],
             role: 'admin',
             created_at: new Date().toISOString(),
             status: 'ativo'
-          }
-        ];
-        localStorage.setItem('fin_users_list', JSON.stringify(initialMock));
-        setUsersList(initialMock);
+          });
+        }
       }
+
+      setUsersList(list);
+      localStorage.setItem('fin_users_list', JSON.stringify(list));
     }
-  }, [isUnlocked]);
+  }, [isUnlocked, user]);
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
