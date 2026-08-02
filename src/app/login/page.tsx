@@ -215,7 +215,7 @@ export default function LoginPage() {
                     placeholder="seuemail@exemplo.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-16 sm:h-[56px] w-full bg-zinc-50 border border-zinc-200/60 rounded-2xl pl-11 pr-5 text-sm font-bold text-foreground placeholder:text-zinc-400/40 outline-none focus:border-[#ff5a3c] focus:ring-1 focus:ring-[#ff5a3c] focus:bg-white transition-all"
+                    className="h-16 sm:h-[56px] w-full bg-zinc-50 border border-zinc-200/60 rounded-2xl pl-11 pr-5 text-sm font-bold text-foreground placeholder:text-zinc-400/40 outline-none focus:border-[#236B39] focus:ring-1 focus:ring-[#236B39] focus:bg-white transition-all"
                     required
                   />
                 </div>
@@ -234,7 +234,7 @@ export default function LoginPage() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-16 sm:h-[56px] w-full bg-zinc-50 border border-zinc-200/60 rounded-2xl pl-11 pr-12 text-sm font-bold text-foreground placeholder:text-zinc-400/40 outline-none focus:border-[#ff5a3c] focus:ring-1 focus:ring-[#ff5a3c] focus:bg-white transition-all"
+                    className="h-16 sm:h-[56px] w-full bg-zinc-50 border border-zinc-200/60 rounded-2xl pl-11 pr-12 text-sm font-bold text-foreground placeholder:text-zinc-400/40 outline-none focus:border-[#236B39] focus:ring-1 focus:ring-[#236B39] focus:bg-white transition-all"
                     required
                   />
                   <button
@@ -254,7 +254,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={authLoading}
-                className="h-16 sm:h-[56px] w-full rounded-2xl text-sm font-extrabold text-white bg-[#ff5a3c] hover:bg-[#e04f33] shadow-[0_4px_24px_rgba(255,90,60,0.28)] flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50"
+                className="h-16 sm:h-[56px] w-full rounded-2xl text-sm font-extrabold text-white bg-[#236B39] hover:bg-[#1b522c] shadow-[0_4px_24px_rgba(35,107,57,0.25)] flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] disabled:opacity-50"
               >
                 {authLoading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
