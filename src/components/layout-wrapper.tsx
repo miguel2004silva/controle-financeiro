@@ -141,11 +141,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-64 bg-card/80 backdrop-blur-xl text-foreground flex-col z-40 border-r border-border/15 px-4 pt-6 pb-6 transition-all duration-300">
         {/* Sidebar Logo */}
         <div className="flex items-center gap-3 px-3 mb-8">
-          <img 
-            src="/logo.png" 
-            alt="Logo Controle Financeiro" 
-            className="w-10 h-10 rounded-xl object-contain shadow-sm"
-          />
+          <svg viewBox="0 0 256 256" className="w-8 h-8 text-[#ff5a3c] fill-none shrink-0 stroke-[24]">
+            <rect width="256" height="256" fill="none" />
+            <line x1="208" y1="128" x2="128" y2="208" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+            <line x1="192" y1="40" x2="40" y2="192" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
           <div>
             <h2 className="font-extrabold text-sm tracking-tight text-foreground leading-tight">
               Controle<span className="opacity-70">Fin</span>
@@ -244,11 +244,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* 2. MOBILE HEADER & BOTTOM NAV */}
       <header className="h-16 px-4 border-b border-border/15 flex items-center justify-between bg-card/80 backdrop-blur-md sticky top-0 z-40 md:hidden transition-colors duration-200">
         <div className="flex items-center gap-2.5">
-          <img 
-            src="/logo.png" 
-            alt="Logo Controle Financeiro" 
-            className="w-8 h-8 rounded-xl object-contain shadow-sm"
-          />
+          <svg viewBox="0 0 256 256" className="w-7 h-7 text-[#ff5a3c] fill-none shrink-0 stroke-[24]">
+            <rect width="256" height="256" fill="none" />
+            <line x1="208" y1="128" x2="128" y2="208" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+            <line x1="192" y1="40" x2="40" y2="192" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
           <span className="font-extrabold text-xs tracking-tight text-foreground">
             Controle<span className="opacity-75">Fin</span>
           </span>

@@ -139,6 +139,45 @@ export const EmergencyReserveCard: React.FC = () => {
                     transition={{ type: 'spring', stiffness: 50, damping: 15 }}
                   />
 
+                  {/* Rising Bubbles inside the fluid */}
+                  {percentage > 0 && Array.from({ length: 6 }).map((_, i) => {
+                    const randomX = 20 + (i * 12) + (Math.sin(i) * 5);
+                    const speed = 2.2 + (i % 3) * 0.4;
+                    const delay = i * 0.4;
+                    const radius = 1 + (i % 2) * 0.8;
+                    const maxRise = 95 - (percentage / 100) * 90;
+
+                    return (
+                      <motion.circle
+                        key={i}
+                        r={radius}
+                        fill="#ffffff"
+                        opacity={0.35}
+                        initial={{ cx: randomX, cy: 95, opacity: 0 }}
+                        animate={{
+                          cy: [95, maxRise],
+                          opacity: [0, 0.6, 0]
+                        }}
+                        transition={{
+                          duration: speed,
+                          repeat: Infinity,
+                          delay: delay,
+                          ease: "linear"
+                        }}
+                      />
+                    );
+                  })}
+
+                  {/* Inner Glow Border */}
+                  <path
+                    d="M 50 8 C 72 8, 86 17, 86 45 C 86 71, 50 90, 50 90 C 50 90, 14 71, 14 45 C 14 17, 28 8, 50 8 Z"
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.25)"
+                    strokeWidth="1"
+                    strokeDasharray="3 3"
+                    className="pointer-events-none"
+                  />
+
                   {/* Shiny overlay highlight */}
                   <path
                     d="M 15 15 Q 50 35 85 15"
