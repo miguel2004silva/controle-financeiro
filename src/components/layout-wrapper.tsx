@@ -140,9 +140,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       <aside className="hidden md:flex fixed top-0 bottom-0 left-0 w-64 bg-card/80 backdrop-blur-xl text-foreground flex-col z-40 border-r border-border/15 px-4 pt-6 pb-6 transition-all duration-300">
         {/* Sidebar Logo */}
         <div className="flex items-center gap-3 px-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center font-extrabold shadow-md">
-            <Wallet size={20} />
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="Logo Controle Financeiro" 
+            className="w-10 h-10 rounded-xl object-contain shadow-sm"
+          />
           <div>
             <h2 className="font-extrabold text-sm tracking-tight text-foreground leading-tight">
               Controle<span className="opacity-70">Fin</span>
@@ -220,9 +222,11 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* 2. MOBILE HEADER & BOTTOM NAV */}
       <header className="h-16 px-4 border-b border-border/15 flex items-center justify-between bg-card/80 backdrop-blur-md sticky top-0 z-40 md:hidden transition-colors duration-200">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-foreground text-background flex items-center justify-center font-bold">
-            <Wallet size={16} />
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="Logo Controle Financeiro" 
+            className="w-8 h-8 rounded-xl object-contain shadow-sm"
+          />
           <span className="font-extrabold text-xs tracking-tight text-foreground">
             Controle<span className="opacity-75">Fin</span>
           </span>
