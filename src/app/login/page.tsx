@@ -17,6 +17,7 @@ import {
   UserCheck,
   CheckCircle2,
   TrendingUp,
+  Wallet,
   PieChart as PieChartIcon
 } from 'lucide-react';
 
@@ -123,7 +124,9 @@ export default function LoginPage() {
 
         {/* Top Header Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <img src="/logo.png" alt="Logo Controle Financeiro" className="w-10 h-10 rounded-2xl object-contain shadow-md" />
+          <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-sm">
+            <Wallet size={20} className="stroke-[2.2]" />
+          </div>
           <span className="text-sm font-extrabold tracking-[0.14em] uppercase text-emerald-100">
             Controle Financeiro
           </span>
@@ -189,7 +192,9 @@ export default function LoginPage() {
           {/* Header */}
           <header className="flex items-center justify-between w-full py-2">
             <div className="flex items-center gap-2.5">
-              <img src="/logo.png" alt="Logo Controle Financeiro" className="w-9 h-9 rounded-2xl object-contain shadow-xs" />
+              <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-[#EAF5ED] text-[#236B39] shadow-xs">
+                <Wallet size={18} className="stroke-[2.5]" />
+              </div>
               <span className="text-xs font-bold tracking-[0.14em] text-foreground uppercase">
                 Controle Financeiro
               </span>
