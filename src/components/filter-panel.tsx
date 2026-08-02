@@ -127,28 +127,26 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
               Tipo
             </label>
-            <select
+            <CustomSelect
               value={filters.type}
-              onChange={(e) => updateFilter('type', e.target.value)}
-              className="w-full shadcn-input px-3 py-2 text-xs"
-            >
-              {isInvestmentsPage ? (
-                <>
-                  <option value="todos">Todos os tipos</option>
-                  <option value="renda_fixa">Renda Fixa</option>
-                  <option value="ação">Ações</option>
-                  <option value="fii">FIIs</option>
-                  <option value="cripto">Cripto</option>
-                </>
-              ) : (
-                <>
-                  <option value="todos">Todos os lançamentos</option>
-                  <option value="receita">Receitas</option>
-                  <option value="despesa">Despesas</option>
-                  <option value="investimento">Investimentos</option>
-                </>
-              )}
-            </select>
+              onChange={(val) => updateFilter('type', val)}
+              options={
+                isInvestmentsPage
+                  ? [
+                      { label: 'Todos os tipos', value: 'todos' },
+                      { label: 'Renda Fixa', value: 'renda_fixa' },
+                      { label: 'Ações', value: 'ação' },
+                      { label: 'FIIs', value: 'fii' },
+                      { label: 'Cripto', value: 'cripto' },
+                    ]
+                  : [
+                      { label: 'Todos os lançamentos', value: 'todos' },
+                      { label: 'Receitas', value: 'receita' },
+                      { label: 'Despesas', value: 'despesa' },
+                      { label: 'Investimentos', value: 'investimento' },
+                    ]
+              }
+            />
           </div>
         </div>
 
@@ -158,17 +156,17 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
               Período
             </label>
-            <select
+            <CustomSelect
               value={filters.periodType}
-              onChange={(e) => updateFilter('periodType', e.target.value as any)}
-              className="w-full shadcn-input px-3 py-2 text-xs"
-            >
-              <option value="todos">Todo o histórico</option>
-              <option value="dia">Dia específico</option>
-              <option value="mes">Mês específico</option>
-              <option value="ano">Ano específico</option>
-              <option value="personalizado">Intervalo personalizado</option>
-            </select>
+              onChange={(val) => updateFilter('periodType', val as any)}
+              options={[
+                { label: 'Todo o histórico', value: 'todos' },
+                { label: 'Dia específico', value: 'dia' },
+                { label: 'Mês específico', value: 'mes' },
+                { label: 'Ano específico', value: 'ano' },
+                { label: 'Intervalo personalizado', value: 'personalizado' },
+              ]}
+            />
           </div>
 
           {/* Conditional Date Fields */}

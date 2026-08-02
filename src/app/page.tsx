@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useFinance } from '@/context/finance-context';
 import { InvestmentSliderModal } from '@/components/investment-slider-modal';
+import { parseCurrencyInput } from '@/lib/currency-utils';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -241,7 +242,7 @@ export default function DashboardPage() {
 
   const handleSaveModal = async (e: React.FormEvent) => {
     e.preventDefault();
-    const val = parseFloat(modalValue.replace(/\./g, '').replace(',', '.'));
+    const val = parseCurrencyInput(modalValue);
     if (isNaN(val)) return;
 
     try {

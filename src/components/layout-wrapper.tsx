@@ -52,31 +52,13 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
 
-  // Sync theme with document attributes and local storage
+  // Force light mode permanently
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const initialTheme = savedTheme || 'dark';
-    setTheme(initialTheme);
-    document.documentElement.setAttribute('data-theme', initialTheme);
-    if (initialTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
   }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('theme', newTheme);
-  };
 
   const getPageTitle = (path: string) => {
     switch (path) {
@@ -117,8 +99,8 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
     setSelectedMonth(`${newYear}-${String(newMonth).padStart(2, '0')}`);
   };
 
-  // If loading, show a dark sleek loading screen
-  if (isLoading) {
+  // Only show splash loader on initial unmounted load
+  if (isLoading && !mounted) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
         <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary glow-primary animate-pulse mb-4">
@@ -217,33 +199,15 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-2">
-            {mounted && (
-              <button
-                onClick={toggleTheme}
-                className="flex-1 px-3 py-2 rounded-xl bg-muted hover:bg-muted/80 text-foreground text-xs font-bold flex items-center justify-center gap-1.5 border border-border/15 transition-all"
-              >
-                {theme === 'light' ? (
-                  <>
-                    <Sun size={14} className="text-[#E8A020]" />
-                    <span>Modo Claro</span>
-                  </>
-                ) : (
-                  <>
-                    <Moon size={14} className="text-blue-400" />
-                    <span>Modo Escuro</span>
-                  </>
-                )}
-              </button>
-            )}
-
+          <div className="flex items-center gap-2">
             {/* Logout Button */}
             <button
               onClick={signOut}
-              className="h-9 px-3 rounded-xl border border-border/15 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 transition-colors"
-              title="Sair"
+              className="w-full h-10 px-3 rounded-xl border border-border/15 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+              title="Sair da Conta"
             >
               <LogOut size={16} />
+              <span>Sair da Conta</span>
             </button>
           </div>
         </div>
@@ -261,15 +225,6 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
         </div>
 
         <div className="flex items-center gap-2">
-          {mounted && (
-            <button
-              onClick={toggleTheme}
-              className="p-2 border border-border/15 rounded-xl bg-muted/50 text-foreground"
-            >
-              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
-            </button>
-          )}
-
           <button 
             onClick={signOut}
             className="p-2 border border-border/15 rounded-xl bg-muted/50 text-muted-foreground hover:text-rose-500"

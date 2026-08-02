@@ -9,10 +9,11 @@ import { X, Plus, Calendar, AlignLeft, Check, ChevronDown, FolderPlus } from 'lu
 import { useFinance } from '@/context/finance-context';
 import { CategoryIcon } from './category-icon';
 import { Category } from '@/lib/types';
+import { parseCurrencyInput } from '@/lib/currency-utils';
 
 const transactionSchema = z.object({
   valor: z.preprocess(
-    (val) => Number(val),
+    (val) => parseCurrencyInput(String(val || '')),
     z.number().positive('O valor deve ser maior que zero')
   ),
   descrição: z.string().min(1, 'A descrição é obrigatória'),
@@ -164,7 +165,7 @@ export const QuickTransactionModal: React.FC = () => {
 
       await addTransaction({
         tipo: data.tipo,
-        valor: Number(data.valor),
+        valor: parseCurrencyInput(String(data.valor)),
         categoria_id: catId,
         descrição: data.descrição,
         data: new Date(data.data + 'T12:00:00Z').toISOString(), // Set UTC midday to avoid TZ offset issues

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { FilterPanel, FilterState, initialFilterState } from '@/components/filter-panel';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { CustomSelect } from '@/components/custom-select';
 
 export default function TransacoesPage() {
   const { 
@@ -402,16 +403,17 @@ export default function TransacoesPage() {
                           {/* Category cell */}
                           <td className="py-3.5 px-4">
                             {isEditing && tx.tipo === 'despesa' ? (
-                              <select
+                              <CustomSelect
                                 value={editCatId || ''}
-                                onChange={(e) => setEditCatId(e.target.value || null)}
-                                className="shadcn-input p-1.5 text-xs focus:outline-none w-32"
-                              >
-                                <option value="">Nenhuma</option>
-                                {categories.filter(c => c.nome !== 'Investimentos').map(c => (
-                                  <option key={c.id} value={c.id}>{c.nome}</option>
-                                ))}
-                              </select>
+                                onChange={(val) => setEditCatId(val || null)}
+                                options={[
+                                  { label: 'Nenhuma', value: '' },
+                                  ...categories.filter(c => c.nome !== 'Investimentos').map(c => ({
+                                    label: c.nome,
+                                    value: c.id
+                                  }))
+                                ]}
+                              />
                             ) : (
                               <div className="flex items-center gap-2.5">
                                  <div 
@@ -656,15 +658,14 @@ export default function TransacoesPage() {
                             className="shadcn-input text-xs py-1"
                             placeholder="Orçamento"
                           />
-                          <select 
+                          <CustomSelect 
                             value={editCatColor} 
-                            onChange={(e) => setEditCatColor(e.target.value)}
-                            className="shadcn-input text-xs py-1"
-                          >
-                            {PREDEFINED_COLORS.map(c => (
-                              <option key={c} value={c}>{c}</option>
-                            ))}
-                          </select>
+                            onChange={(val) => setEditCatColor(val)}
+                            options={PREDEFINED_COLORS.map(c => ({
+                              label: c,
+                              value: c
+                            }))}
+                          />
                         </div>
                       ) : (
                         <div className="flex items-center gap-2">

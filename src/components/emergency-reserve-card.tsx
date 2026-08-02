@@ -1,14 +1,26 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShieldCheck, Plus, Minus, Target, Sparkles, Lock, ShieldAlert, Shield } from 'lucide-react';
+import { ShieldCheck, Plus, Minus, Target, Sparkles, AlertCircle } from 'lucide-react';
 import { useFinance } from '@/context/finance-context';
 import { motion } from 'framer-motion';
 
 export const EmergencyReserveCard: React.FC = () => {
-  const { emergencyReserve, emergencyGoal, updateEmergencyReserve, addTransaction } = useFinance();
+  const { emergencyReserve, emergencyGoal, updateEmergencyReserve, addTransaction, transactions } = useFinance();
   const [inputValue, setInputValue] = useState('');
   const [modalMode, setModalMode] = useState<'deposit' | 'withdraw' | 'goal' | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Compute available general balance (liquidez) from transactions
+  const totalRevenues = transactions
+    .filter(t => t.tipo === 'receita')
+    .reduce((sum, t) => sum + Number(t.valor), 0);
+
+  const totalExpenses = transactions
+    .filter(t => t.tipo === 'despesa')
+    .reduce((sum, t) => sum + Number(t.valor), 0);
+
+  const generalBalance = totalRevenues - totalExpenses;
 
   const percentage = Math.min(100, Math.round((emergencyReserve / (emergencyGoal || 1)) * 100));
 
@@ -16,13 +28,37 @@ export const EmergencyReserveCard: React.FC = () => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   };
 
+  const handleOpenModal = (mode: 'deposit' | 'withdraw' | 'goal') => {
+    setValidationError(null);
+    setInputValue('');
+    setModalMode(mode);
+  };
+
   const handleConfirmAction = async (e: React.FormEvent) => {
     e.preventDefault();
-    const val = parseFloat(inputValue.replace(/\./g, '').replace(',', '.'));
-    if (isNaN(val) || val <= 0) return;
+    setValidationError(null);
+
+    // Parse numeric value safely
+    const cleanDigits = inputValue.replace(/[^0-9,.]/g, '');
+    let val = 0;
+    if (cleanDigits.includes(',')) {
+      val = parseFloat(cleanDigits.replace(/\./g, '').replace(',', '.'));
+    } else {
+      val = parseFloat(cleanDigits);
+    }
+
+    if (isNaN(val) || val <= 0) {
+      setValidationError('Por favor insira um valor válido maior que zero.');
+      return;
+    }
 
     try {
       if (modalMode === 'deposit') {
+        if (val > generalBalance) {
+          setValidationError(`Saldo disponível insuficiente na conta geral (${formatBRL(Math.max(0, generalBalance))}).`);
+          return;
+        }
+
         await addTransaction({
           tipo: 'despesa',
           valor: val,
@@ -32,7 +68,13 @@ export const EmergencyReserveCard: React.FC = () => {
           recorrente: false
         });
         updateEmergencyReserve(emergencyReserve + val);
+
       } else if (modalMode === 'withdraw') {
+        if (val > emergencyReserve) {
+          setValidationError(`Valor máximo permitido para resgate é ${formatBRL(emergencyReserve)} (saldo atual da reserva).`);
+          return;
+        }
+
         await addTransaction({
           tipo: 'receita',
           valor: val,
@@ -42,15 +84,18 @@ export const EmergencyReserveCard: React.FC = () => {
           recorrente: false
         });
         updateEmergencyReserve(Math.max(0, emergencyReserve - val));
+
       } else if (modalMode === 'goal') {
         updateEmergencyReserve(emergencyReserve, val);
       }
     } catch (err) {
       console.error(err);
-      alert('Erro ao salvar transação da reserva.');
+      setValidationError('Erro ao registrar transação.');
+      return;
     }
 
     setInputValue('');
+    setValidationError(null);
     setModalMode(null);
   };
 
@@ -62,7 +107,7 @@ export const EmergencyReserveCard: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6 relative z-10">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-[#2D7D46] shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-[#EAF5ED] border border-emerald-500/30 flex items-center justify-center text-[#2D7D46] shadow-xs">
             <ShieldCheck size={26} />
           </div>
           <div>
@@ -77,7 +122,7 @@ export const EmergencyReserveCard: React.FC = () => {
         </div>
 
         <button
-          onClick={() => setModalMode('goal')}
+          onClick={() => handleOpenModal('goal')}
           className="text-xs font-bold text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-muted/60 hover:bg-muted border border-border/20 transition-all"
         >
           <Target size={14} />
@@ -85,122 +130,109 @@ export const EmergencyReserveCard: React.FC = () => {
         </button>
       </div>
 
-      {/* Main Shield Visual */}
+      {/* Main Shield Visual & Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center relative z-10">
         
-        {/* Animated Shield Protection Level */}
-        <div className="md:col-span-5 flex flex-col items-center justify-center p-5 bg-[#F7F9F7] rounded-3xl border border-border/15">
+        {/* Modern Vector Liquid-Fill SVG Shield */}
+        <div className="md:col-span-5 flex flex-col items-center justify-center p-6 bg-[#F7F9F7] rounded-3xl border border-border/15">
           <div className="relative w-36 h-40 flex flex-col items-center justify-center">
-            {/* Outer Pulsing Shield Halo */}
-            <div className="absolute inset-0 rounded-full bg-emerald-500/5 animate-pulse blur-xl pointer-events-none" />
+            {/* Outer Soft Shield Halo */}
+            <div className="absolute inset-0 rounded-full bg-emerald-500/10 animate-pulse blur-xl pointer-events-none" />
 
-            {/* Custom SVG Animated Shield */}
             <div className="relative z-10 w-28 h-32 flex items-center justify-center">
-              <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
+              <svg viewBox="0 0 100 120" className="w-full h-full drop-shadow-md">
                 <defs>
-                  <linearGradient id="shield-grad" x1="0" y1="1" x2="0" y2="0">
+                  <linearGradient id="liquid-shield-grad" x1="0" y1="1" x2="0" y2="0">
                     <stop offset="0%" stopColor="#1B522C" />
                     <stop offset="50%" stopColor="#236B39" />
                     <stop offset="100%" stopColor="#2D7D46" />
                   </linearGradient>
-                  <clipPath id="shield-clip">
-                    <path d="M 50 5 C 75 5, 90 15, 90 45 C 90 75, 50 95, 50 95 C 50 95, 10 75, 10 45 C 10 15, 25 5, 50 5 Z" />
+
+                  <clipPath id="shield-path-clip">
+                    <path d="M 50 4 C 76 4, 94 14, 94 48 C 94 82, 50 114, 50 114 C 50 114, 6 82, 6 48 C 6 14, 24 4, 50 4 Z" />
                   </clipPath>
                 </defs>
 
-                {/* Base Outer Border */}
+                {/* Base Outer Metallic Shield Border */}
                 <path
-                  d="M 50 5 C 75 5, 90 15, 90 45 C 90 75, 50 95, 50 95 C 50 95, 10 75, 10 45 C 10 15, 25 5, 50 5 Z"
+                  d="M 50 4 C 76 4, 94 14, 94 48 C 94 82, 50 114, 50 114 C 50 114, 6 82, 6 48 C 6 14, 24 4, 50 4 Z"
                   fill="none"
-                  stroke="#e4e4e7"
-                  strokeWidth="3.5"
-                  className="dark:stroke-zinc-800"
+                  stroke="#E4E4E7"
+                  strokeWidth="4"
                 />
 
-                {/* Clipped Fill Content */}
-                <g clipPath="url(#shield-clip)">
-                  {/* Empty Background */}
-                  <rect x="0" y="0" width="100" height="100" className="fill-zinc-100 dark:fill-zinc-900" />
+                {/* Shield Fill Area */}
+                <g clipPath="url(#shield-path-clip)">
+                  {/* Empty Interior Background */}
+                  <rect x="0" y="0" width="100" height="120" fill="#F4F4F5" />
                   
-                  {/* Grid overlay for tech look */}
-                  <path d="M 50 5 L 50 95" stroke="rgba(0,0,0,0.03)" strokeWidth="1" />
-                  <path d="M 10 45 L 90 45" stroke="rgba(0,0,0,0.03)" strokeWidth="1" />
+                  {/* Tech Grid Guide Lines */}
+                  <path d="M 50 0 L 50 120" stroke="rgba(0,0,0,0.04)" strokeWidth="1" />
+                  <path d="M 0 48 L 100 48" stroke="rgba(0,0,0,0.04)" strokeWidth="1" />
 
-                  {/* Liquid / Color Fill */}
+                  {/* Liquid Elevation Rect */}
                   <motion.rect
                     x="0"
                     width="100"
-                    fill="url(#shield-grad)"
-                    initial={{ y: 95, height: 0 }}
+                    fill="url(#liquid-shield-grad)"
+                    initial={{ y: 114, height: 0 }}
                     animate={{
-                      y: 95 - (percentage / 100) * 90,
-                      height: (percentage / 100) * 90
+                      y: 114 - (percentage / 100) * 105,
+                      height: (percentage / 100) * 105
                     }}
-                    transition={{ type: 'spring', stiffness: 50, damping: 15 }}
+                    transition={{ type: 'spring', stiffness: 45, damping: 14 }}
                   />
 
-                  {/* Rising Bubbles inside the fluid */}
-                  {percentage > 0 && Array.from({ length: 6 }).map((_, i) => {
-                    const randomX = 20 + (i * 12) + (Math.sin(i) * 5);
-                    const speed = 2.2 + (i % 3) * 0.4;
-                    const delay = i * 0.4;
-                    const radius = 1 + (i % 2) * 0.8;
-                    const maxRise = 95 - (percentage / 100) * 90;
+                  {/* Fluid Rising Particles */}
+                  {percentage > 0 && Array.from({ length: 5 }).map((_, i) => {
+                    const posX = 20 + i * 15;
+                    const speed = 2.4 + (i % 3) * 0.5;
+                    const maxLevel = 114 - (percentage / 100) * 105;
 
                     return (
                       <motion.circle
                         key={i}
-                        r={radius}
-                        fill="#ffffff"
-                        opacity={0.35}
-                        initial={{ cx: randomX, cy: 95, opacity: 0 }}
+                        r={1.8}
+                        fill="#FFFFFF"
+                        opacity={0.4}
+                        initial={{ cx: posX, cy: 110, opacity: 0 }}
                         animate={{
-                          cy: [95, maxRise],
-                          opacity: [0, 0.6, 0]
+                          cy: [110, maxLevel],
+                          opacity: [0, 0.7, 0]
                         }}
                         transition={{
                           duration: speed,
                           repeat: Infinity,
-                          delay: delay,
+                          delay: i * 0.45,
                           ease: "linear"
                         }}
                       />
                     );
                   })}
 
-                  {/* Inner Glow Border */}
+                  {/* Inner Glass Highlight Line */}
                   <path
-                    d="M 50 8 C 72 8, 86 17, 86 45 C 86 71, 50 90, 50 90 C 50 90, 14 71, 14 45 C 14 17, 28 8, 50 8 Z"
+                    d="M 12 12 Q 50 36 88 12"
                     fill="none"
                     stroke="rgba(255, 255, 255, 0.25)"
-                    strokeWidth="1"
-                    strokeDasharray="3 3"
-                    className="pointer-events-none"
-                  />
-
-                  {/* Shiny overlay highlight */}
-                  <path
-                    d="M 15 15 Q 50 35 85 15"
-                    fill="none"
-                    stroke="rgba(255, 255, 255, 0.15)"
-                    strokeWidth="3"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                   />
                 </g>
 
-                {/* Outline Border on Top */}
+                {/* Outer Active Border */}
                 <path
-                  d="M 50 5 C 75 5, 90 15, 90 45 C 90 75, 50 95, 50 95 C 50 95, 10 75, 10 45 C 10 15, 25 5, 50 5 Z"
+                  d="M 50 4 C 76 4, 94 14, 94 48 C 94 82, 50 114, 50 114 C 50 114, 6 82, 6 48 C 6 14, 24 4, 50 4 Z"
                   fill="none"
-                  stroke={percentage >= 100 ? '#2D7D46' : '#c8e2d1'}
+                  stroke={percentage >= 100 ? '#2D7D46' : '#A7F3D0'}
                   strokeWidth="3.5"
                   className="transition-colors duration-500 pointer-events-none"
                 />
 
-                {/* Checkmark overlay */}
+                {/* Center Checkmark when protected */}
                 {percentage > 0 && (
                   <motion.path
-                    d="M 36 48 L 46 58 L 66 36"
+                    d="M 38 52 L 47 62 L 64 40"
                     fill="none"
                     stroke={percentage >= 50 ? '#FFFFFF' : '#2D7D46'}
                     strokeWidth="5"
@@ -208,7 +240,7 @@ export const EmergencyReserveCard: React.FC = () => {
                     strokeLinejoin="round"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.6, delay: 0.1 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
                   />
                 )}
               </svg>
@@ -217,45 +249,46 @@ export const EmergencyReserveCard: React.FC = () => {
             {/* Percentage Badge */}
             <div className="absolute -bottom-1 px-3 py-1 rounded-full bg-[#236B39] text-white font-extrabold text-xs shadow-md z-20 flex items-center gap-1 select-none">
               <Sparkles size={12} />
-              <span>{percentage}% Protegido</span>
-            </div>
-          </div>
-
-          <div className="mt-5 w-full text-center space-y-1">
-            <div className="w-full bg-zinc-200 rounded-full h-2.5 overflow-hidden border border-border/20">
-              <div 
-                className="bg-gradient-to-r from-emerald-600 to-teal-500 h-full transition-all duration-700 rounded-full"
-                style={{ width: `${percentage}%` }}
-              />
+              <span>{percentage}%</span>
             </div>
           </div>
         </div>
 
-        {/* Values & Action Controls */}
-        <div className="md:col-span-7 space-y-4">
-          <div className="p-5 rounded-2xl bg-muted/40 border border-border/20 space-y-3">
-            <div className="flex justify-between items-baseline">
-              <span className="text-xs font-semibold text-muted-foreground">Valor Guardado na Reserva</span>
-              <span className="text-2xl font-extrabold text-foreground">{formatBRL(emergencyReserve)}</span>
+        {/* Financial Metrics & Actions */}
+        <div className="md:col-span-7 flex flex-col justify-between space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 rounded-2xl bg-muted/30 border border-border/15">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">
+                Saldo Atual Guardado
+              </p>
+              <p className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
+                {formatBRL(emergencyReserve)}
+              </p>
             </div>
-            <div className="flex justify-between items-center text-xs pt-2.5 border-t border-border/15">
-              <span className="text-muted-foreground">Meta da Reserva (6 Meses):</span>
-              <span className="font-extrabold text-[#2D7D46]">{formatBRL(emergencyGoal)}</span>
+
+            <div className="p-4 rounded-2xl bg-muted/30 border border-border/15">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">
+                Meta Desejada
+              </p>
+              <p className="text-xl sm:text-2xl font-black text-muted-foreground tracking-tight">
+                {formatBRL(emergencyGoal)}
+              </p>
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Quick Action Buttons */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
             <button
-              onClick={() => setModalMode('deposit')}
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#2D7D46] hover:bg-[#236B39] text-white font-bold text-xs shadow-md active:scale-95 transition-all"
+              onClick={() => handleOpenModal('deposit')}
+              className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#2D7D46] hover:bg-[#236B39] text-white font-bold text-xs shadow-md active:scale-95 transition-all cursor-pointer"
             >
               <Plus size={16} />
               <span>Adicionar Valor</span>
             </button>
+
             <button
-              onClick={() => setModalMode('withdraw')}
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-muted hover:bg-muted/80 text-foreground font-bold text-xs border border-border/30 active:scale-95 transition-all"
+              onClick={() => handleOpenModal('withdraw')}
+              className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-muted hover:bg-muted/80 text-foreground font-bold text-xs border border-border/30 active:scale-95 transition-all cursor-pointer"
             >
               <Minus size={16} />
               <span>Resgatar Valor</span>
@@ -267,7 +300,7 @@ export const EmergencyReserveCard: React.FC = () => {
       {/* Deposit/Withdraw Modal */}
       {modalMode && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-card border border-border/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+          <div className="w-full max-w-sm bg-white border border-border/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between">
               <h4 className="font-extrabold text-base text-foreground">
                 {modalMode === 'deposit' && 'Adicionar ao Escudo'}
@@ -276,11 +309,19 @@ export const EmergencyReserveCard: React.FC = () => {
               </h4>
               <button
                 onClick={() => setModalMode(null)}
-                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground"
+                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground cursor-pointer"
               >
                 ✕
               </button>
             </div>
+
+            {/* Validation Error Banner */}
+            {validationError && (
+              <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold flex items-start gap-2">
+                <AlertCircle size={16} className="shrink-0 mt-0.5" />
+                <p>{validationError}</p>
+              </div>
+            )}
 
             <form onSubmit={handleConfirmAction} className="space-y-4">
               <div>
@@ -290,28 +331,42 @@ export const EmergencyReserveCard: React.FC = () => {
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs font-bold">R$</span>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
                     required
                     placeholder="0,00"
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-muted/40 border border-border/30 text-foreground text-sm font-bold focus:outline-none focus:border-primary"
+                    onChange={(e) => {
+                      setValidationError(null);
+                      setInputValue(e.target.value);
+                    }}
+                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-muted/40 border border-border/30 text-foreground text-sm font-bold focus:outline-none focus:border-[#2D7D46]"
                   />
                 </div>
+
+                {/* Helper text showing max available limit */}
+                {modalMode === 'deposit' && (
+                  <p className="text-[11px] font-semibold text-emerald-700 mt-1.5">
+                    Saldo disponível na conta geral: {formatBRL(Math.max(0, generalBalance))}
+                  </p>
+                )}
+                {modalMode === 'withdraw' && (
+                  <p className="text-[11px] font-semibold text-emerald-700 mt-1.5">
+                    Saldo disponível na reserva: {formatBRL(emergencyReserve)}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setModalMode(null)}
-                  className="flex-1 py-2.5 rounded-xl bg-muted text-foreground text-xs font-bold"
+                  className="flex-1 py-2.5 rounded-xl bg-muted text-foreground text-xs font-bold cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-[#2D7D46] hover:bg-[#236B39] text-white text-xs font-bold shadow-md"
+                  className="flex-1 py-2.5 rounded-xl bg-[#2D7D46] hover:bg-[#236B39] text-white text-xs font-bold shadow-md cursor-pointer"
                 >
                   Confirmar
                 </button>

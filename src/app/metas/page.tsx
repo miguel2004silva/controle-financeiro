@@ -411,20 +411,20 @@ export default function MetaseOrcamentosPage() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">Valor Alvo</label>
+                      <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">Valor Alvo (R$)</label>
                       <input
-                        type="number"
-                        placeholder="R$ 15.000"
+                        type="text"
+                        placeholder="15.000,00"
                         value={goalTarget}
                         onChange={(e) => setGoalTarget(e.target.value)}
                         className="w-full shadcn-input text-xs"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">Já tenho poupado</label>
+                      <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">Já tenho poupado (R$)</label>
                       <input
-                        type="number"
-                        placeholder="R$ 2.000"
+                        type="text"
+                        placeholder="2.000,00"
                         value={goalCurrent}
                         onChange={(e) => setGoalCurrent(e.target.value)}
                         className="w-full shadcn-input text-xs"
@@ -520,11 +520,11 @@ export default function MetaseOrcamentosPage() {
                           {isAddingFunds ? (
                             <div className="flex items-center gap-1">
                               <input
-                                type="number"
-                                placeholder="+ R$"
+                                type="text"
+                                placeholder="0,00"
                                 value={fundAmount}
                                 onChange={(e) => setFundAmount(e.target.value)}
-                                className="w-16 shadcn-input px-1.5 py-0.5 text-[10px]"
+                                className="w-20 shadcn-input px-1.5 py-0.5 text-[10px]"
                                 autoFocus
                               />
                               <button
