@@ -22,6 +22,7 @@ import {
 import Link from 'next/link';
 import { useFinance } from '@/context/finance-context';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { CustomSelect } from '@/components/custom-select';
 
 interface ManagedUser {
   id: string;
@@ -351,14 +352,14 @@ export default function SecretGestaoPage() {
                     <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
                       Nível de Permissão
                     </label>
-                    <select
+                    <CustomSelect
                       value={newRole}
-                      onChange={(e) => setNewRole(e.target.value as any)}
-                      className="w-full bg-[#1a1a1e] border border-zinc-800 focus:border-emerald-500/60 rounded-2xl px-4 py-3 text-xs text-white outline-none font-bold"
-                    >
-                      <option value="usuario">Usuário Comum</option>
-                      <option value="admin">Administrador</option>
-                    </select>
+                      onChange={(val) => setNewRole(val as any)}
+                      options={[
+                        { value: 'usuario', label: 'Usuário Comum' },
+                        { value: 'admin', label: 'Administrador' }
+                      ]}
+                    />
                   </div>
 
                   <button

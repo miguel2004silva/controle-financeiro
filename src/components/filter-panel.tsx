@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, X, ChevronDown, Search, Calendar, DollarSign, RefreshCw, Check } from 'lucide-react';
 import { Category } from '@/lib/types';
+import { CustomSelect } from './custom-select';
 
 export interface FilterState {
   search: string;
@@ -202,15 +203,14 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           {filters.periodType === 'ano' && (
             <div className="animate-fade-in">
               <label className="text-[10px] font-bold text-muted-foreground block mb-1">Ano</label>
-              <select
+              <CustomSelect
                 value={filters.selectedYear}
-                onChange={(e) => updateFilter('selectedYear', e.target.value)}
-                className="w-full shadcn-input px-3 py-1.5 text-xs"
-              >
-                {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((yr) => (
-                  <option key={yr} value={yr.toString()}>{yr}</option>
-                ))}
-              </select>
+                onChange={(val) => updateFilter('selectedYear', val)}
+                options={Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((yr) => ({
+                  value: yr.toString(),
+                  label: yr.toString()
+                }))}
+              />
             </div>
           )}
 
