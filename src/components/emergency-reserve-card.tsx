@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { ShieldCheck, Plus, Minus, Target, Sparkles, AlertCircle } from 'lucide-react';
 import { useFinance } from '@/context/finance-context';
 import { motion } from 'framer-motion';
+import { maskCurrency, parseCurrencyInput } from '@/lib/currency-utils';
 
 export const EmergencyReserveCard: React.FC = () => {
   const { emergencyReserve, emergencyGoal, updateEmergencyReserve, addTransaction, transactions } = useFinance();
@@ -38,14 +39,7 @@ export const EmergencyReserveCard: React.FC = () => {
     e.preventDefault();
     setValidationError(null);
 
-    // Parse numeric value safely
-    const cleanDigits = inputValue.replace(/[^0-9,.]/g, '');
-    let val = 0;
-    if (cleanDigits.includes(',')) {
-      val = parseFloat(cleanDigits.replace(/\./g, '').replace(',', '.'));
-    } else {
-      val = parseFloat(cleanDigits);
-    }
+    const val = parseCurrencyInput(inputValue);
 
     if (isNaN(val) || val <= 0) {
       setValidationError('Por favor insira um valor válido maior que zero.');
@@ -337,7 +331,7 @@ export const EmergencyReserveCard: React.FC = () => {
                     value={inputValue}
                     onChange={(e) => {
                       setValidationError(null);
-                      setInputValue(e.target.value);
+                      setInputValue(maskCurrency(e.target.value));
                     }}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-muted/40 border border-border/30 text-foreground text-sm font-bold focus:outline-none focus:border-[#2D7D46]"
                   />

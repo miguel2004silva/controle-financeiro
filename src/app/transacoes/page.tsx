@@ -18,6 +18,7 @@ import {
 import { FilterPanel, FilterState, initialFilterState } from '@/components/filter-panel';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { CustomSelect } from '@/components/custom-select';
+import { maskCurrency, parseCurrencyInput } from '@/lib/currency-utils';
 
 export default function TransacoesPage() {
   const { 
@@ -652,9 +653,9 @@ export default function TransacoesPage() {
                             required
                           />
                           <input 
-                            type="number" 
+                            type="text" 
                             value={editCatBudget} 
-                            onChange={(e) => setEditCatBudget(e.target.value)}
+                            onChange={(e) => setEditCatBudget(maskCurrency(e.target.value))}
                             className="shadcn-input text-xs py-1"
                             placeholder="Orçamento"
                           />

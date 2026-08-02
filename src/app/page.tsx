@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useFinance } from '@/context/finance-context';
 import { InvestmentSliderModal } from '@/components/investment-slider-modal';
-import { parseCurrencyInput } from '@/lib/currency-utils';
+import { parseCurrencyInput, maskCurrency } from '@/lib/currency-utils';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -361,21 +361,6 @@ export default function DashboardPage() {
               {activeBalanceDisplay.subtitle}
             </p>
           </div>
-
-          <button
-            onClick={() => {
-              setModalMode('edit');
-              setModalTipo('liquidez');
-              setModalId('');
-              setModalName('Saldo em Conta');
-              setModalValue(String(liquidezTotal));
-              setIsModalOpen(true);
-            }}
-            className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/25 transition-all shadow-sm"
-            title="Ajustar Saldo"
-          >
-            <Pencil size={18} />
-          </button>
         </div>
       </motion.div>
 
@@ -636,12 +621,11 @@ export default function DashboardPage() {
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs font-bold">R$</span>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
                     required
                     placeholder="0,00"
                     value={modalValue}
-                    onChange={(e) => setModalValue(e.target.value)}
+                    onChange={(e) => setModalValue(maskCurrency(e.target.value))}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-muted/40 border border-border/30 text-foreground text-sm font-bold focus:outline-none focus:border-primary"
                   />
                 </div>

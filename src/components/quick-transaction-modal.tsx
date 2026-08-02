@@ -9,7 +9,7 @@ import { X, Plus, Calendar, AlignLeft, Check, ChevronDown, FolderPlus } from 'lu
 import { useFinance } from '@/context/finance-context';
 import { CategoryIcon } from './category-icon';
 import { Category } from '@/lib/types';
-import { parseCurrencyInput } from '@/lib/currency-utils';
+import { parseCurrencyInput, maskCurrency } from '@/lib/currency-utils';
 
 const transactionSchema = z.object({
   valor: z.preprocess(
@@ -254,11 +254,11 @@ export const QuickTransactionModal: React.FC = () => {
                 <div className="relative flex items-center justify-center">
                   <span className="text-2xl font-extrabold text-muted-foreground mr-1">R$</span>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
                     placeholder="0,00"
                     autoFocus
                     {...register('valor')}
+                    onChange={(e) => setValue('valor', maskCurrency(e.target.value))}
                     className="bg-transparent text-4xl sm:text-5xl font-extrabold text-center text-foreground placeholder:text-muted-foreground/30 focus:outline-none max-w-[260px] select-all"
                   />
                 </div>

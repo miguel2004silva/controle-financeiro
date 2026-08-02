@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useFinance } from '@/context/finance-context';
+import { Investment } from '@/lib/types';
+import { parseCurrencyInput, maskCurrency } from '@/lib/currency-utils';
 import { 
   PlusCircle,
   Wallet,
@@ -149,7 +151,7 @@ export default function InvestimentosPage() {
   // Submit handler (Add or Edit)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const val = Number(amount);
+    const val = parseCurrencyInput(amount);
     
     if (!name.trim()) {
       alert('Informe o local/nome do investimento.');
@@ -453,11 +455,10 @@ export default function InvestimentosPage() {
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">R$</span>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
                     placeholder="0,00"
                     value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    onChange={(e) => setAmount(maskCurrency(e.target.value))}
                     className="w-full shadcn-input pl-9 font-bold text-xs"
                     required
                   />

@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { TrendingUp, DollarSign, Sliders, ShieldCheck, PieChart, Sparkles, Check, X } from 'lucide-react';
 import { useFinance } from '@/context/finance-context';
 
+import { maskCurrency, parseCurrencyInput } from '@/lib/currency-utils';
+
 interface InvestmentSliderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,7 +27,7 @@ export const InvestmentSliderModal: React.FC<InvestmentSliderModalProps> = ({ is
   };
 
   const handleSaveIncome = () => {
-    const val = parseFloat(tempIncome.replace(/\./g, '').replace(',', '.'));
+    const val = parseCurrencyInput(tempIncome);
     if (!isNaN(val) && val > 0) {
       setMonthlyIncome(val);
     }
@@ -78,10 +80,11 @@ export const InvestmentSliderModal: React.FC<InvestmentSliderModalProps> = ({ is
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs font-bold text-muted-foreground">R$</span>
                 <input
-                  type="number"
+                  type="text"
+                  placeholder="0,00"
                   value={tempIncome}
-                  onChange={(e) => setTempIncome(e.target.value)}
-                  className="w-28 py-1 px-2 text-sm font-bold bg-background border border-border/30 rounded-lg text-foreground focus:outline-none"
+                  onChange={(e) => setTempIncome(maskCurrency(e.target.value))}
+                  className="w-32 py-1 px-2 text-sm font-bold bg-background border border-border/30 rounded-lg text-foreground focus:outline-none"
                 />
                 <button
                   onClick={handleSaveIncome}

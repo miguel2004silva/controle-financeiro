@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   PiggyBank
 } from 'lucide-react';
+import { maskCurrency, parseCurrencyInput } from '@/lib/currency-utils';
 
 export default function MetaseOrcamentosPage() {
   const { 
@@ -416,7 +417,7 @@ export default function MetaseOrcamentosPage() {
                         type="text"
                         placeholder="15.000,00"
                         value={goalTarget}
-                        onChange={(e) => setGoalTarget(e.target.value)}
+                        onChange={(e) => setGoalTarget(maskCurrency(e.target.value))}
                         className="w-full shadcn-input text-xs"
                       />
                     </div>
@@ -426,7 +427,7 @@ export default function MetaseOrcamentosPage() {
                         type="text"
                         placeholder="2.000,00"
                         value={goalCurrent}
-                        onChange={(e) => setGoalCurrent(e.target.value)}
+                        onChange={(e) => setGoalCurrent(maskCurrency(e.target.value))}
                         className="w-full shadcn-input text-xs"
                       />
                     </div>
@@ -523,7 +524,7 @@ export default function MetaseOrcamentosPage() {
                                 type="text"
                                 placeholder="0,00"
                                 value={fundAmount}
-                                onChange={(e) => setFundAmount(e.target.value)}
+                                onChange={(e) => setFundAmount(maskCurrency(e.target.value))}
                                 className="w-20 shadcn-input px-1.5 py-0.5 text-[10px]"
                                 autoFocus
                               />
