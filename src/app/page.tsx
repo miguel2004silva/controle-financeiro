@@ -51,7 +51,8 @@ export default function DashboardPage() {
     addInvestment,
     editInvestment,
     deleteInvestment,
-    addInvestmentMovement
+    addInvestmentMovement,
+    addTransaction
   } = useFinance();
 
   const [mounted, setMounted] = useState(false);
@@ -121,9 +122,9 @@ export default function DashboardPage() {
   const activeItemsAtMonth = useMemo(() => {
     return investments.map(inv => {
       let value = 0;
-      if (['liquidez', 'bens', 'divida'].includes(inv.tipo)) {
+      if (['bens', 'divida'].includes(inv.tipo)) {
         value = getValueAtMonth(inv.id);
-      } else {
+      } else if (['ação', 'fii', 'renda_fixa', 'cripto'].includes(inv.tipo)) {
         const qty = getQtyAtMonth(inv.id);
         value = qty * Number(inv.preço_atual);
       }
@@ -131,14 +132,21 @@ export default function DashboardPage() {
     }).filter(item => {
       const createdBefore = isCreatedInOrBefore(item, selectedMonth);
       if (!createdBefore) return false;
-      if (['liquidez', 'bens', 'divida'].includes(item.tipo)) return item.valor_no_mes !== 0;
-      return getQtyAtMonth(item.id) > 0;
+      if (['bens', 'divida'].includes(item.tipo)) return item.valor_no_mes !== 0;
+      return ['ação', 'fii', 'renda_fixa', 'cripto'].includes(item.tipo) && getQtyAtMonth(item.id) > 0;
     });
   }, [investments, investmentMovements, selectedMonth]);
 
   const liquidezTotal = useMemo(() => {
-    return activeItemsAtMonth.filter(item => item.tipo === 'liquidez').reduce((sum, item) => sum + item.valor_no_mes, 0);
-  }, [activeItemsAtMonth]);
+    const transactionsUpToMonth = transactions.filter(t => t.data && t.data.substring(0, 7) <= selectedMonth);
+    const totalRevenues = transactionsUpToMonth
+      .filter(t => t.tipo === 'receita')
+      .reduce((sum, t) => sum + Number(t.valor), 0);
+    const totalExpenses = transactionsUpToMonth
+      .filter(t => t.tipo === 'despesa')
+      .reduce((sum, t) => sum + Number(t.valor), 0);
+    return totalRevenues - totalExpenses;
+  }, [transactions, selectedMonth]);
 
   const investimentosTotal = useMemo(() => {
     return activeItemsAtMonth.filter(item => ['ação', 'fii', 'renda_fixa', 'cripto'].includes(item.tipo)).reduce((sum, item) => sum + item.valor_no_mes, 0);
@@ -231,6 +239,49 @@ export default function DashboardPage() {
     setIsModalOpen(true);
   };
 
+  const handleSaveModal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const val = parseFloat(modalValue.replace(/\./g, '').replace(',', '.'));
+    if (isNaN(val)) return;
+
+    try {
+      if (modalTipo === 'liquidez') {
+        const diff = val - liquidezTotal;
+        if (diff !== 0) {
+          await addTransaction({
+            tipo: diff > 0 ? 'receita' : 'despesa',
+            valor: Math.abs(diff),
+            descrição: 'Ajuste de Saldo',
+            categoria_id: null,
+            data: new Date().toISOString().split('T')[0],
+            recorrente: false
+          });
+        }
+      } else {
+        if (modalMode === 'add') {
+          await addInvestment({
+            ticker: modalName.trim() || (modalTipo === 'bens' ? 'Bem' : 'Dívida'),
+            tipo: modalTipo,
+            quantidade: 1,
+            preço_medio: val,
+            preço_atual: val,
+            data_atualização: new Date().toISOString()
+          });
+        } else {
+          await editInvestment(modalId, {
+            ticker: modalName.trim(),
+            preço_atual: val,
+            data_atualização: new Date().toISOString()
+          });
+        }
+      }
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar ajuste de saldo.');
+    }
+  };
+
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
       
@@ -312,9 +363,12 @@ export default function DashboardPage() {
 
           <button
             onClick={() => {
-              const mainSaldo = investments.find(i => i.tipo === 'liquidez');
-              if (mainSaldo) handleOpenEdit(mainSaldo);
-              else handleOpenAdd('liquidez');
+              setModalMode('edit');
+              setModalTipo('liquidez');
+              setModalId('');
+              setModalName('Saldo em Conta');
+              setModalValue(String(liquidezTotal));
+              setIsModalOpen(true);
             }}
             className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/25 transition-all shadow-sm"
             title="Ajustar Saldo"
@@ -540,6 +594,77 @@ export default function DashboardPage() {
 
       {/* 6. INVESTMENT SLIDER MODAL */}
       <InvestmentSliderModal isOpen={isSliderOpen} onClose={() => setIsSliderOpen(false)} />
+
+      {/* 7. BALANCE ADJUSTMENT MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-sm bg-card border border-border/30 rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between">
+              <h4 className="font-extrabold text-base text-foreground">
+                {modalMode === 'add' ? 'Adicionar' : 'Ajustar'} {modalTipo === 'liquidez' ? 'Saldo em Conta' : modalTipo === 'bens' ? 'Bem / Ativo' : 'Dívida'}
+              </h4>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveModal} className="space-y-4">
+              {modalTipo !== 'liquidez' && (
+                <div>
+                  <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                    Nome / Descrição
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={modalTipo === 'bens' ? 'Ex: Carro, Imóvel' : 'Ex: Empréstimo, Financiamento'}
+                    value={modalName}
+                    onChange={(e) => setModalName(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-muted/40 border border-border/30 text-foreground text-sm font-semibold focus:outline-none focus:border-primary"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1.5">
+                  Valor (R$)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs font-bold">R$</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    placeholder="0,00"
+                    value={modalValue}
+                    onChange={(e) => setModalValue(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-muted/40 border border-border/30 text-foreground text-sm font-bold focus:outline-none focus:border-primary"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-muted text-foreground text-xs font-bold transition-all hover:bg-muted/80"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 rounded-xl bg-[#2D7D46] hover:bg-[#236B39] text-white text-xs font-bold shadow-md transition-all active:scale-95"
+                >
+                  Confirmar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

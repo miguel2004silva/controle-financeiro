@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useFinance } from '@/context/finance-context';
 import { QuickTransactionModal } from './quick-transaction-modal';
+import { motion } from 'framer-motion';
 
 interface NavItem {
   name: string;
@@ -164,8 +165,8 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
           </button>
         </div>
 
-        {/* Navigation Links (Multicap style matching reference image) */}
-        <nav className="flex-1 space-y-1.5">
+        {/* Navigation Links (Komadi style with Framer Motion) */}
+        <nav className="flex-1 space-y-1">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href || (item.href.includes('#') && pathname === '/');
             const Icon = item.icon;
@@ -173,14 +174,21 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
               <Link
                 key={item.name}
                 href={item.href}
-                className={`relative flex items-center gap-3.5 h-11 px-4 rounded-2xl shrink-0 transition-all duration-200 outline-none ${
+                className={`relative flex items-center gap-3.5 h-11 px-4 rounded-xl shrink-0 transition-colors duration-200 outline-none select-none ${
                   isActive
-                    ? 'bg-[#EAF5ED] text-[#236B39] dark:bg-emerald-950/70 dark:text-emerald-300 font-bold border border-emerald-500/20 shadow-xs'
-                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100 font-medium'
+                    ? 'text-[#ff5a3c] font-bold'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/40 hover:text-zinc-900 dark:hover:text-zinc-100 font-medium'
                 }`}
               >
-                <Icon size={19} className={`relative z-10 ${isActive ? 'text-[#236B39] dark:text-emerald-400' : 'text-zinc-500 dark:text-zinc-400'}`} />
-                <span className="relative z-10 text-[13.5px] tracking-tight">{item.name}</span>
+                {isActive && (
+                  <motion.span
+                    layoutId="active-nav-indicator"
+                    className="absolute inset-0 bg-zinc-100 dark:bg-zinc-850 rounded-xl -z-10"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <Icon size={19} className={`relative z-10 ${isActive ? 'text-[#ff5a3c]' : 'text-zinc-500 dark:text-zinc-450'}`} />
+                <span className="relative z-10 text-[13px] tracking-tight">{item.name}</span>
               </Link>
             );
           })}
@@ -202,10 +210,24 @@ export const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ childre
           </div>
 
           <div className="flex items-center justify-between gap-2">
-            <div className="flex-1 px-3 py-2 rounded-xl bg-[#EAF5ED] text-[#236B39] text-xs font-bold flex items-center justify-center gap-1.5 border border-emerald-500/20">
-              <Sun size={14} />
-              <span>Modo Claro</span>
-            </div>
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                className="flex-1 px-3 py-2 rounded-xl bg-muted hover:bg-muted/80 text-foreground text-xs font-bold flex items-center justify-center gap-1.5 border border-border/15 transition-all"
+              >
+                {theme === 'light' ? (
+                  <>
+                    <Sun size={14} className="text-[#E8A020]" />
+                    <span>Modo Claro</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon size={14} className="text-blue-400" />
+                    <span>Modo Escuro</span>
+                  </>
+                )}
+              </button>
+            )}
 
             {/* Logout Button */}
             <button

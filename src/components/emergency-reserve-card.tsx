@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Plus, Minus, Target, Sparkles, Lock, ShieldAlert, Shield } from 'lucide-react';
 import { useFinance } from '@/context/finance-context';
+import { motion } from 'framer-motion';
 
 export const EmergencyReserveCard: React.FC = () => {
-  const { emergencyReserve, emergencyGoal, updateEmergencyReserve } = useFinance();
+  const { emergencyReserve, emergencyGoal, updateEmergencyReserve, addTransaction } = useFinance();
   const [inputValue, setInputValue] = useState('');
   const [modalMode, setModalMode] = useState<'deposit' | 'withdraw' | 'goal' | null>(null);
 
@@ -15,17 +16,38 @@ export const EmergencyReserveCard: React.FC = () => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   };
 
-  const handleConfirmAction = (e: React.FormEvent) => {
+  const handleConfirmAction = async (e: React.FormEvent) => {
     e.preventDefault();
     const val = parseFloat(inputValue.replace(/\./g, '').replace(',', '.'));
     if (isNaN(val) || val <= 0) return;
 
-    if (modalMode === 'deposit') {
-      updateEmergencyReserve(emergencyReserve + val);
-    } else if (modalMode === 'withdraw') {
-      updateEmergencyReserve(Math.max(0, emergencyReserve - val));
-    } else if (modalMode === 'goal') {
-      updateEmergencyReserve(emergencyReserve, val);
+    try {
+      if (modalMode === 'deposit') {
+        await addTransaction({
+          tipo: 'despesa',
+          valor: val,
+          descrição: 'Aporte - Reserva de Emergência',
+          categoria_id: null,
+          data: new Date().toISOString().split('T')[0],
+          recorrente: false
+        });
+        updateEmergencyReserve(emergencyReserve + val);
+      } else if (modalMode === 'withdraw') {
+        await addTransaction({
+          tipo: 'receita',
+          valor: val,
+          descrição: 'Resgate - Reserva de Emergência',
+          categoria_id: null,
+          data: new Date().toISOString().split('T')[0],
+          recorrente: false
+        });
+        updateEmergencyReserve(Math.max(0, emergencyReserve - val));
+      } else if (modalMode === 'goal') {
+        updateEmergencyReserve(emergencyReserve, val);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar transação da reserva.');
     }
 
     setInputValue('');
@@ -70,15 +92,91 @@ export const EmergencyReserveCard: React.FC = () => {
         <div className="md:col-span-5 flex flex-col items-center justify-center p-5 bg-[#F7F9F7] rounded-3xl border border-border/15">
           <div className="relative w-36 h-40 flex flex-col items-center justify-center">
             {/* Outer Pulsing Shield Halo */}
-            <div className="absolute inset-0 rounded-full bg-emerald-500/10 animate-pulse blur-xl" />
+            <div className="absolute inset-0 rounded-full bg-emerald-500/5 animate-pulse blur-xl pointer-events-none" />
 
-            {/* Shield Icon Container */}
-            <div className="relative z-10 w-28 h-28 rounded-full bg-white border-2 border-emerald-500/30 shadow-md flex items-center justify-center text-[#2D7D46]">
-              <ShieldCheck size={56} className="text-[#2D7D46]" />
+            {/* Custom SVG Animated Shield */}
+            <div className="relative z-10 w-28 h-32 flex items-center justify-center">
+              <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
+                <defs>
+                  <linearGradient id="shield-grad" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stopColor="#1B522C" />
+                    <stop offset="50%" stopColor="#236B39" />
+                    <stop offset="100%" stopColor="#2D7D46" />
+                  </linearGradient>
+                  <clipPath id="shield-clip">
+                    <path d="M 50 5 C 75 5, 90 15, 90 45 C 90 75, 50 95, 50 95 C 50 95, 10 75, 10 45 C 10 15, 25 5, 50 5 Z" />
+                  </clipPath>
+                </defs>
+
+                {/* Base Outer Border */}
+                <path
+                  d="M 50 5 C 75 5, 90 15, 90 45 C 90 75, 50 95, 50 95 C 50 95, 10 75, 10 45 C 10 15, 25 5, 50 5 Z"
+                  fill="none"
+                  stroke="#e4e4e7"
+                  strokeWidth="3.5"
+                  className="dark:stroke-zinc-800"
+                />
+
+                {/* Clipped Fill Content */}
+                <g clipPath="url(#shield-clip)">
+                  {/* Empty Background */}
+                  <rect x="0" y="0" width="100" height="100" className="fill-zinc-100 dark:fill-zinc-900" />
+                  
+                  {/* Grid overlay for tech look */}
+                  <path d="M 50 5 L 50 95" stroke="rgba(0,0,0,0.03)" strokeWidth="1" />
+                  <path d="M 10 45 L 90 45" stroke="rgba(0,0,0,0.03)" strokeWidth="1" />
+
+                  {/* Liquid / Color Fill */}
+                  <motion.rect
+                    x="0"
+                    width="100"
+                    fill="url(#shield-grad)"
+                    initial={{ y: 95, height: 0 }}
+                    animate={{
+                      y: 95 - (percentage / 100) * 90,
+                      height: (percentage / 100) * 90
+                    }}
+                    transition={{ type: 'spring', stiffness: 50, damping: 15 }}
+                  />
+
+                  {/* Shiny overlay highlight */}
+                  <path
+                    d="M 15 15 Q 50 35 85 15"
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.15)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                </g>
+
+                {/* Outline Border on Top */}
+                <path
+                  d="M 50 5 C 75 5, 90 15, 90 45 C 90 75, 50 95, 50 95 C 50 95, 10 75, 10 45 C 10 15, 25 5, 50 5 Z"
+                  fill="none"
+                  stroke={percentage >= 100 ? '#2D7D46' : '#c8e2d1'}
+                  strokeWidth="3.5"
+                  className="transition-colors duration-500 pointer-events-none"
+                />
+
+                {/* Checkmark overlay */}
+                {percentage > 0 && (
+                  <motion.path
+                    d="M 36 48 L 46 58 L 66 36"
+                    fill="none"
+                    stroke={percentage >= 50 ? '#FFFFFF' : '#2D7D46'}
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                  />
+                )}
+              </svg>
             </div>
 
             {/* Percentage Badge */}
-            <div className="absolute -bottom-1 px-3 py-1 rounded-full bg-[#236B39] text-white font-extrabold text-xs shadow-md z-20 flex items-center gap-1">
+            <div className="absolute -bottom-1 px-3 py-1 rounded-full bg-[#236B39] text-white font-extrabold text-xs shadow-md z-20 flex items-center gap-1 select-none">
               <Sparkles size={12} />
               <span>{percentage}% Protegido</span>
             </div>
