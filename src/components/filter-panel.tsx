@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, X, ChevronDown, Search, Calendar, DollarSign, RefreshCw, Check } from 'lucide-react';
 import { Category } from '@/lib/types';
 import { CustomSelect } from './custom-select';
+import { DatePicker } from './date-picker';
 
 export interface FilterState {
   search: string;
@@ -175,11 +176,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <label className="text-[10px] font-bold text-muted-foreground block mb-1 flex items-center gap-1">
                 <Calendar size={10} /> Data
               </label>
-              <input
-                type="date"
+              <DatePicker
                 value={filters.selectedDate}
-                onChange={(e) => updateFilter('selectedDate', e.target.value)}
-                className="w-full shadcn-input px-3 py-1.5 text-xs"
+                onChange={(val) => updateFilter('selectedDate', val)}
               />
             </div>
           )}
@@ -216,20 +215,16 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <div className="grid grid-cols-2 gap-2 animate-fade-in">
               <div>
                 <label className="text-[9px] font-bold text-muted-foreground block mb-1">Início</label>
-                <input
-                  type="date"
+                <DatePicker
                   value={filters.startDate}
-                  onChange={(e) => updateFilter('startDate', e.target.value)}
-                  className="w-full shadcn-input px-2 py-1 text-xs"
+                  onChange={(val) => updateFilter('startDate', val)}
                 />
               </div>
               <div>
                 <label className="text-[9px] font-bold text-muted-foreground block mb-1">Fim</label>
-                <input
-                  type="date"
+                <DatePicker
                   value={filters.endDate}
-                  onChange={(e) => updateFilter('endDate', e.target.value)}
-                  className="w-full shadcn-input px-2 py-1 text-xs"
+                  onChange={(val) => updateFilter('endDate', val)}
                 />
               </div>
             </div>

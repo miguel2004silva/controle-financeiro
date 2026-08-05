@@ -18,6 +18,7 @@ import {
 import { FilterPanel, FilterState, initialFilterState } from '@/components/filter-panel';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { CustomSelect } from '@/components/custom-select';
+import { DatePicker } from '@/components/date-picker';
 import { maskCurrency, parseCurrencyInput } from '@/lib/currency-utils';
 
 export default function TransacoesPage() {
@@ -460,11 +461,9 @@ export default function TransacoesPage() {
                           {/* Date cell */}
                           <td className="py-3.5 px-4 text-muted-foreground whitespace-nowrap font-medium">
                             {isEditing ? (
-                              <input
-                                type="date"
+                              <DatePicker
                                 value={editDate}
-                                onChange={(e) => setEditDate(e.target.value)}
-                                className="shadcn-input p-1 text-xs"
+                                onChange={(val) => setEditDate(val)}
                               />
                             ) : (
                               new Date(tx.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })

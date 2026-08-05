@@ -10,6 +10,7 @@ import { useFinance } from '@/context/finance-context';
 import { CategoryIcon } from './category-icon';
 import { Category } from '@/lib/types';
 import { parseCurrencyInput, maskCurrency } from '@/lib/currency-utils';
+import { DatePicker } from './date-picker';
 
 const transactionSchema = z.object({
   valor: z.preprocess(
@@ -91,6 +92,7 @@ export const QuickTransactionModal: React.FC = () => {
   });
 
   const selectedTipo = watch('tipo');
+  const selectedData = watch('data');
 
   // Reset form when modal closes or opens
   useEffect(() => {
@@ -481,10 +483,9 @@ export const QuickTransactionModal: React.FC = () => {
                     <Calendar size={14} />
                     Data
                   </label>
-                  <input
-                    type="date"
-                    {...register('data')}
-                    className="w-full shadcn-input text-xs"
+                  <DatePicker
+                    value={selectedData}
+                    onChange={(val) => setValue('data', val, { shouldValidate: true })}
                   />
                 </div>
 

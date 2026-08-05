@@ -16,6 +16,7 @@ import {
   PiggyBank
 } from 'lucide-react';
 import { maskCurrency, parseCurrencyInput } from '@/lib/currency-utils';
+import { DatePicker } from '@/components/date-picker';
 
 export default function MetaseOrcamentosPage() {
   const { 
@@ -435,11 +436,9 @@ export default function MetaseOrcamentosPage() {
 
                   <div>
                     <label className="text-[10px] text-muted-foreground font-bold uppercase block mb-1">Prazo Conclusão (Opcional)</label>
-                    <input
-                      type="date"
+                    <DatePicker
                       value={goalDeadline}
-                      onChange={(e) => setGoalDeadline(e.target.value)}
-                      className="w-full shadcn-input text-xs"
+                      onChange={(val) => setGoalDeadline(val)}
                     />
                   </div>
                 </div>
