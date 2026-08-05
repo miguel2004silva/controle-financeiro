@@ -44,6 +44,10 @@ export default function LoginPage() {
     setAuthLoading(true);
 
     if (!email || !password) {
+      if (!isSupabaseConfigured) {
+        router.push('/');
+        return;
+      }
       setError('Por favor preencha todos os campos obrigatórios.');
       setAuthLoading(false);
       return;
@@ -57,7 +61,8 @@ export default function LoginPage() {
         });
         if (err) throw err;
       } else {
-        setError('O Supabase não está configurado.');
+        // Direct to dashboard in local sandbox mode
+        router.push('/');
       }
     } catch (err: any) {
       setError(err.message || 'Ocorreu um erro ao realizar o login.');
@@ -69,7 +74,7 @@ export default function LoginPage() {
   const handleOAuthLogin = async (provider: 'google' | 'apple' | 'github') => {
     setError(null);
     if (!isSupabaseConfigured) {
-      setError('O Supabase não está configurado.');
+      router.push('/');
       return;
     }
 
@@ -171,13 +176,20 @@ export default function LoginPage() {
         <div className="w-full max-w-[450px] bg-white border border-zinc-200/50 rounded-3xl p-8 sm:p-10 shadow-2xl shadow-zinc-200/30 flex flex-col space-y-6">
           
           {/* Header Logo */}
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-[#EAF5ED] text-[#236B39] shadow-xs">
-              <Wallet size={18} className="stroke-[2.5]" />
+          <div className="flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-[#EAF5ED] text-[#236B39] shadow-xs">
+                <Wallet size={18} className="stroke-[2.5]" />
+              </div>
+              <span className="text-xs font-bold tracking-[0.14em] text-foreground uppercase">
+                Controle Financeiro
+              </span>
             </div>
-            <span className="text-xs font-bold tracking-[0.14em] text-foreground uppercase">
-              Controle Financeiro
-            </span>
+            {!isSupabaseConfigured && (
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-[#EAF5ED] text-[#236B39] border border-emerald-500/20">
+                Modo Local / Demo
+              </span>
+            )}
           </div>
 
           {/* Heading */}

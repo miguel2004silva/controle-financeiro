@@ -129,15 +129,15 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                       }}
                       className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer select-none ${
                         isSelected
-                          ? 'bg-[#F7E5D8] text-[#D95D39] dark:bg-emerald-950/80 dark:text-emerald-300 font-extrabold shadow-xs'
-                          : 'text-zinc-700 dark:text-zinc-300 hover:bg-[#F3EBD8] dark:hover:bg-zinc-800/60 hover:text-zinc-900'
+                          ? 'bg-[#EAF5ED] text-[#2D7D46] dark:bg-emerald-950/80 dark:text-emerald-300 font-extrabold shadow-xs'
+                          : 'text-zinc-700 dark:text-zinc-300 hover:bg-[#EAF5ED]/60 dark:hover:bg-zinc-800/60 hover:text-zinc-900'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 truncate">
                         {opt.icon && <span className="shrink-0">{opt.icon}</span>}
                         <span className="truncate">{opt.label}</span>
                       </div>
-                      {isSelected && <Check size={14} className="shrink-0 text-[#D95D39] dark:text-emerald-400" />}
+                      {isSelected && <Check size={14} className="shrink-0 text-[#2D7D46] dark:text-emerald-400" />}
                     </div>
                   );
                 })
